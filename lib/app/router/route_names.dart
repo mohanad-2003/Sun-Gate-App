@@ -12,4 +12,5 @@ class RouteNames {
   static const String changePassword = '/change-password';
   static const String legalPolicies = '/legal-policies';
   static const String helpSupport = '/help-support';
+  static const String home = '/home';
 }

@@ -11,4 +11,5 @@ class ApiConstants {
   static final String updateMyProfile = '/api/users/me';
   static final String changePassword = '/api/users/change-password';
   static final String uploadProfilePicture = '/api/users/profile/picture';
+  static final String home = '/api/home';
 }

@@ -8,5 +8,15 @@ class CategoryItemModel {
     required this.title,
     required this.imagePath,
   });
-  
+
+  factory CategoryItemModel.fromJson(Map<String, dynamic> json) {
+    return CategoryItemModel(
+      id: json['id']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      imagePath: json['imagePath']?.toString() ?? '',
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {"id": id, 'title': title, 'imagePath': imagePath};
+  }
 }

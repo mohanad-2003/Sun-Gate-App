@@ -45,7 +45,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
 
         if (mounted) {
-          context.go(RouteNames.profile);
+          context.go(RouteNames.home);
         }
       }
     });
