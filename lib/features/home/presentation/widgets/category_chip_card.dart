@@ -21,7 +21,7 @@ class CategoryChipCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        width: 82,
+        width: 95,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: isDark

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/home/presentation/controllers/home_mock_data_provider.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/category_chip_card.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/company_card.dart';
@@ -62,7 +64,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         itemBuilder: (context, index) {
                           return CategoryChipCard(
                             category: homeState.categories[index],
-                            onTap: () {},
+                            onTap: () {
+                              context.push(
+                                RouteNames.categoryProducts,
+                                extra: homeState.categories[index],
+                              );
+                            },
                           );
                         },
                       ),
@@ -74,7 +81,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: SectionTitleRow(
                         title: 'Popular Companies',
                         actionText: 'See all',
-                        onTap: () {},
+                        onTap: () {
+                          context.push(RouteNames.allComopanies);
+                        },
                       ),
                     ),
                   ),
@@ -84,7 +93,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       delegate: SliverChildBuilderDelegate((context, index) {
                         return CompanyCard(
                           company: homeState.companies[index],
-                          onTap: () {},
+                          onTap: () {
+                            context.push(
+                              RouteNames.companyDetail,
+                              extra: homeState.companies[index],
+                            );
+                          },
                         );
                       }, childCount: homeState.companies.length),
                       gridDelegate:

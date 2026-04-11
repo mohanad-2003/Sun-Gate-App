@@ -13,5 +13,12 @@ class RouteNames {
   static const String legalPolicies = '/legal-policies';
   static const String helpSupport = '/help-support';
   static const String home = '/home';
+  static const String allComopanies = '/comapanies';
+  static const String companyDetail = '/company-detail';
+  static const String productDetail = '/product-detail';
+  static const String categoryProducts = '/category-products';
+  static const String createProduct = '/create-product';
+  static const String market = '/market';
+
   static const String main = '/main';
 }

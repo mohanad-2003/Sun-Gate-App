@@ -42,7 +42,7 @@ class CompanyCard extends StatelessWidget {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      Image.asset(company.imagePath, fit: BoxFit.cover),
+                      Image.asset(company.coverImagePath, fit: BoxFit.cover),
                       Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
@@ -99,7 +99,7 @@ class CompanyCard extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                company.Description,
+                company.description,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodySmall?.copyWith(

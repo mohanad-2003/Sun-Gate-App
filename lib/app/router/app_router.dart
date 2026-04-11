@@ -5,7 +5,16 @@ import 'package:sun_gate_app/features/auth/presentation/screen/login_screen.dart
 import 'package:sun_gate_app/features/auth/presentation/screen/new_password_screen.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/otp_screen.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/sign_up_screen.dart';
+import 'package:sun_gate_app/features/home/data/models/category_item_model.dart';
+import 'package:sun_gate_app/features/home/data/models/company_model.dart';
+import 'package:sun_gate_app/features/home/data/models/product_model.dart';
+import 'package:sun_gate_app/features/home/presentation/screens/all_company_screen.dart';
+import 'package:sun_gate_app/features/home/presentation/screens/category_products_screen.dart';
+import 'package:sun_gate_app/features/home/presentation/screens/company_detail_screen.dart';
+import 'package:sun_gate_app/features/home/presentation/screens/create_product_screen.dart';
 import 'package:sun_gate_app/features/home/presentation/screens/home_screen.dart';
+import 'package:sun_gate_app/features/home/presentation/screens/market_screen.dart';
+import 'package:sun_gate_app/features/home/presentation/screens/product_detail_screen.dart';
 import 'package:sun_gate_app/features/main_navigation/presentation/screens/main_navigation_screen.dart';
 import 'package:sun_gate_app/features/onboarding/presentation/screen/onboarding_screen.dart';
 import 'package:sun_gate_app/features/profile/presentation/screens/change_password_screen.dart';
@@ -80,6 +89,39 @@ class AppRouter {
       GoRoute(
         path: RouteNames.home,
         builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.allComopanies,
+        builder: (context, state) => const AllCompanyScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.companyDetail,
+        builder: (context, state) {
+          final company = state.extra as CompanyModel;
+          return CompanyDetailScreen(company: company);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.productDetail,
+        builder: (context, state) {
+          final product = state.extra as ProductModel;
+          return ProductDetailScreen(product: product);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.categoryProducts,
+        builder: (context, state) {
+          final category = state.extra as CategoryItemModel;
+          return CategoryProductsScreen(category: category);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.createProduct,
+        builder: (context, state) => const CreateProductScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.market,
+        builder: (context, state) => const MarketScreen(),
       ),
       GoRoute(
         path: RouteNames.main,
