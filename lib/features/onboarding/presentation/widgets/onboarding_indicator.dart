@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sun_gate_app/app/theme/app_colors.dart';
+import 'package:sun_gate_app/core/theme/app_colors.dart';
 
 
 class OnboardingIndicator extends StatelessWidget {

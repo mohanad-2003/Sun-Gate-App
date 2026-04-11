@@ -6,6 +6,7 @@ import 'package:sun_gate_app/features/auth/presentation/screen/new_password_scre
 import 'package:sun_gate_app/features/auth/presentation/screen/otp_screen.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/sign_up_screen.dart';
 import 'package:sun_gate_app/features/home/presentation/screens/home_screen.dart';
+import 'package:sun_gate_app/features/main_navigation/presentation/screens/main_navigation_screen.dart';
 import 'package:sun_gate_app/features/onboarding/presentation/screen/onboarding_screen.dart';
 import 'package:sun_gate_app/features/profile/presentation/screens/change_password_screen.dart';
 import 'package:sun_gate_app/features/profile/presentation/screens/help_support_screen.dart';
@@ -79,6 +80,10 @@ class AppRouter {
       GoRoute(
         path: RouteNames.home,
         builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.main,
+        builder: (context, state) => const MainNavigationScreen(),
       ),
     ],
   );

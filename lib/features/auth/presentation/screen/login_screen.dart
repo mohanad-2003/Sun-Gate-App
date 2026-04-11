@@ -39,13 +39,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     ref.listen(authControllerProvider, (previous, next) async {
       if (next.isSuccess && mounted) {
-        await showDialog(
-          context: context,
-          builder: (_) => const _AuthSuccessDialog(),
-        );
-
         if (mounted) {
-          context.go(RouteNames.home);
+          context.go(RouteNames.main);
         }
       }
     });
@@ -162,44 +157,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               actionText: 'Sign Up',
               onTap: () => context.push(RouteNames.signUp),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _AuthSuccessDialog extends StatelessWidget {
-  const _AuthSuccessDialog();
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.all(22),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const CircleAvatar(
-              radius: 34,
-              backgroundColor: Colors.green,
-              child: Icon(Icons.check, color: Colors.white, size: 36),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'you have logged in\nsuccessfully',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Corem ipsum dolor sit amet, elit consectetur adipiscing elit.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
-            ),
-            const SizedBox(height: 24),
-            AuthPrimaryButton(text: 'Continue', onPressed: () => context.pop()),
           ],
         ),
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sun_gate_app/app/constants/app_sizes.dart';
-import 'package:sun_gate_app/app/theme/app_colors.dart';
+import 'package:sun_gate_app/core/theme/app_colors.dart';
 import 'package:sun_gate_app/core/widgets/app_text.dart';
 
 class OnboardingContentCard extends StatelessWidget {

@@ -14,27 +14,29 @@ class SectionTitleRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Row(
       children: [
         Expanded(
           child: Text(
             title,
-            style: const TextStyle(
-              fontSize: 18,
-              color: Color(0xFF252525),
-              fontWeight: FontWeight.w700,
-            ),
+            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
         ),
         if (actionText.isNotEmpty)
           InkWell(
             onTap: onTap,
-            child: Text(
-              actionText,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.orange,
-                fontWeight: FontWeight.w600,
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              child: Text(
+                actionText,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),

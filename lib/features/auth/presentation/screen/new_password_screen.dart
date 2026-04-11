@@ -120,8 +120,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
             const SizedBox(height: 16),
           ],
 
-          AuthPrimaryButton
-          (
+          AuthPrimaryButton(
             text: 'Next',
             isLoading: state.isLoading,
             onPressed: () {

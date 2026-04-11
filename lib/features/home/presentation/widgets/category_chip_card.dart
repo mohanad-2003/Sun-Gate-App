@@ -13,19 +13,26 @@ class CategoryChipCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final colorScheme = theme.colorScheme;
+
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(16),
       child: Container(
         width: 82,
-        height: 82,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
+          color: isDark
+              ? colorScheme.surfaceContainerHighest
+              : const Color(0xFFE7E7E7),
+          border: Border.all(color: colorScheme.outline.withOpacity(0.08)),
           image: DecorationImage(
             image: AssetImage(category.imagePath),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              Colors.black.withValues(alpha: 0.35),
+              Colors.black.withOpacity(isDark ? 0.35 : 0.28),
               BlendMode.darken,
             ),
           ),
@@ -36,12 +43,12 @@ class CategoryChipCard extends StatelessWidget {
             alignment: Alignment.bottomLeft,
             child: Text(
               category.title,
-              maxLines: 2,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: theme.textTheme.bodyMedium?.copyWith(
                 color: Colors.white,
-                fontSize: 13,
                 fontWeight: FontWeight.w600,
+                fontSize: 13,
               ),
             ),
           ),

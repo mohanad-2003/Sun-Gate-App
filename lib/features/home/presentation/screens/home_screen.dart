@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:sun_gate_app/app/router/route_names.dart';
-import 'package:sun_gate_app/features/home/presentation/controllers/home_bottom_nav_provider.dart';
 import 'package:sun_gate_app/features/home/presentation/controllers/home_mock_data_provider.dart';
-import 'package:sun_gate_app/features/home/presentation/widgets/app_bottom_nav_bar.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/category_chip_card.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/company_card.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/home_header_section.dart';
@@ -23,41 +19,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
 
-    Future.microtask(() async {
-      await ref.read(profileControllerProvider.notifier).getMyProfile();
+    Future.microtask(() {
+      ref.read(profileControllerProvider.notifier).getMyProfile();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final homeState = ref.watch(homeControllerProvider);
-    final currentIndex = ref.watch(homeBotomNavProvider);
-    final profileState = ref.watch(profileControllerProvider);
-
-    final userName = profileState.profile?.firstName.trim().isNotEmpty == true
-        ? profileState.profile!.firstName
-        : 'User';
-
-    final imagePath =
-        profileState.profile?.profileImage?.trim().isNotEmpty == true
-        ? profileState.profile?.profileImage
-        : '';
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: homeState.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(color: colorScheme.primary))
           : SafeArea(
               bottom: false,
               child: CustomScrollView(
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   SliverToBoxAdapter(
-                    child: HomeHeaderSection(
-                      userName: userName,
-                      imagePath: imagePath ?? '',
-                      onBannerTap: () {},
-                    ),
+                    child: HomeHeaderSection(onBannerTap: () {}),
                   ),
                   SliverToBoxAdapter(
                     child: Padding(
@@ -114,19 +96,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                     ),
                   ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 8)),
                 ],
               ),
             ),
-      bottomNavigationBar: AppBottomNavBar(
-        currentIndex: currentIndex,
-        onTap: (index) {
-          ref.read(homeBotomNavProvider.notifier).state = index;
-
-          if (index == 4) {
-            context.push(RouteNames.profile);
-          }
-        },
-      ),
     );
   }
 }

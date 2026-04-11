@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
-import 'package:sun_gate_app/app/theme/theme_mode_provider.dart';
+import 'package:sun_gate_app/core/theme/theme_mode_provider.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/logout_conformation_dialog.dart';
@@ -30,9 +30,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileControllerProvider);
     final profile = profileState.profile;
-    final themeMode = ref.watch(appThemeModeProvider);
-    final isDarkMode = themeMode == ThemeMode.dark;
-
+    final currentThemeMode = ref.watch(appThemeModeProvider);
+    final isDarkMode = currentThemeMode == ThemeMode.dark;
     return Scaffold(
       body: SafeArea(
         child: profileState.isLoading && profile == null
@@ -95,14 +94,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         title: 'Dark Mode',
                         trailing: Switch(
                           value: isDarkMode,
-                          onChanged: (value) {
+                          onChanged: (value) async {
                             ref
                                 .read(appThemeModeProvider.notifier)
                                 .toggleTheme(value);
                           },
                         ),
                       ),
-
                       const SizedBox(height: 24),
 
                       if (profileState.errorMessage != null &&
@@ -123,7 +121,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             style: const TextStyle(color: Colors.red),
                           ),
                         ),
-
 
                       const SizedBox(height: 40),
 

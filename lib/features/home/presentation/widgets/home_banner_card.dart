@@ -7,96 +7,103 @@ class HomeBannerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 132,
-      padding: const EdgeInsets.fromLTRB(16, 16, 14, 16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F7),
-        borderRadius: BorderRadius.circular(22),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 6,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Smart Solutions For A\nBrighter Future',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Color(0xFF314E7E),
-                      fontSize: 16,
-                      height: 1.35,
-                      fontWeight: FontWeight.w700,
-                    ),
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(22),
+      child: Container(
+        height: 136,
+        padding: const EdgeInsets.fromLTRB(18, 16, 14, 16),
+        decoration: BoxDecoration(
+          color: isDark
+              ? colorScheme.surfaceContainerHigh
+              : const Color(0xFFF0F2F7),
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: colorScheme.outline.withOpacity(0.08)),
+          boxShadow: isDark
+              ? []
+              : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 14,
+                    offset: const Offset(0, 6),
                   ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 38,
-                    width: 120,
-                    child: ElevatedButton(
-                      onPressed: onTap,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF314E7E),
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        padding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22),
-                        ),
+                ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Smart Solutions For A\nBrighter Future',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: isDark
+                            ? colorScheme.onSurface
+                            : const Color(0xFF314E7E),
+                        fontWeight: FontWeight.w700,
+                        height: 1.35,
                       ),
-                      child: const FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          child: Text(
-                            'Start Explore',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
+                    ),
+                    const Spacer(),
+                    SizedBox(
+                      height: 42,
+                      child: ElevatedButton(
+                        onPressed: onTap,
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: colorScheme.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        child: const Text(
+                          'Start Explore',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 4,
-            child: Align(
-              alignment: Alignment.centerRight,
+            const SizedBox(width: 12),
+            Container(
+              width: 104,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: isDark
+                    ? colorScheme.surfaceContainer
+                    : Colors.white.withOpacity(0.8),
+              ),
+              clipBehavior: Clip.antiAlias,
               child: Image.asset(
                 'assets/images/p.png',
                 fit: BoxFit.contain,
-                height: 95,
-                errorBuilder: (_, _, _) {
-                  return Container(
-                    height: 95,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.image_not_supported_outlined,
-                        color: Color(0xFF314E7E),
-                      ),
+                errorBuilder: (context, error, stackTrace) {
+                  return Center(
+                    child: Icon(
+                      Icons.image_not_supported_outlined,
+                      color: colorScheme.outline,
+                      size: 32,
                     ),
                   );
                 },
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

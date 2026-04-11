@@ -35,7 +35,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       if (!mounted) return;
 
       if (hasToken) {
-        context.go(RouteNames.home);
+        context.go(RouteNames.main);
       } else {
         context.go(RouteNames.onboarding);
       }

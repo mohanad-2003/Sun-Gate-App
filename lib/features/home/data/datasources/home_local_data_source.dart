@@ -11,7 +11,7 @@ abstract class HomeLocalDataSource {
 class HomeLocalDataSourceImpl implements HomeLocalDataSource {
   @override
   Future<List<CategoryItemModel>> getCategories() async {
-    return  [
+    return [
       CategoryItemModel(
         id: '1',
         title: 'Batteries',
@@ -42,14 +42,14 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
         id: '1',
         name: 'luminance Solar',
         imagePath: 'assets/images/company_luminis.jpg',
-        shortDescription: 'Expert installation of high-efficiency panels',
+        Description: 'Expert installation of high-efficiency panels',
         tags: ['Batteries', 'Panels'],
       ),
       CompanyModel(
         id: '2',
         name: 'VoltGuard Com',
         imagePath: 'assets/images/company_sungrid.jpg',
-        shortDescription: 'Advanced battery and inverter management',
+        Description: 'Advanced battery and inverter management',
         tags: ['Batteries', 'Inverter'],
       ),
     ];
