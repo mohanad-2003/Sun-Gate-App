@@ -1,68 +1,220 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/router/route_names.dart';
+import 'package:sun_gate_app/features/home/presentation/controllers/home_mock_data_provider.dart';
+import 'package:sun_gate_app/features/home/presentation/widgets/category_chip_card.dart';
+import 'package:sun_gate_app/features/home/presentation/widgets/company_card.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/home_app_bar_section.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/home_banner_card.dart';
+import 'package:sun_gate_app/features/home/presentation/widgets/section_title_row.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 
 class HomeHeaderSection extends ConsumerWidget {
-  final VoidCallback onBannerTap;
-
-  const HomeHeaderSection({super.key, required this.onBannerTap});
+  const HomeHeaderSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileControllerProvider);
-    final profile = profileState.profile;
+    final homeState = ref.watch(homeControllerProvider);
+    final theme = Theme.of(context);
+    final previewCompanies = homeState.companies.take(2).toList();
 
-    final userName = _getUserName(profile);
-    final imageUrl = _getUserImage(profile);
+    final userName = _resolveUserName(profileState.profile?.firstName);
 
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/p.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Container(
-        decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.20)),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              HomeAppBarSection(userName: userName, imageUrl: imageUrl),
-              const SizedBox(height: 18),
-              HomeBannerCard(onTap: onBannerTap),
-            ],
-          ),
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        final horizontalPadding = width < 360 ? 12.0 : 16.0;
+        final headerHeight = width < 360 ? 220.0 : 270.0;
+        final categoriesHeight = width < 360 ? 96.0 : 108.0;
+
+        return Column(
+          children: [
+            SizedBox(
+              height: headerHeight,
+              width: double.infinity,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: -20,
+                    child: Image.asset(
+                      'assets/images/home_header_pg2.jpg',
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) {
+                        return Container(color: const Color(0xFF314E7E));
+                      },
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withOpacity(0.08),
+                            Colors.black.withOpacity(0.18),
+                            Colors.black.withOpacity(0.32),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                    child: HomeAppBarSection(userName: userName),
+                  ),
+                ],
+              ),
+            ),
+
+            Transform.translate(
+              offset: const Offset(0, -15),
+              child: Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  color: theme.cardColor,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(30),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(
+                        theme.brightness == Brightness.dark ? 0.28 : 0.08,
+                      ),
+                      blurRadius: 20,
+                      offset: const Offset(0, -4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        horizontalPadding,
+                        4,
+                        horizontalPadding,
+                        0,
+                      ),
+                      child: HomeBannerCard(
+                        onTap: () {
+                          context.push(RouteNames.market);
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 22),
+
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: horizontalPadding,
+                      ),
+                      child: SectionTitleRow(
+                        title: 'Category',
+                        actionText: '',
+                        onTap: () {},
+                      ),
+                    ),
+
+                    SizedBox(
+                      height: categoriesHeight,
+                      child: ListView.separated(
+                        padding: EdgeInsets.fromLTRB(
+                          horizontalPadding,
+                          12,
+                          horizontalPadding,
+                          0,
+                        ),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: homeState.categories.length,
+                        separatorBuilder: (_, _) => const SizedBox(width: 10),
+                        itemBuilder: (context, index) {
+                          final category = homeState.categories[index];
+
+                          return CategoryChipCard(
+                            category: category,
+                            onTap: () {
+                              context.push(
+                                RouteNames.categoryProducts,
+                                extra: category,
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: horizontalPadding,
+                      ),
+                      child: SectionTitleRow(
+                        title: 'Popular Companies',
+                        actionText: 'See all',
+                        onTap: () {
+                          context.push(RouteNames.allCompanies);
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        horizontalPadding,
+                        0,
+                        horizontalPadding,
+                        20,
+                      ),
+                      child: GridView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: previewCompanies.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 14,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 0.80,
+                            ),
+                        itemBuilder: (context, index) {
+                          final company = homeState.companies[index];
+
+                          return CompanyCard(
+                            company: company,
+                            onTap: () {
+                              context.push(
+                                RouteNames.companyDetail,
+                                extra: company,
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  String _getUserName(dynamic profile) {
-    if (profile == null) return 'User';
-
-    final firstName = (profile.firstName ?? '').toString().trim();
-    final fullName = (profile.fullName ?? '').toString().trim();
-
-    if (firstName.isNotEmpty) return firstName;
-    if (fullName.isNotEmpty) return fullName;
-
-    return 'User';
-  }
-
-  String? _getUserImage(dynamic profile) {
-    if (profile == null) return null;
-
-    final imageUrl = profile.imageUrl?.toString().trim();
-    final profileImage = profile.profileImage?.toString().trim();
-
-    if (imageUrl != null && imageUrl.isNotEmpty) return imageUrl;
-    if (profileImage != null && profileImage.isNotEmpty) return profileImage;
-
-    return null;
+  String _resolveUserName(String? firstName) {
+    if (firstName == null) return 'User';
+    final trimmed = firstName.trim();
+    if (trimmed.isEmpty) return 'User';
+    return trimmed;
   }
 }

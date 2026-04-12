@@ -3,6 +3,7 @@ class ProductModel {
   final String companyId;
   final String name;
   final String imagePath;
+  final String imageProfile;
   final String description;
   final List<String> howItWorks;
   final double price;
@@ -25,6 +26,7 @@ class ProductModel {
     required this.ownerPhone,
     required this.ownerEmail,
     this.tags = const [],
+    required this.imageProfile,
   });
 
   ProductModel copyWith({
@@ -40,6 +42,7 @@ class ProductModel {
     String? ownerPhone,
     String? ownerEmail,
     List<String>? tags,
+    String? imageProfile,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -54,6 +57,7 @@ class ProductModel {
       ownerPhone: ownerPhone ?? this.ownerPhone,
       ownerEmail: ownerEmail ?? this.ownerEmail,
       tags: tags ?? this.tags,
+      imageProfile: imageProfile ?? this.imageProfile,
     );
   }
 
@@ -88,6 +92,7 @@ class ProductModel {
       ownerPhone: map['ownerPhone']?.toString() ?? '',
       ownerEmail: map['ownerEmail']?.toString() ?? '',
       tags: List<String>.from(map['tags'] ?? const []),
+      imageProfile: map['imageProfile']?.toString() ?? '',
     );
   }
 }

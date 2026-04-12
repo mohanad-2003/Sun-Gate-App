@@ -2,109 +2,149 @@ import 'package:flutter/material.dart';
 
 class HomeBannerCard extends StatelessWidget {
   final VoidCallback onTap;
+  final double height;
 
-  const HomeBannerCard({super.key, required this.onTap});
+  const HomeBannerCard({super.key, required this.onTap, this.height = 126});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(22),
-      child: Container(
-        height: 136,
-        padding: const EdgeInsets.fromLTRB(18, 16, 14, 16),
-        decoration: BoxDecoration(
-          color: isDark
-              ? colorScheme.surfaceContainerHigh
-              : const Color(0xFFF0F2F7),
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: colorScheme.outline.withOpacity(0.08)),
-          boxShadow: isDark
-              ? []
-              : [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 14,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Smart Solutions For A\nBrighter Future',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: isDark
-                            ? colorScheme.onSurface
-                            : const Color(0xFF314E7E),
-                        fontWeight: FontWeight.w700,
-                        height: 1.35,
-                      ),
-                    ),
-                    const Spacer(),
-                    SizedBox(
-                      height: 42,
-                      child: ElevatedButton(
-                        onPressed: onTap,
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          backgroundColor: colorScheme.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                        ),
-                        child: const Text(
-                          'Start Explore',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+    final horizontalPadding = screenWidth < 360 ? 14.0 : 18.0;
+    final verticalPadding = screenWidth < 360 ? 14.0 : 16.0;
+    final titleFontSize = screenWidth < 360 ? 15.0 : 16.0;
+    final imageHeight = screenWidth < 360 ? 90.0 : 108.0;
+    final buttonHeight = screenWidth < 360 ? 36.0 : 38.0;
+    final buttonHorizontalPadding = screenWidth < 360 ? 14.0 : 28.0;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          height: height,
+          padding: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            verticalPadding,
+            horizontalPadding - 2,
+            verticalPadding,
+          ),
+          decoration: BoxDecoration(
+            color: theme.cardColor,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(
+                  theme.brightness == Brightness.dark ? 0.22 : 0.08,
+                ),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 6,
+                child: _BannerTextContent(
+                  titleFontSize: titleFontSize,
+                  buttonHeight: buttonHeight,
+                  buttonHorizontalPadding: buttonHorizontalPadding,
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Container(
-              width: 104,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-                color: isDark
-                    ? colorScheme.surfaceContainer
-                    : Colors.white.withOpacity(0.8),
+              const SizedBox(width: 10),
+              Expanded(
+                flex: 3,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Image.asset(
+                    'assets/images/p.png',
+                    height: imageHeight,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) {
+                      return Container(
+                        width: imageHeight * 0.82,
+                        height: imageHeight * 0.82,
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.image_not_supported_outlined,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
-              clipBehavior: Clip.antiAlias,
-              child: Image.asset(
-                'assets/images/p.png',
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return Center(
-                    child: Icon(
-                      Icons.image_not_supported_outlined,
-                      color: colorScheme.outline,
-                      size: 32,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class _BannerTextContent extends StatelessWidget {
+  final double titleFontSize;
+  final double buttonHeight;
+  final double buttonHorizontalPadding;
+
+  const _BannerTextContent({
+    required this.titleFontSize,
+    required this.buttonHeight,
+    required this.buttonHorizontalPadding,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Flexible(
+          child: Text(
+            'Smart Solutions For A\nBrighter Future',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontSize: titleFontSize,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF314E7E),
+              height: 1.3,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Container(
+            height: buttonHeight,
+            padding: EdgeInsets.symmetric(horizontal: buttonHorizontalPadding),
+            decoration: BoxDecoration(
+              color: const Color(0xFF314E7E),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              'Start Explore',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

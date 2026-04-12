@@ -15,21 +15,43 @@ class ProductListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final imageSize = screenWidth < 360 ? 54.0 : 60.0;
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(18),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: colorScheme.outlineVariant.withOpacity(0.45),
+          ),
+        ),
         child: Row(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               child: Image.asset(
                 product.imagePath,
-                width: 68,
-                height: 68,
+                width: imageSize,
+                height: imageSize,
                 fit: BoxFit.cover,
+                errorBuilder: (_, _, _) {
+                  return Container(
+                    width: imageSize,
+                    height: imageSize,
+                    color: colorScheme.surfaceContainerHighest,
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.image_not_supported_outlined,
+                      color: colorScheme.onSurfaceVariant,
+                      size: 20,
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(width: 12),
@@ -55,7 +77,7 @@ class ProductListTile extends StatelessWidget {
                       height: 1.45,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Text(
                     '\$${product.price.toStringAsFixed(0)}',
                     style: theme.textTheme.labelLarge?.copyWith(

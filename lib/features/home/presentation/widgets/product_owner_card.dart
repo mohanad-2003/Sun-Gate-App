@@ -16,21 +16,18 @@ class ProductOwnerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: colorScheme.outlineVariant,
-        ),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Row(
         children: [
           const CircleAvatar(
             radius: 24,
-            backgroundImage: AssetImage('assets/images/avatar.png'),
+            backgroundImage: AssetImage('assets/images/profile.jpg'),
           ),
           const SizedBox(width: 12),
           Expanded(

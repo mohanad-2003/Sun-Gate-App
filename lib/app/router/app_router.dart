@@ -91,7 +91,7 @@ class AppRouter {
         builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
-        path: RouteNames.allComopanies,
+        path: RouteNames.allCompanies,
         builder: (context, state) => const AllCompanyScreen(),
       ),
       GoRoute(
