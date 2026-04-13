@@ -9,6 +9,7 @@ class ProductListTile extends StatelessWidget {
     super.key,
     required this.product,
     required this.onTap,
+  
   });
 
   @override

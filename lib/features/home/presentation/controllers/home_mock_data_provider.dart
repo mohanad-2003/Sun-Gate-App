@@ -141,7 +141,7 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       id: 'p1',
       companyId: '1',
       name: 'Monocrystalline Solar Panel',
-      imagePath: 'assets/images/products/panel.jpg',
+      imagePath: 'assets/images/products/p1.jpg',
       description:
           'High-efficiency 200W solar panel suitable for residential systems.',
       howItWorks: [
@@ -162,7 +162,7 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       id: 'p2',
       companyId: '1',
       name: 'Portable Solar Power System',
-      imagePath: 'assets/images/products/generator_1.jpg',
+      imagePath: 'assets/images/products/p2.jpg',
       description:
           'Compact solar power unit with built-in battery and LED lighting.',
       howItWorks: [
@@ -183,7 +183,7 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       id: 'p3',
       companyId: '2',
       name: 'Pure Sine Wave Inverter',
-      imagePath: 'assets/images/products/inverter_1.jpg',
+      imagePath: 'assets/images/products/p3.jpg',
       description: '1000W high-efficiency inverter with smart cooling system.',
       howItWorks: [
         'Connect to the battery system.',
@@ -203,7 +203,7 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       id: 'p4',
       companyId: '2',
       name: 'Portable Solar Generator',
-      imagePath: 'assets/images/products/generator_2.jpg',
+      imagePath: 'assets/images/products/p4.jpg',
       description:
           'Portable backup system for outdoor and emergency applications.',
       howItWorks: [
@@ -224,7 +224,7 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       id: 'p5',
       companyId: '3',
       name: 'Hybrid Solar Inverter',
-      imagePath: 'assets/images/products/inverter_2.jpg',
+      imagePath: 'assets/images/products/inver.jpg',
       description: 'Advanced inverter supporting both solar and grid systems.',
       howItWorks: [
         'Accepts solar and grid input.',
@@ -244,7 +244,7 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       id: 'p6',
       companyId: '3',
       name: 'Solar Roof Panel Kit',
-      imagePath: 'assets/images/products/panel_2.jpg',
+      imagePath: 'assets/images/products/p6.png',
       description: 'Complete roof-mount panel kit with durable aluminum frame.',
       howItWorks: [
         'Mounts securely on rooftops.',
@@ -264,7 +264,7 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       id: 'p7',
       companyId: '4',
       name: 'Lithium Solar Battery',
-      imagePath: 'assets/images/products/battery_1.jpg',
+      imagePath: 'assets/images/products/battery2.jpg',
       description: 'Long-life lithium battery for high-capacity solar storage.',
       howItWorks: [
         'Stores extra solar energy.',
@@ -284,7 +284,7 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       id: 'p8',
       companyId: '4',
       name: 'Deep Cycle Battery Pack',
-      imagePath: 'assets/images/products/battery_2.jpg',
+      imagePath: 'assets/images/products/p8.jpg',
       description:
           'Reliable deep-cycle battery pack for long-duration energy backup.',
       howItWorks: [
@@ -305,7 +305,7 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       id: 'p9',
       companyId: '5',
       name: 'Solar Street Light',
-      imagePath: 'assets/images/products/light_1.jpg',
+      imagePath: 'assets/images/products/p9.png',
       description:
           'Outdoor solar-powered street light with automatic night mode.',
       howItWorks: [
@@ -326,7 +326,7 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       id: 'p10',
       companyId: '5',
       name: 'Outdoor Solar Flood Light',
-      imagePath: 'assets/images/products/light_2.jpg',
+      imagePath: 'assets/images/products/p10.png',
       description:
           'High-brightness solar flood light for gardens and outdoor spaces.',
       howItWorks: [
@@ -347,7 +347,7 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       id: 'p11',
       companyId: '6',
       name: 'Smart Distribution Cabinet',
-      imagePath: 'assets/images/products/grid_1.jpg',
+      imagePath: 'assets/images/products/p11.png',
       description:
           'Energy distribution cabinet for smart solar infrastructure.',
       howItWorks: [
@@ -368,7 +368,7 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       id: 'p12',
       companyId: '6',
       name: 'Solar Grid Control Unit',
-      imagePath: 'assets/images/products/grid_2.jpg',
+      imagePath: 'assets/images/products/p12.png',
       description:
           'Control unit for monitoring and managing distributed solar power.',
       howItWorks: [

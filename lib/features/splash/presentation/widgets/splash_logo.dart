@@ -7,39 +7,44 @@ class SplashLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Image.asset(
-          AppAssets.splashLogo,
-          width: 200,
-          height: 200,
-          fit: BoxFit.contain,
-          errorBuilder: (_, _, _) {
-            return const SizedBox(
-              width: 90,
-              height: 90,
-              child: Center(
-                child: Icon(
-                  Icons.image_not_supported_outlined,
-                  size: 40,
-                  color: Colors.white70,
-                ),
-              ),
-            );
-          },
-        ),
-        const SizedBox(height: 20),
-        Text(
-          AppStrings.get(context, 'sun_gate'),
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+
+        children: [
+          Center(
+            child: Image.asset(
+              AppAssets.splashLogo,
+              width: 150,
+              height: 150,
+              fit: BoxFit.contain,
+              errorBuilder: (_, _, _) {
+                return const SizedBox(
+                  width: 90,
+                  height: 90,
+                  child: Center(
+                    child: Icon(
+                      Icons.image_not_supported_outlined,
+                      size: 40,
+                      color: Colors.white70,
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+          const SizedBox(height: 20),
+          Text(
+            AppStrings.get(context, 'sun_gate'),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
     );
   }
 }
