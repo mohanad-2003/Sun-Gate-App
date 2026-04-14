@@ -14,7 +14,6 @@ class AllCompanyScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final homeState = ref.watch(homeControllerProvider);
 
     return Scaffold(
@@ -39,7 +38,7 @@ class AllCompanyScreen extends ConsumerWidget {
                   child: Row(
                     children: [
                       IconButton(
-                        onPressed: () => context.pop(),
+                        onPressed: () => context.go(RouteNames.main),
                         icon: const Icon(Icons.arrow_back_ios_new_rounded),
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
@@ -61,9 +60,7 @@ class AllCompanyScreen extends ConsumerWidget {
 
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                  child: HomeSearchBar(
-                    hintText: 'Search . . .',
-                  ),
+                  child: HomeSearchBar(hintText: 'Search . . .'),
                 ),
 
                 const SizedBox(height: 18),
@@ -129,11 +126,11 @@ class AllCompanyScreen extends ConsumerWidget {
                     itemCount: homeState.companies.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 14,
-                      mainAxisSpacing: 18,
-                      childAspectRatio: 0.73,
-                    ),
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 14,
+                          mainAxisSpacing: 18,
+                          childAspectRatio: 0.73,
+                        ),
                     itemBuilder: (context, index) {
                       final company = homeState.companies[index];
 

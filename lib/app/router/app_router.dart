@@ -5,6 +5,15 @@ import 'package:sun_gate_app/features/auth/presentation/screen/login_screen.dart
 import 'package:sun_gate_app/features/auth/presentation/screen/new_password_screen.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/otp_screen.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/sign_up_screen.dart';
+import 'package:sun_gate_app/features/calculator/data/models/calculate_flow_data.dart';
+import 'package:sun_gate_app/features/calculator/presentation/screens/battery_capacity_screen.dart';
+import 'package:sun_gate_app/features/calculator/presentation/screens/calculator_screen.dart';
+import 'package:sun_gate_app/features/calculator/presentation/screens/calculator_summary_screen.dart';
+import 'package:sun_gate_app/features/calculator/presentation/screens/device_consumpation_screen.dart';
+import 'package:sun_gate_app/features/calculator/presentation/screens/number_of_panels_screen.dart';
+import 'package:sun_gate_app/features/calculator/presentation/screens/return_on_investment_screen.dart';
+import 'package:sun_gate_app/features/calculator/presentation/screens/system_efficiency_screen.dart';
+import 'package:sun_gate_app/features/calculator/presentation/screens/title_of_panels_screen.dart';
 import 'package:sun_gate_app/features/home/data/models/category_item_model.dart';
 import 'package:sun_gate_app/features/home/data/models/company_model.dart';
 import 'package:sun_gate_app/features/home/data/models/product_model.dart';
@@ -126,6 +135,66 @@ class AppRouter {
       GoRoute(
         path: RouteNames.main,
         builder: (context, state) => const MainNavigationScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.calculator,
+        builder: (context, state) => CalculatorScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.deviceConsumption,
+        builder: (context, state) {
+          final data =
+              state.extra as CalculatorFlowData? ?? const CalculatorFlowData();
+          return DeviceConsumptionScreen(flowData: data);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.numberOfPanels,
+        builder: (context, state) {
+          final data =
+              state.extra as CalculatorFlowData? ?? const CalculatorFlowData();
+          return NumberOfPanelsScreen(flowData: data);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.batteryCapacity,
+        builder: (context, state) {
+          final data =
+              state.extra as CalculatorFlowData? ?? const CalculatorFlowData();
+          return BatteryCapacityScreen(flowData: data);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.tiltOfPanels,
+        builder: (context, state) {
+          final data =
+              state.extra as CalculatorFlowData? ?? const CalculatorFlowData();
+          return TiltOfPanelsScreen(flowData: data);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.systemEfficiency,
+        builder: (context, state) {
+          final data =
+              state.extra as CalculatorFlowData? ?? const CalculatorFlowData();
+          return SystemEfficiencyScreen(flowData: data);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.returnOnInvestment,
+        builder: (context, state) {
+          final data =
+              state.extra as CalculatorFlowData? ?? const CalculatorFlowData();
+          return ReturnOnInvestmentScreen(flowData: data);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.calculatorSummary,
+        builder: (context, state) {
+          final data =
+              state.extra as CalculatorFlowData? ?? const CalculatorFlowData();
+          return CalculatorSummaryScreen(flowData: data);
+        },
       ),
     ],
   );

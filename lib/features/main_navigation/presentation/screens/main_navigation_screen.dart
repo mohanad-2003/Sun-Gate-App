@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sun_gate_app/features/calculator/presentation/screens/calculator_screen.dart';
 import 'package:sun_gate_app/features/home/presentation/screens/home_screen.dart';
 import 'package:sun_gate_app/features/main_navigation/presentation/controllers/home_bottom_nav_provider.dart';
 import 'package:sun_gate_app/features/main_navigation/presentation/widgets/app_bottom_nav_bar.dart';
@@ -14,7 +15,7 @@ class MainNavigationScreen extends ConsumerWidget {
 
     final pages = const [
       HomeScreen(),
-      CalculatorPlaceholderScreen(),
+      CalculatorScreen(),
       InstructionsPlaceholderScreen(),
       SuppliersPlaceholderScreen(),
       ProfileScreen(),
@@ -30,14 +31,7 @@ class MainNavigationScreen extends ConsumerWidget {
   }
 }
 
-class CalculatorPlaceholderScreen extends StatelessWidget {
-  const CalculatorPlaceholderScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text('Calculator Screen')));
-  }
-}
 
 class InstructionsPlaceholderScreen extends StatelessWidget {
   const InstructionsPlaceholderScreen({super.key});
