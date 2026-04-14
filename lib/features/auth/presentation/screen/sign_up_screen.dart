@@ -61,7 +61,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     return AuthScaffoldBody(
       child: Column(
         children: [
-          AuthBackButton(onTap: () => context.go('/onboarding')),
+          AuthBackButton(onTap: () => context.go('/login')),
           const SizedBox(height: 4),
           const Text(
             'Sign up',

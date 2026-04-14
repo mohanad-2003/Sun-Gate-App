@@ -82,13 +82,13 @@ class OnboardingFooter extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: const Icon(
-              Icons.arrow_forward_ios_rounded,
+              Icons.arrow_forward_ios,
               size: 16,
               color: AppColors.primary,
             ),
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 30),
         TextButton(
           onPressed: onSkip,
           child: Text(

@@ -24,9 +24,7 @@ class MainNavigationScreen extends ConsumerWidget {
       body: IndexedStack(index: currentIndex, children: pages),
       bottomNavigationBar: AppBottomNavBar(
         currentIndex: currentIndex,
-        onTap: (index) {
-          ref.read(bottomNavProvider.notifier).state = index;
-        },
+        onTap: (index) => {ref.read(bottomNavProvider.notifier).state = index},
       ),
     );
   }

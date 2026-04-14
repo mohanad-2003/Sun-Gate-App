@@ -17,6 +17,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
   late final TextEditingController lastNameController;
   late final TextEditingController emailController;
   late final TextEditingController locationController;
+
   final _picker = ImagePicker();
 
   Future<void> _pickImage(ImageSource source) async {

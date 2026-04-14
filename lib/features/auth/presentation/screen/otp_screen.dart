@@ -10,26 +10,22 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_header.dart
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_body.dart';
 
-
-
 class OtpScreen extends ConsumerStatefulWidget {
   final String email;
 
-  const OtpScreen({
-    super.key,
-    required this.email,
-  });
+  const OtpScreen({super.key, required this.email});
 
   @override
   ConsumerState<OtpScreen> createState() => _OtpScreenState();
 }
 
 class _OtpScreenState extends ConsumerState<OtpScreen> {
-  final List<TextEditingController> _controllers =
-      List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _controllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
 
-  final List<FocusNode> _focusNodes =
-      List.generate(6, (_) => FocusNode());
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
   int _seconds = 0;
   Timer? _timer;
@@ -57,8 +53,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   void _onChanged(String value, int index) {
     if (value.length > 1) {
       _controllers[index].text = value.substring(value.length - 1);
-      _controllers[index].selection =
-          const TextSelection.collapsed(offset: 1);
+      _controllers[index].selection = const TextSelection.collapsed(offset: 1);
     }
 
     if (value.isNotEmpty && index < _focusNodes.length - 1) {
@@ -94,11 +89,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     ref.listen(authControllerProvider, (previous, next) {
       if (next.isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              next.message ?? 'Code resent successfully',
-            ),
-          ),
+          SnackBar(content: Text(next.message ?? 'Code resent successfully')),
         );
       }
     });
@@ -106,7 +97,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     return AuthScaffoldBody(
       child: Column(
         children: [
-          AuthBackButton(onTap: () => context.pop()),
+          AuthBackButton(onTap: () => context.go(RouteNames.signUp)),
           const SizedBox(height: 48),
 
           AuthHeader(
@@ -140,9 +131,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(
-                          color: Color(0xFF274777),
-                        ),
+                        borderSide: const BorderSide(color: Color(0xFF274777)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -167,26 +156,19 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
             children: [
               const Text(
                 "Didn't receive code ? ",
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontSize: 13, color: Colors.grey),
               ),
               GestureDetector(
                 onTap: _seconds == 0
                     ? () {
                         ref
                             .read(authControllerProvider.notifier)
-                            .forgotPassword(
-                              email: widget.email,
-                            );
+                            .forgotPassword(email: widget.email);
                         _startTimer();
                       }
                     : null,
                 child: Text(
-                  _seconds == 0
-                      ? 'Resend Code'
-                      : 'Resend in $_seconds s',
+                  _seconds == 0 ? 'Resend Code' : 'Resend in $_seconds s',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -209,16 +191,11 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
               decoration: BoxDecoration(
                 color: Colors.red.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.red.withOpacity(0.20),
-                ),
+                border: Border.all(color: Colors.red.withOpacity(0.20)),
               ),
               child: Text(
                 state.errorMessage!,
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontSize: 13,
-                ),
+                style: const TextStyle(color: Colors.red, fontSize: 13),
               ),
             ),
             const SizedBox(height: 16),
@@ -232,10 +209,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                 ? () {
                     context.push(
                       RouteNames.newPassword,
-                      extra: {
-                        'email': widget.email,
-                        'token': _otpCode,
-                      },
+                      extra: {'email': widget.email, 'token': _otpCode},
                     );
                   }
                 : null,
