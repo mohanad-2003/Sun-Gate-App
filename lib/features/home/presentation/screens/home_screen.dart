@@ -5,6 +5,7 @@ import 'package:sun_gate_app/features/profile/presentation/controllers/profile_c
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
+  
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -24,8 +25,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        //  physics: BouncingScrollPhysics(),
         child: HomeHeaderSection(),
       ),
     );

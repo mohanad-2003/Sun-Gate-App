@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/core/services/contact_service.dart';
 
 class ProductOwnerCard extends StatelessWidget {
   final String ownerName;
@@ -57,9 +58,19 @@ class ProductOwnerCard extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.call_outlined, color: colorScheme.primary),
+          IconButton(
+            icon: const Icon(Icons.call),
+            onPressed: () {
+              ContactService.call('+972599000000');
+            },
+          ),
           const SizedBox(width: 12),
-          Icon(Icons.mail_outline_rounded, color: colorScheme.primary),
+          IconButton(
+            icon: const Icon(Icons.email),
+            onPressed: () {
+              ContactService.email('example@email.com');
+            },
+          ),
         ],
       ),
     );

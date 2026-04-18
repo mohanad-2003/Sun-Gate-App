@@ -16,8 +16,8 @@ class MainNavigationScreen extends ConsumerWidget {
     final pages = const [
       HomeScreen(),
       CalculatorScreen(),
-      InstructionsPlaceholderScreen(),
-      SuppliersPlaceholderScreen(),
+      InstructionsScreen(),
+      SuppliersScreen(),
       ProfileScreen(),
     ];
 
@@ -31,10 +31,8 @@ class MainNavigationScreen extends ConsumerWidget {
   }
 }
 
-
-
-class InstructionsPlaceholderScreen extends StatelessWidget {
-  const InstructionsPlaceholderScreen({super.key});
+class InstructionsScreen extends StatelessWidget {
+  const InstructionsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +40,8 @@ class InstructionsPlaceholderScreen extends StatelessWidget {
   }
 }
 
-class SuppliersPlaceholderScreen extends StatelessWidget {
-  const SuppliersPlaceholderScreen({super.key});
+class SuppliersScreen extends StatelessWidget {
+  const SuppliersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

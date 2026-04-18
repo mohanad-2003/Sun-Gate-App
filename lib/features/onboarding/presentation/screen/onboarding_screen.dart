@@ -73,6 +73,7 @@ class OnboardingScreen extends ConsumerWidget {
       child: PageView.builder(
         controller: pageController,
         itemCount: items.length,
+
         onPageChanged: (index) {
           ref.read(onboardingPageIndexProvider.notifier).state = index;
         },
