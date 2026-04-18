@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 
 class ProfileGenderSelector extends StatelessWidget {
   final String selectedGender;
@@ -12,6 +13,8 @@ class ProfileGenderSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     Widget tile(String value, String label) {
       final selected = selectedGender.toLowerCase() == value.toLowerCase();
 
@@ -52,9 +55,9 @@ class ProfileGenderSelector extends StatelessWidget {
 
     return Row(
       children: [
-        tile('male', 'Male'),
+        tile('male', loc.male),
         const SizedBox(width: 10),
-        tile('female', 'Female'),
+        tile('female', loc.female),
       ],
     );
   }

@@ -25,7 +25,8 @@ class ProfileMenuTile extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 18,
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+              backgroundColor:
+                  Theme.of(context).colorScheme.surfaceContainerHighest,
               child: Icon(icon, size: 18),
             ),
             const SizedBox(width: 12),

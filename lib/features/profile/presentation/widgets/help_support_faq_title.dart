@@ -44,7 +44,7 @@ class HelpSupportFaqTile extends StatelessWidget {
               child: Text(
                 answer,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.85),
+                  color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.85),
                   height: 1.7,
                 ),
               ),

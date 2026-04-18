@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 
 class LogoutConfirmationDialog extends StatelessWidget {
   final VoidCallback onConfirm;
@@ -10,6 +11,8 @@ class LogoutConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
       child: Padding(
@@ -28,14 +31,14 @@ class LogoutConfirmationDialog extends StatelessWidget {
             ),
             const SizedBox(height: 18),
             Text(
-              'Are You Sure?',
+              loc.logoutTitle,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
             ),
             const SizedBox(height: 10),
             Text(
-              'You will be logged out from your account.',
+              loc.logoutMessage,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.grey.shade700,
@@ -47,14 +50,14 @@ class LogoutConfirmationDialog extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: onConfirm,
-                    child: const Text('Log Out'),
+                    child: Text(loc.logOut),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: FilledButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Cancel'),
+                    child: Text(loc.cancel),
                   ),
                 ),
               ],

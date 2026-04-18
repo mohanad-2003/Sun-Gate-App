@@ -9,6 +9,7 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_back_button
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_header.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_body.dart';
+import 'package:sun_gate_app/features/auth/presentation/widgets/password_strength_indicator.dart';
 
 class NewPasswordScreen extends ConsumerStatefulWidget {
   final String email;
@@ -41,6 +42,10 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
     final passVisible = ref.watch(newPasswordVisiableProvider);
     final confirmVisible = ref.watch(confirmPasswordVisiableProvider);
 
+    final passwordStrength = evaluatePasswordStrength(
+      passwordController.text.trim(),
+    );
+
     ref.listen(authControllerProvider, (previous, next) {
       if (next.isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -56,10 +61,12 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
     return AuthScaffoldBody(
       child: Column(
         children: [
-          AuthBackButton(onTap: () => context.pop()),
+          AuthBackButton(
+            onTap: () => context.pop(),
+          ),
           const SizedBox(height: 24),
           const AuthHeader(
-            title: 'create a New Password',
+            title: 'Create a New Password',
             subtitle: 'Enter your new password',
           ),
           const SizedBox(height: 34),
@@ -69,6 +76,9 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
             label: 'New Password',
             hintText: 'Enter your password',
             obscureText: !passVisible,
+            onChanged: (_) {
+              setState(() {});
+            },
             suffixIcon: IconButton(
               onPressed: () {
                 ref.read(newPasswordVisiableProvider.notifier).state =
@@ -81,13 +91,23 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
               ),
             ),
           ),
+
+          const SizedBox(height: 10),
+
+          PasswordStrengthIndicator(
+            password: passwordController.text.trim(),
+          ),
+
           const SizedBox(height: 16),
 
           AuthTextField(
             controller: confirmPasswordController,
             label: 'Confirm Password',
-            hintText: 'confirm your password',
+            hintText: 'Confirm your password',
             obscureText: !confirmVisible,
+            onChanged: (_) {
+              setState(() {});
+            },
             suffixIcon: IconButton(
               onPressed: () {
                 ref.read(confirmPasswordVisiableProvider.notifier).state =
@@ -101,29 +121,58 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
-          if (state.errorMessage != null) ...[
+          if (confirmPasswordController.text.isNotEmpty &&
+              passwordController.text.trim() !=
+                  confirmPasswordController.text.trim())
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha: 0.08),
+                color: Colors.red.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.red.withValues(alpha: 0.20)),
+                border: Border.all(color: Colors.red.withOpacity(0.20)),
+              ),
+              child: const Text(
+                'Passwords do not match',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+
+          if (state.errorMessage != null) ...[
+            const SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.red.withOpacity(0.20)),
               ),
               child: Text(
                 state.errorMessage!,
-                style: const TextStyle(color: Colors.red, fontSize: 13),
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 13,
+                ),
               ),
             ),
-            const SizedBox(height: 16),
           ],
+
+          const SizedBox(height: 20),
 
           AuthPrimaryButton(
             text: 'Next',
             isLoading: state.isLoading,
             onPressed: () {
+              final password = passwordController.text.trim();
+              final confirmPassword = confirmPasswordController.text.trim();
+
               if (widget.email.trim().isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -146,20 +195,39 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                 return;
               }
 
-              if (passwordController.text.trim() !=
-                  confirmPasswordController.text.trim()) {
+              if (password.isEmpty || confirmPassword.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Passwords do not match')),
+                  const SnackBar(
+                    content: Text('Please fill in all password fields'),
+                  ),
                 );
                 return;
               }
 
-              ref
-                  .read(authControllerProvider.notifier)
-                  .resetPassword(
+              if (password != confirmPassword) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Passwords do not match'),
+                  ),
+                );
+                return;
+              }
+
+              if (!passwordStrength.isValidStrongPassword) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Please choose a stronger password',
+                    ),
+                  ),
+                );
+                return;
+              }
+
+              ref.read(authControllerProvider.notifier).resetPassword(
                     email: widget.email,
                     token: widget.token,
-                    password: passwordController.text.trim(),
+                    password: password,
                   );
             },
           ),

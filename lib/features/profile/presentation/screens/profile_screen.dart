@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
+import 'package:sun_gate_app/app/localization/local_provider.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/core/theme/theme_mode_provider.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
@@ -26,12 +28,74 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     });
   }
 
+  void _showLanguageBottomSheet(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations loc,
+    Locale? currentLocale,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
+      builder: (_) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  loc.chooseLanguage,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                ListTile(
+                  leading: const Icon(Icons.language),
+                  title: Text(loc.english),
+                  trailing: currentLocale?.languageCode == 'en'
+                      ? const Icon(Icons.check, color: Colors.green)
+                      : null,
+                  onTap: () {
+                    ref.read(appLocaleProvider.notifier).setEnglish();
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.language),
+                  title: Text(loc.arabic),
+                  trailing: currentLocale?.languageCode == 'ar'
+                      ? const Icon(Icons.check, color: Colors.green)
+                      : null,
+                  onTap: () {
+                    ref.read(appLocaleProvider.notifier).setArabic();
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileControllerProvider);
     final profile = profileState.profile;
     final currentThemeMode = ref.watch(appThemeModeProvider);
     final isDarkMode = currentThemeMode == ThemeMode.dark;
+    final loc = AppLocalizations.of(context)!;
+    final currentLocale = ref.watch(appLocaleProvider);
+
+    final currentLanguageText =
+        currentLocale?.languageCode == 'ar' ? loc.arabic : loc.english;
+
     return Scaffold(
       body: SafeArea(
         child: profileState.isLoading && profile == null
@@ -57,41 +121,71 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         )
                       else
                         ProfileHeaderCard(
-                          name: 'User Name',
-                          email: 'user@example.com',
+                          name: loc.userName,
+                          email: loc.userEmail,
                           imageUrl: null,
                           onEditTap: () => context.push(RouteNames.userInfo),
                         ),
 
                       const SizedBox(height: 28),
 
-                      const ProfileSectionLabel(title: 'Security'),
+                      ProfileSectionLabel(title: loc.security),
                       const SizedBox(height: 8),
                       ProfileMenuTile(
                         icon: Icons.lock_outline_rounded,
-                        title: 'Change Password',
+                        title: loc.changePassword,
                         onTap: () => context.push(RouteNames.changePassword),
                       ),
 
                       const SizedBox(height: 18),
 
-                      const ProfileSectionLabel(title: 'About'),
+                      ProfileSectionLabel(title: loc.about),
                       const SizedBox(height: 8),
                       ProfileMenuTile(
+                        icon: Icons.language_outlined,
+                        title: loc.language,
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              currentLanguageText,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: Colors.grey.shade600,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                        onTap: () => _showLanguageBottomSheet(
+                          context,
+                          ref,
+                          loc,
+                          currentLocale,
+                        ),
+                      ),
+                      ProfileMenuTile(
                         icon: Icons.shield_outlined,
-                        title: 'Legal and Policies',
+                        title: loc.legal_and_policies,
                         onTap: () => context.push(RouteNames.legalPolicies),
                       ),
                       ProfileMenuTile(
                         icon: Icons.help_outline_rounded,
-                        title: 'Help & Support',
+                        title: loc.help_and_center,
                         onTap: () => context.push(RouteNames.helpSupport),
                       ),
                       ProfileMenuTile(
                         icon: isDarkMode
                             ? Icons.dark_mode_outlined
                             : Icons.light_mode_outlined,
-                        title: 'Dark Mode',
+                        title: loc.darkMode,
                         trailing: Switch(
                           value: isDarkMode,
                           onChanged: (value) async {
@@ -101,6 +195,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           },
                         ),
                       ),
+
                       const SizedBox(height: 24),
 
                       if (profileState.errorMessage != null &&
@@ -145,7 +240,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               ),
                             );
                           },
-                          child: const Text('Log out'),
+                          child: Text(loc.logOut),
                         ),
                       ),
                     ],

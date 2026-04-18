@@ -9,6 +9,7 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_bottom_link
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_header.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_body.dart';
+import 'package:sun_gate_app/features/auth/presentation/widgets/password_strength_indicator.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -23,6 +24,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final passwordController = TextEditingController();
 
   bool acceptPolicy = false;
+  bool obscurePassword = true;
 
   @override
   void dispose() {
@@ -46,9 +48,30 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     return (parts.first, parts.sublist(1).join(' '));
   }
 
+  Color? _getPasswordBorderColor(String password) {
+    if (password.isEmpty) {
+      return null;
+    }
+
+    final result = evaluatePasswordStrength(password);
+
+    if (result.level == PasswordStrengthLevel.strong) {
+      return Colors.green;
+    }
+
+    if (result.level == PasswordStrengthLevel.medium) {
+      return Colors.orange;
+    }
+
+    return Colors.red;
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
+    final password = passwordController.text.trim();
+    final passwordStrength = evaluatePasswordStrength(password);
+    final passwordBorderColor = _getPasswordBorderColor(password);
 
     ref.listen(authControllerProvider, (previous, next) {
       if (next.isSuccess) {
@@ -58,6 +81,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         context.go(RouteNames.otp, extra: emailController.text.trim());
       }
     });
+
     return AuthScaffoldBody(
       child: Column(
         children: [
@@ -78,6 +102,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             controller: fullNameController,
             label: 'Full Name',
             hintText: 'Enter your full name',
+            onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 14),
 
@@ -86,6 +111,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             label: 'Email',
             hintText: 'Enter your email',
             keyboardType: TextInputType.emailAddress,
+            onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 14),
 
@@ -93,8 +119,28 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             controller: passwordController,
             label: 'Password',
             hintText: 'Enter your password',
-            obscureText: true,
+            obscureText: obscurePassword,
+            onChanged: (_) => setState(() {}),
+            enabledBorderColor: passwordBorderColor,
+            focusedBorderColor: passwordBorderColor ?? const Color(0xFF274777),
+            suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  obscurePassword = !obscurePassword;
+                });
+              },
+              icon: Icon(
+                obscurePassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+              ),
+            ),
           ),
+
+          const SizedBox(height: 10),
+
+          PasswordStrengthIndicator(password: password),
+
           const SizedBox(height: 12),
 
           CheckboxListTile(
@@ -137,15 +183,55 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             isLoading: state.isLoading,
             onPressed: acceptPolicy
                 ? () {
-                    final name = _splitName(fullNameController.text);
+                    final fullName = fullNameController.text.trim();
+                    final email = emailController.text.trim();
+                    final rawPassword = passwordController.text;
+
+                    if (fullName.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter your full name'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    if (email.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter your email'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    if (rawPassword.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter your password'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    if (!passwordStrength.isValidStrongPassword) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please choose a stronger password'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    final name = _splitName(fullName);
 
                     ref
                         .read(authControllerProvider.notifier)
                         .register(
                           firstName: name.$1,
                           lastName: name.$2,
-                          email: emailController.text.trim(),
-                          password: passwordController.text,
+                          email: email,
+                          password: rawPassword,
                         );
                   }
                 : null,
