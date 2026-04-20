@@ -31,11 +31,23 @@ class ProductDetailScreen extends StatelessWidget {
                 Positioned(
                   top: 14,
                   left: 14,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface.withOpacity(0.9),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: colorScheme.outlineVariant),
+                    ),
+                    child: Center(
+                      child: IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          color: colorScheme.onSurface,
+                          size: 20,
+                        ),
+                      ),
                     ),
                   ),
                 ),
