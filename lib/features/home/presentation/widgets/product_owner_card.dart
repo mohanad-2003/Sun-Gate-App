@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/core/services/contact_service.dart';
 
 class ProductOwnerCard extends StatelessWidget {
   final String ownerName;
   final String ownerRole;
   final String ownerPhone;
+  final String ownerEmail;
 
   const ProductOwnerCard({
     super.key,
     required this.ownerName,
     required this.ownerRole,
     required this.ownerPhone,
+    required this.ownerEmail,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final loc = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -60,15 +65,17 @@ class ProductOwnerCard extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.call),
+            tooltip: loc.call,
             onPressed: () {
-              ContactService.call('+972599000000');
+              ContactService.call(ownerPhone);
             },
           ),
           const SizedBox(width: 12),
           IconButton(
             icon: const Icon(Icons.email),
+            tooltip: loc.email,
             onPressed: () {
-              ContactService.email('example@email.com');
+              ContactService.email(ownerEmail);
             },
           ),
         ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auht_text_field.dart';
@@ -29,13 +30,14 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
+    final loc = AppLocalizations.of(context)!;
 
     ref.listen(authControllerProvider, (previous, next) {
       if (next.isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              next.message ?? 'Password reset email sent',
+              next.message ?? loc.passwordResetEmailSent,
             ),
           ),
         );
@@ -50,19 +52,25 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     return AuthScaffoldBody(
       child: Column(
         children: [
-          AuthBackButton(onTap: () => context.pop()),
-          const SizedBox(height: 40),
-          const AuthHeader(
-            title: 'Forget Password',
-            subtitle: 'Recover your account password',
+          AuthBackButton(
+            onTap: () => context.pop(),
           ),
           const SizedBox(height: 40),
+
+          AuthHeader(
+            title: loc.forgotPasswordTitle,
+            subtitle: loc.forgotPasswordSubtitle,
+          ),
+
+          const SizedBox(height: 40),
+
           AuthTextField(
             controller: emailController,
-            label: 'E-mail',
-            hintText: 'Enter your email address',
+            label: loc.emailAddress,
+            hintText: loc.enterEmailAddress,
             keyboardType: TextInputType.emailAddress,
           ),
+
           const SizedBox(height: 16),
 
           if (state.errorMessage != null) ...[
@@ -88,7 +96,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           ],
 
           AuthPrimaryButton(
-            text: 'Next',
+            text: loc.next,
             isLoading: state.isLoading,
             onPressed: () {
               ref.read(authControllerProvider.notifier).forgotPassword(

@@ -17,9 +17,9 @@ class SupportExpandableTile extends StatelessWidget {
       childrenPadding: const EdgeInsets.only(bottom: 10),
       title: Text(
         title,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+        style: Theme.of(
+          context,
+        ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
       ),
       children: [
         Align(
@@ -27,9 +27,9 @@ class SupportExpandableTile extends StatelessWidget {
           child: Text(
             content,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  height: 1.7,
-                  color: Colors.grey.shade700,
-                ),
+              height: 1.7,
+              color: Colors.grey.shade700,
+            ),
           ),
         ),
       ],

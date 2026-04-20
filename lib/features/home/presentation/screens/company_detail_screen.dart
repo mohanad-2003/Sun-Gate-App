@@ -29,7 +29,7 @@ class CompanyDetailScreen extends ConsumerWidget {
       body: Column(
         children: [
           CompanyCoverHeader(
-            title: '${company.name} Detail',
+            title: '${company.nameKey} Detail',
             imagePath: company.coverImagePath,
           ),
           Expanded(
@@ -62,7 +62,7 @@ class CompanyDetailScreen extends ConsumerWidget {
                   ),
                   children: [
                     Text(
-                      company.name,
+                      company.nameKey,
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -79,7 +79,7 @@ class CompanyDetailScreen extends ConsumerWidget {
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            company.location,
+                            company.locationKey,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: theme.textTheme.bodySmall?.copyWith(
@@ -115,7 +115,7 @@ class CompanyDetailScreen extends ConsumerWidget {
                     Text(
                       overflow: TextOverflow.ellipsis,
                       maxLines: 3,
-                      company.description,
+                      company.descriptionKey,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                         height: 1.65,

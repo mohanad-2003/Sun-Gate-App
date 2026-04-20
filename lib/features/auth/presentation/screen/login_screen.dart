@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/password_visiablity_controller.dart';
@@ -36,42 +37,49 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
     final isVisible = ref.watch(loginPasswordVisiableProvider);
+    final loc = AppLocalizations.of(context)!;
 
     ref.listen(authControllerProvider, (previous, next) async {
       if (next.isSuccess && mounted) {
-        if (mounted) {
-          context.go(RouteNames.main);
-        }
+        context.go(RouteNames.main);
       }
     });
+
     return AuthScaffoldBody(
       child: Form(
         key: formKey,
         child: Column(
           children: [
-            AuthBackButton(onTap: () => context.go('/onboarding')),
+            AuthBackButton(
+              onTap: () => context.go('/onboarding'),
+            ),
             const SizedBox(height: 8),
-            const Text(
-              'Login',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            Text(
+              loc.login,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 24),
-            const AuthHeader(
-              title: 'Hi, Welcome Back ! 👋',
-              subtitle: 'Sun Gate Welcome you',
+            AuthHeader(
+              title: loc.loginWelcomeTitle,
+              subtitle: loc.loginWelcomeSubtitle,
             ),
             const SizedBox(height: 38),
+
             AuthTextField(
               controller: emailController,
-              label: 'Email',
-              hintText: 'Enter your email address',
+              label: loc.emailAddress,
+              hintText: loc.enterEmailAddress,
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
+
             AuthTextField(
               controller: passwordController,
-              label: 'Password',
-              hintText: 'Enter your password',
+              label: loc.password,
+              hintText: loc.enterPassword,
               obscureText: !isVisible,
               suffixIcon: IconButton(
                 onPressed: () {
@@ -85,15 +93,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ),
             ),
+
             if (state.errorMessage != null) ...[
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(12),
-                margin: EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(bottom: 12),
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.08),
+                  color: Colors.red.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.red.withOpacity(0.25)),
+                  border: Border.all(
+                    color: Colors.red.withValues(alpha: 0.25),
+                  ),
                 ),
                 child: Text(
                   state.errorMessage!,
@@ -105,30 +116,34 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ),
             ],
-            SizedBox(height: 10),
+
+            const SizedBox(height: 10),
+
             Align(
               alignment: AlignmentDirectional.centerStart,
               child: TextButton(
                 onPressed: () => context.push(RouteNames.forgotPassword),
-                child: const Text('Forgot Password?'),
+                child: Text(loc.forgotPassword),
               ),
             ),
+
             const SizedBox(height: 4),
+
             AuthPrimaryButton(
-              text: 'Login',
+              text: loc.login,
               isLoading: state.isLoading,
               onPressed: () {
-                ref
-                    .read(authControllerProvider.notifier)
-                    .login(
+                ref.read(authControllerProvider.notifier).login(
                       email: emailController.text,
                       password: passwordController.text,
                     );
               },
             ),
+
             const SizedBox(height: 22),
             const AuthDivider(),
             const SizedBox(height: 22),
+
             AuthOutlineGoogleButton(
               onPressed: () async {
                 final googleService = ref.read(googleAuthServiceProvider);
@@ -139,8 +154,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   if (!context.mounted) return;
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Google sign-in failed. Please try again.'),
+                    SnackBar(
+                      content: Text(loc.googleSignInFailed),
                     ),
                   );
                   return;
@@ -151,10 +166,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     .googleLogin(idToken: idToken);
               },
             ),
+
             const SizedBox(height: 28),
+
             AuthBottomLink(
-              text: "Don't have an account ? ",
-              actionText: 'Sign Up',
+              text: loc.dontHaveAccount,
+              actionText: loc.signUp,
               onTap: () => context.push(RouteNames.signUp),
             ),
           ],

@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/features/home/data/models/company_model.dart';
+import 'package:sun_gate_app/features/home/presentation/extentions/home_localization_extention.dart';
 
 class CompanyCard extends StatelessWidget {
   final CompanyModel company;
   final VoidCallback onTap;
 
-  const CompanyCard({super.key, required this.company, required this.onTap});
+  const CompanyCard({
+    super.key,
+    required this.company,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final loc = AppLocalizations.of(context)!;
 
     return InkWell(
       onTap: onTap,
@@ -20,12 +27,14 @@ class CompanyCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isDark ? colorScheme.surface : Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: colorScheme.outline.withOpacity(0.10)),
+          border: Border.all(
+            color: colorScheme.outline.withValues(alpha: 0.10),
+          ),
           boxShadow: isDark
               ? []
               : [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 14,
                     offset: const Offset(0, 6),
                   ),
@@ -47,8 +56,8 @@ class CompanyCard extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            Colors.black.withOpacity(0.22),
-                            Colors.black.withOpacity(0.10),
+                            Colors.black.withValues(alpha: 0.22),
+                            Colors.black.withValues(alpha: 0.10),
                           ],
                         ),
                       ),
@@ -60,18 +69,18 @@ class CompanyCard extends StatelessWidget {
                       child: Wrap(
                         spacing: 6,
                         runSpacing: 6,
-                        children: company.tags.map((tag) {
+                        children: company.tagKeys.map((tagKey) {
                           return Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 8,
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.82),
+                              color: Colors.white.withValues(alpha: 0.82),
                               borderRadius: BorderRadius.circular(18),
                             ),
                             child: Text(
-                              tag,
+                              loc.categoryByKey(tagKey),
                               style: const TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w600,
@@ -93,7 +102,7 @@ class CompanyCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    company.name,
+                    loc.companyByKey(company.nameKey),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleSmall?.copyWith(
@@ -102,13 +111,11 @@ class CompanyCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    company.description,
+                    loc.companyByKey(company.descriptionKey),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.textTheme.bodySmall?.color?.withOpacity(
-                        0.75,
-                      ),
+                      color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.75),
                       height: 1.45,
                     ),
                   ),

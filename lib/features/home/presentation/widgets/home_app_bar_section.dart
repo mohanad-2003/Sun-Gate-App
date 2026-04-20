@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 
 class HomeAppBarSection extends ConsumerWidget {
@@ -13,7 +14,7 @@ class HomeAppBarSection extends ConsumerWidget {
 
     final imageUrl =
         profileState.profile?.imageUrl ?? profileState.profile?.profileImage;
-
+    final loc = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.only(top: 6),
       child: Column(
@@ -34,7 +35,7 @@ class HomeAppBarSection extends ConsumerWidget {
           const SizedBox(height: 10),
 
           Text(
-            'Hi, $userName !',
+            loc.hiUser(userName),
             style: const TextStyle(
               color: Colors.white,
               fontSize: 16,

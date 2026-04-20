@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 
 class HomeBannerCard extends StatelessWidget {
   final VoidCallback onTap;
@@ -63,7 +64,7 @@ class HomeBannerCard extends StatelessWidget {
                     'assets/images/p.png',
                     height: imageHeight,
                     fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) {
+                    errorBuilder: (_, _, _) {
                       return Container(
                         width: imageHeight * 0.82,
                         height: imageHeight * 0.82,
@@ -103,6 +104,7 @@ class _BannerTextContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +112,7 @@ class _BannerTextContent extends StatelessWidget {
       children: [
         Flexible(
           child: Text(
-            'Smart Solutions For A\nBrighter Future',
+            loc.homeBannerTitle,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.titleMedium?.copyWith(
@@ -134,7 +136,7 @@ class _BannerTextContent extends StatelessWidget {
             ),
             alignment: Alignment.center,
             child: Text(
-              'Start Explore',
+              loc.startExplore,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.labelLarge?.copyWith(

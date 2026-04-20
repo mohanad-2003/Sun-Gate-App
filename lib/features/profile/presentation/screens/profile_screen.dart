@@ -60,9 +60,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   trailing: currentLocale?.languageCode == 'en'
                       ? const Icon(Icons.check, color: Colors.green)
                       : null,
-                  onTap: () {
-                    ref.read(appLocaleProvider.notifier).setEnglish();
-                    Navigator.pop(context);
+                  onTap: () async {
+                    await ref.read(appLocaleProvider.notifier).setEnglish();
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   },
                 ),
                 ListTile(
@@ -71,9 +73,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   trailing: currentLocale?.languageCode == 'ar'
                       ? const Icon(Icons.check, color: Colors.green)
                       : null,
-                  onTap: () {
-                    ref.read(appLocaleProvider.notifier).setArabic();
-                    Navigator.pop(context);
+                  onTap: () async {
+                    await ref.read(appLocaleProvider.notifier).setArabic();
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   },
                 ),
               ],
@@ -93,8 +97,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final loc = AppLocalizations.of(context)!;
     final currentLocale = ref.watch(appLocaleProvider);
 
-    final currentLanguageText =
-        currentLocale?.languageCode == 'ar' ? loc.arabic : loc.english;
+    final currentLanguageText = currentLocale?.languageCode == 'ar'
+        ? loc.arabic
+        : loc.english;
 
     return Scaffold(
       body: SafeArea(
@@ -149,9 +154,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           children: [
                             Text(
                               currentLanguageText,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
+                              style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(
                                     color: Colors.grey.shade600,
                                     fontWeight: FontWeight.w500,

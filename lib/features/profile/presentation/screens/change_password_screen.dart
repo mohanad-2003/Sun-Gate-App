@@ -71,9 +71,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   }) {
     return InputDecoration(
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide(
@@ -123,9 +121,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.changePassword),
-      ),
+      appBar: AppBar(title: Text(loc.changePassword)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -134,9 +130,9 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
             children: [
               Text(
                 loc.changePasswordHint,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey.shade700,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
               ),
               const SizedBox(height: 20),
 
@@ -230,10 +226,11 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                       ? null
                       : () {
                           final oldPassword = oldPasswordController.text.trim();
-                          final newPasswordValue =
-                              newPasswordController.text.trim();
-                          final confirmPasswordValue =
-                              confirmPasswordController.text.trim();
+                          final newPasswordValue = newPasswordController.text
+                              .trim();
+                          final confirmPasswordValue = confirmPasswordController
+                              .text
+                              .trim();
 
                           if (oldPassword.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -265,9 +262,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
 
                           if (newPasswordValue != confirmPasswordValue) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(loc.passwordsDoNotMatch),
-                              ),
+                              SnackBar(content: Text(loc.passwordsDoNotMatch)),
                             );
                             return;
                           }

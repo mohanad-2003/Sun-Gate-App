@@ -150,32 +150,41 @@ class AuthFormController extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> verifyOtp({required String email, required String code}) async {
+ Future<void> verifyOtp({
+  required String email,
+  required String code,
+}) async {
+  state = state.copyWith(
+    isLoading: true,
+    errorMessage: null,
+    isSuccess: false,
+    message: null,
+  );
+
+  try {
+    final message = await repository.verifyOtp(
+      email: email,
+      code: code,
+    );
+
     state = state.copyWith(
-      isLoading: true,
+      isLoading: false,
+      isSuccess: true,
       errorMessage: null,
+      message: message,
+    );
+  } catch (e) {
+    state = state.copyWith(
+      isLoading: false,
       isSuccess: false,
+      errorMessage: e.toString().replaceFirst('Exception: ', ''),
       message: null,
     );
 
-    try {
-      final message = await repository.verifyOtp(email: email, code: code);
-
-      state = state.copyWith(
-        isLoading: false,
-        isSuccess: true,
-        errorMessage: null,
-        message: message,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        isSuccess: false,
-        errorMessage: e.toString().replaceFirst('Exception: ', ''),
-        message: null,
-      );
-    }
+    // 🔥 هذا أهم سطر
+    rethrow;
   }
+}
 
   Future<void> googleLogin({required String idToken}) async {
     state = state.copyWith(

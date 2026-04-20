@@ -264,4 +264,506 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pleaseChooseStrongerPassword =>
       'Please choose a stronger password';
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get calculator => 'Calculator';
+
+  @override
+  String get instructions => 'Instruction';
+
+  @override
+  String get suppliser => 'Suppliser';
+
+  @override
+  String get login => 'Login';
+
+  @override
+  String get loginWelcomeTitle => 'Hi, Welcome Back ! 👋';
+
+  @override
+  String get loginWelcomeSubtitle => 'Sun Gate welcomes you';
+
+  @override
+  String get enterEmailAddress => 'Enter your email address';
+
+  @override
+  String get enterPassword => 'Enter your password';
+
+  @override
+  String get forgotPassword => 'Forgot Password?';
+
+  @override
+  String get continueWithGoogle => 'Continue with Google';
+
+  @override
+  String get dontHaveAccount => 'Don\'t have an account ? ';
+
+  @override
+  String get signUp => 'Sign Up';
+
+  @override
+  String get googleSignInFailed => 'Google sign-in failed. Please try again.';
+
+  @override
+  String get emailAddress => 'Email';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get signUpTitle => 'Sign Up';
+
+  @override
+  String get completeAccountTitle => 'Complete Your Account';
+
+  @override
+  String get createNewAccount => 'Create your new account';
+
+  @override
+  String get fullName => 'Full Name';
+
+  @override
+  String get enterFullName => 'Enter your full name';
+
+  @override
+  String get enterEmail => 'Enter your email';
+
+  @override
+  String get acceptPolicy => 'Accept the app\'s policy and privacy';
+
+  @override
+  String get alreadyHaveAccount => 'Already have an account ? ';
+
+  @override
+  String get registrationSuccess => 'Registration successful';
+
+  @override
+  String get pleaseEnterFullName => 'Please enter your full name';
+
+  @override
+  String get pleaseEnterEmail => 'Please enter your email';
+
+  @override
+  String get pleaseEnterPassword => 'Please enter your password';
+
+  @override
+  String get forgotPasswordTitle => 'Forgot Password';
+
+  @override
+  String get forgotPasswordSubtitle => 'Recover your account password';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get passwordResetEmailSent => 'Password reset email sent';
+
+  @override
+  String get enterOtp => 'Enter OTP';
+
+  @override
+  String get otpSubtitle =>
+      'We have just sent you a 6 digit code via your email';
+
+  @override
+  String get didNotReceiveCode => 'Didn\'t receive code ? ';
+
+  @override
+  String get resendCode => 'Resend Code';
+
+  @override
+  String get resendIn => 'Resend in';
+
+  @override
+  String get seconds => 's';
+
+  @override
+  String get continues => 'Continue';
+
+  @override
+  String get codeResent => 'Code resent successfully';
+
+  @override
+  String get createNewPassword => 'Create a New Password';
+
+  @override
+  String get enterNewPasswordSubtitle => 'Enter your new password';
+
+  @override
+  String get confirmYourPassword => 'Confirm your password';
+
+  @override
+  String get passwordResetSuccess => 'Password reset successfully';
+
+  @override
+  String get emailMissing => 'Email is missing. Please go back and try again.';
+
+  @override
+  String get tokenMissing =>
+      'Reset code is missing. Please go back and try again.';
+
+  @override
+  String get homeBannerTitle => 'Smart Solutions For A Brighter Future';
+
+  @override
+  String get startExplore => 'Start Explore';
+
+  @override
+  String hiUser(Object name) {
+    return 'Hi, $name !';
+  }
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get popularCompanies => 'Popular Companies';
+
+  @override
+  String get seeAll => 'See all';
+
+  @override
+  String get defaultUser => 'User';
+
+  @override
+  String get categoryBatteries => 'Batteries';
+
+  @override
+  String get categoryInverters => 'Inverters';
+
+  @override
+  String get categoryPanels => 'Panels';
+
+  @override
+  String get categorySuppliers => 'Suppliers';
+
+  @override
+  String get companyLuminanceName => 'Luminance Solar';
+
+  @override
+  String get companyLuminanceShortDescription =>
+      'Expert installation of high-efficiency panels';
+
+  @override
+  String get companyLuminanceDescription =>
+      'Luminance Solar specializes in modern solar panel systems for homes and small businesses with strong performance and reliable maintenance support.';
+
+  @override
+  String get companyLuminanceLocation => 'Amman, Jordan';
+
+  @override
+  String get companyVoltGuardName => 'VoltGuard Com';
+
+  @override
+  String get companyVoltGuardShortDescription =>
+      'Advanced battery and inverter management';
+
+  @override
+  String get companyVoltGuardDescription =>
+      'VoltGuard provides advanced inverter solutions and backup battery systems suitable for residential and commercial energy needs.';
+
+  @override
+  String get companyVoltGuardLocation => 'Zarqa, Jordan';
+
+  @override
+  String get companyEcoVoltName => 'EcoVolt Solar';
+
+  @override
+  String get companyEcoVoltShortDescription =>
+      'Residential and commercial solar solutions';
+
+  @override
+  String get companyEcoVoltDescription =>
+      'EcoVolt Solar focuses on complete solar energy solutions including design, supply, installation, and after-sales support.';
+
+  @override
+  String get companyEcoVoltLocation => 'Irbid, Jordan';
+
+  @override
+  String get companyZenithName => 'Zenith Power';
+
+  @override
+  String get companyZenithShortDescription =>
+      'High-performance lithium battery solutions';
+
+  @override
+  String get companyZenithDescription =>
+      'Zenith Power delivers high-capacity battery systems and smart energy storage units designed for dependable long-term use.';
+
+  @override
+  String get companyZenithLocation => 'Aqaba, Jordan';
+
+  @override
+  String get companySunCoreName => 'SunCore Energy';
+
+  @override
+  String get companySunCoreShortDescription =>
+      'Reliable solar products for modern projects';
+
+  @override
+  String get companySunCoreDescription =>
+      'SunCore Energy serves solar projects with quality modules, trusted installation materials, and strong technical consultation.';
+
+  @override
+  String get companySunCoreLocation => 'Nablus, Palestine';
+
+  @override
+  String get companyNovaGridName => 'NovaGrid Solutions';
+
+  @override
+  String get companyNovaGridShortDescription =>
+      'Smart renewable systems and supplier services';
+
+  @override
+  String get companyNovaGridDescription =>
+      'NovaGrid Solutions combines smart controllers, renewable products, and supply services for scalable clean-energy setups.';
+
+  @override
+  String get companyNovaGridLocation => 'Ramallah, Palestine';
+
+  @override
+  String get productDetailTitle => 'Product Detail';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get howItWorks => 'How it Works';
+
+  @override
+  String get contactOwner => 'Contact owner';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get call => 'Call';
+
+  @override
+  String get ownerRoleLuminanceEngineer => 'Luminance Engineer';
+
+  @override
+  String get ownerRoleSunGridManager => 'SunGrid Manager';
+
+  @override
+  String get ownerRoleEcoVoltManager => 'EcoVolt Manager';
+
+  @override
+  String get productP1Name => 'Solar Battery Pack';
+
+  @override
+  String get productP1Description => 'High-capacity battery for solar systems.';
+
+  @override
+  String get productP1How1 => 'Stores solar energy efficiently.';
+
+  @override
+  String get productP1How2 => 'Provides backup power.';
+
+  @override
+  String get productP1How3 => 'Optimized for long-term use.';
+
+  @override
+  String get ownerAhmadSaleh => 'Ahmad Saleh';
+
+  @override
+  String get roleLuminanceEngineer => 'Solar Engineer';
+
+  @override
+  String get productP2Name => 'Hybrid Inverter';
+
+  @override
+  String get productP2Description => 'Smart inverter for hybrid solar systems.';
+
+  @override
+  String get productP2How1 => 'Converts DC to AC power.';
+
+  @override
+  String get productP2How2 => 'Manages energy flow.';
+
+  @override
+  String get productP2How3 => 'Supports battery integration.';
+
+  @override
+  String get productP3Name => 'Solar Panel Kit';
+
+  @override
+  String get productP3Description => 'Complete panel kit for homes.';
+
+  @override
+  String get productP3How1 => 'Captures sunlight.';
+
+  @override
+  String get productP3How2 => 'Generates electricity.';
+
+  @override
+  String get productP3How3 => 'Works in all weather conditions.';
+
+  @override
+  String get ownerMohamoudAli => 'Mohamoud Ali';
+
+  @override
+  String get roleSunGridManager => 'Grid Manager';
+
+  @override
+  String get productP4Name => 'Lithium Battery Pro';
+
+  @override
+  String get productP4Description => 'Advanced lithium battery solution.';
+
+  @override
+  String get productP4How1 => 'Fast charging capability.';
+
+  @override
+  String get productP4How2 => 'Long lifespan.';
+
+  @override
+  String get productP4How3 => 'High efficiency storage.';
+
+  @override
+  String get productP5Name => 'Eco Solar System';
+
+  @override
+  String get productP5Description => 'Eco-friendly solar solution.';
+
+  @override
+  String get productP5How1 => 'Reduces energy costs.';
+
+  @override
+  String get productP5How2 => 'Uses renewable resources.';
+
+  @override
+  String get productP5How3 => 'Low maintenance system.';
+
+  @override
+  String get ownerOmarKhaled => 'Omar Khaled';
+
+  @override
+  String get roleEcoVoltManager => 'Eco Manager';
+
+  @override
+  String get productP6Name => 'Smart Energy Controller';
+
+  @override
+  String get productP6Description => 'Smart controller for energy systems.';
+
+  @override
+  String get productP6How1 => 'Monitors energy usage.';
+
+  @override
+  String get productP6How2 => 'Optimizes performance.';
+
+  @override
+  String get productP6How3 => 'Improves efficiency.';
+
+  @override
+  String get productP7Name => 'Zenith Battery Unit';
+
+  @override
+  String get productP7Description => 'Premium battery storage unit.';
+
+  @override
+  String get productP7How1 => 'Stores excess energy.';
+
+  @override
+  String get productP7How2 => 'Ensures stable supply.';
+
+  @override
+  String get productP7How3 => 'Supports smart grids.';
+
+  @override
+  String get ownerSaraNabil => 'Sara Nabil';
+
+  @override
+  String get roleZenithSpecialist => 'Energy Specialist';
+
+  @override
+  String get productP8Name => 'Solar Charging Station';
+
+  @override
+  String get productP8Description => 'Portable solar charging system.';
+
+  @override
+  String get productP8How1 => 'Charges devices using sunlight.';
+
+  @override
+  String get productP8How2 => 'Compact design.';
+
+  @override
+  String get productP8How3 => 'Easy to install.';
+
+  @override
+  String get productP9Name => 'SunCore Panel System';
+
+  @override
+  String get productP9Description => 'High-efficiency solar panels.';
+
+  @override
+  String get productP9How1 => 'Absorbs maximum sunlight.';
+
+  @override
+  String get productP9How2 => 'Generates clean energy.';
+
+  @override
+  String get productP9How3 => 'Durable and reliable.';
+
+  @override
+  String get ownerAliHasan => 'Ali Hasan';
+
+  @override
+  String get roleSunCoreSupervisor => 'Supervisor';
+
+  @override
+  String get productP10Name => 'Grid Tie Inverter';
+
+  @override
+  String get productP10Description => 'Connects solar system to grid.';
+
+  @override
+  String get productP10How1 => 'Syncs with grid power.';
+
+  @override
+  String get productP10How2 => 'Exports excess energy.';
+
+  @override
+  String get productP10How3 => 'Improves efficiency.';
+
+  @override
+  String get productP11Name => 'Nova Smart Controller';
+
+  @override
+  String get productP11Description => 'Advanced smart controller.';
+
+  @override
+  String get productP11How1 => 'Automates energy control.';
+
+  @override
+  String get productP11How2 => 'Tracks consumption.';
+
+  @override
+  String get productP11How3 => 'Enhances performance.';
+
+  @override
+  String get ownerRamiAdel => 'Rami Adel';
+
+  @override
+  String get roleNovaGridEngineer => 'Electrical Engineer';
+
+  @override
+  String get productP12Name => 'Portable Solar Kit';
+
+  @override
+  String get productP12Description => 'Lightweight solar kit.';
+
+  @override
+  String get productP12How1 => 'Easy to carry.';
+
+  @override
+  String get productP12How2 => 'Quick installation.';
+
+  @override
+  String get productP12How3 => 'Perfect for outdoor use.';
 }

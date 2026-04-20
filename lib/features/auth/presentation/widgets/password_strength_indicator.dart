@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum PasswordStrengthLevel {
-  empty,
-  weak,
-  medium,
-  strong,
-}
+enum PasswordStrengthLevel { empty, weak, medium, strong }
 
 class PasswordStrengthResult {
   final double progress;
@@ -114,10 +109,7 @@ PasswordStrengthResult evaluatePasswordStrength(String password) {
 class PasswordStrengthIndicator extends StatelessWidget {
   final String password;
 
-  const PasswordStrengthIndicator({
-    super.key,
-    required this.password,
-  });
+  const PasswordStrengthIndicator({super.key, required this.password});
 
   @override
   Widget build(BuildContext context) {
@@ -166,10 +158,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
               text: 'Lowercase letter',
               isValid: result.hasLowercase,
             ),
-            _RequirementChip(
-              text: 'Number',
-              isValid: result.hasNumber,
-            ),
+            _RequirementChip(text: 'Number', isValid: result.hasNumber),
             _RequirementChip(
               text: 'Special character',
               isValid: result.hasSpecialCharacter,
@@ -193,10 +182,7 @@ class _RequirementChip extends StatelessWidget {
   final String text;
   final bool isValid;
 
-  const _RequirementChip({
-    required this.text,
-    required this.isValid,
-  });
+  const _RequirementChip({required this.text, required this.isValid});
 
   @override
   Widget build(BuildContext context) {

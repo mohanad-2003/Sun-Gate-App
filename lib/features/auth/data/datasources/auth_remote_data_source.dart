@@ -124,7 +124,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   ) async {
     try {
       final response = await dio.post(
-        ApiConstants.veriyfyEmail,
+        ApiConstants.verifyEmail,
         data: request.toJson(),
       );
 

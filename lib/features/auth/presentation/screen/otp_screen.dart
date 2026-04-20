@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_back_button.dart';
@@ -11,14 +12,13 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_bo
 
 class OtpScreen extends ConsumerStatefulWidget {
   final String email;
-
   const OtpScreen({super.key, required this.email});
 
   @override
   ConsumerState<OtpScreen> createState() => _OtpScreenState();
 }
 
-class _OtpScreenState extends ConsumerState<OtpScreen> { 
+class _OtpScreenState extends ConsumerState<OtpScreen> {
   final List<TextEditingController> _controllers = List.generate(
     6,
     (_) => TextEditingController(),
@@ -37,12 +37,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
   @override
   void dispose() {
-    for (final controller in _controllers) {
-      controller.dispose();
-    }
-    for (final node in _focusNodes) {
-      node.dispose();
-    }
+    for (final c in _controllers) c.dispose();
+    for (final n in _focusNodes) n.dispose();
     _timer?.cancel();
     super.dispose();
   }
@@ -68,15 +64,13 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
   void _startTimer() {
     _seconds = 30;
-
     _timer?.cancel();
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_seconds == 0) {
         timer.cancel();
       } else {
-        setState(() {
-          _seconds--;
-        });
+        setState(() => _seconds--);
       }
     });
   }
@@ -84,25 +78,17 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
-
-    ref.listen(authControllerProvider, (previous, next) {
-      if (next.isSuccess) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.message ?? 'Code resent successfully')),
-        );
-      }
-    });
-
+    final loc = AppLocalizations.of(context)!;
     return AuthScaffoldBody(
       child: Column(
         children: [
           AuthBackButton(onTap: () => context.go(RouteNames.signUp)),
+
           const SizedBox(height: 48),
 
           AuthHeader(
-            title: 'Enter OTP',
-            subtitle:
-                'We have just sent you 6 digit code via your\nemail ${widget.email}',
+            title: loc.enterOtp,
+            subtitle: '${loc.otpSubtitle}\n${widget.email}',
           ),
 
           const SizedBox(height: 28),
@@ -153,9 +139,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
           Wrap(
             alignment: WrapAlignment.center,
             children: [
-              const Text(
-                "Didn't receive code ? ",
-                style: TextStyle(fontSize: 13, color: Colors.grey),
+              Text(
+                loc.didNotReceiveCode,
+                style: const TextStyle(fontSize: 13, color: Colors.grey),
               ),
               GestureDetector(
                 onTap: _seconds == 0
@@ -167,7 +153,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                       }
                     : null,
                 child: Text(
-                  _seconds == 0 ? 'Resend Code' : 'Resend in $_seconds s',
+                  _seconds == 0
+                      ? loc.resendCode
+                      : '${loc.resendIn} $_seconds ${loc.seconds}',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -188,9 +176,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.08),
+                color: Colors.red.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.red.withOpacity(0.20)),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.20)),
               ),
               child: Text(
                 state.errorMessage!,
@@ -200,9 +188,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
             const SizedBox(height: 16),
           ],
 
-          /// CONTINUE BUTTON
           AuthPrimaryButton(
-            text: 'Continue',
+            text: loc.continues,
             isLoading: state.isLoading,
             onPressed: _otpCode.length == 6
                 ? () {

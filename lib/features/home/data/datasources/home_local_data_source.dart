@@ -14,22 +14,22 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
     return [
       CategoryItemModel(
         id: '1',
-        title: 'Batteries',
+        titleKey: 'Batteries',
         imagePath: 'assets/images/battery.jpg',
       ),
       CategoryItemModel(
         id: '2',
-        title: 'Inverters',
+        titleKey: 'Inverters',
         imagePath: 'assets/images/inverter.jpg',
       ),
       CategoryItemModel(
         id: '3',
-        title: 'Panels',
+        titleKey: 'Panels',
         imagePath: 'assets/images/panels.jpg',
       ),
       CategoryItemModel(
         id: '4',
-        title: 'Suppliers',
+        titleKey: 'Suppliers',
         imagePath: 'assets/images/suppliers.jpg',
       ),
     ];
@@ -40,27 +40,27 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
     return const [
       CompanyModel(
         id: '1',
-        name: 'luminance Solar',
+        nameKey: 'luminance Solar',
         coverImagePath: 'assets/images/company_luminis.jpg',
-        description: 'Expert installation of high-efficiency panels',
-        tags: ['Batteries', 'Panels'],
-        location: '',
+        descriptionKey: 'Expert installation of high-efficiency panels',
+        tagKeys: ['Batteries', 'Panels'],
+        locationKey: '',
         logoPath: '',
         rating: 2,
         reviewCount: 4,
-        shortDescription: '',
+        shortDescriptionKey: '',
       ),
       CompanyModel(
         id: '2',
-        name: 'VoltGuard Com',
+        nameKey: 'VoltGuard Com',
         coverImagePath: 'assets/images/company_sungrid.jpg',
-        description: 'Advanced battery and inverter management',
-        tags: ['Batteries', 'Inverter'],
-        location: '',
+        descriptionKey: 'Advanced battery and inverter management',
+        tagKeys: ['Batteries', 'Inverter'],
+        locationKey: '',
         logoPath: '',
         rating: 3,
         reviewCount: 4,
-        shortDescription: '',
+        shortDescriptionKey: '',
       ),
     ];
   }

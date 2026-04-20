@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auht_text_field.dart';
@@ -49,19 +50,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   Color? _getPasswordBorderColor(String password) {
-    if (password.isEmpty) {
-      return null;
-    }
+    if (password.isEmpty) return null;
 
     final result = evaluatePasswordStrength(password);
 
-    if (result.level == PasswordStrengthLevel.strong) {
-      return Colors.green;
-    }
-
-    if (result.level == PasswordStrengthLevel.medium) {
-      return Colors.orange;
-    }
+    if (result.level == PasswordStrengthLevel.strong) return Colors.green;
+    if (result.level == PasswordStrengthLevel.medium) return Colors.orange;
 
     return Colors.red;
   }
@@ -69,6 +63,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
+    final loc = AppLocalizations.of(context)!;
+
     final password = passwordController.text.trim();
     final passwordStrength = evaluatePasswordStrength(password);
     final passwordBorderColor = _getPasswordBorderColor(password);
@@ -76,7 +72,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     ref.listen(authControllerProvider, (previous, next) {
       if (next.isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.message ?? 'Registration successful')),
+          SnackBar(content: Text(loc.registrationSuccess)),
         );
         context.go(RouteNames.otp, extra: emailController.text.trim());
       }
@@ -87,42 +83,52 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         children: [
           AuthBackButton(onTap: () => context.go('/login')),
           const SizedBox(height: 4),
-          const Text(
-            'Sign up',
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+
+          Text(
+            loc.signUpTitle,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 18,
+            ),
           ),
+
           const SizedBox(height: 26),
-          const AuthHeader(
-            title: 'Complete Your account',
-            subtitle: 'Create your new account',
+
+          AuthHeader(
+            title: loc.completeAccountTitle,
+            subtitle: loc.createNewAccount,
           ),
+
           const SizedBox(height: 26),
 
           AuthTextField(
             controller: fullNameController,
-            label: 'Full Name',
-            hintText: 'Enter your full name',
+            label: loc.fullName,
+            hintText: loc.enterFullName,
             onChanged: (_) => setState(() {}),
           ),
+
           const SizedBox(height: 14),
 
           AuthTextField(
             controller: emailController,
-            label: 'Email',
-            hintText: 'Enter your email',
+            label: loc.emailAddress,
+            hintText: loc.enterEmail,
             keyboardType: TextInputType.emailAddress,
             onChanged: (_) => setState(() {}),
           ),
+
           const SizedBox(height: 14),
 
           AuthTextField(
             controller: passwordController,
-            label: 'Password',
-            hintText: 'Enter your password',
+            label: loc.password,
+            hintText: loc.enterPassword,
             obscureText: obscurePassword,
             onChanged: (_) => setState(() {}),
             enabledBorderColor: passwordBorderColor,
-            focusedBorderColor: passwordBorderColor ?? const Color(0xFF274777),
+            focusedBorderColor:
+                passwordBorderColor ?? const Color(0xFF274777),
             suffixIcon: IconButton(
               onPressed: () {
                 setState(() {
@@ -152,9 +158,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             },
             dense: true,
             contentPadding: EdgeInsets.zero,
-            title: const Text(
-              'accept the policy and privacy of app',
-              style: TextStyle(fontSize: 12),
+            title: Text(
+              loc.acceptPolicy,
+              style: const TextStyle(fontSize: 12),
             ),
             controlAffinity: ListTileControlAffinity.leading,
           ),
@@ -165,9 +171,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.08),
+                color: Colors.red.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.red.withOpacity(0.20)),
+                border: Border.all(
+                  color: Colors.red.withValues(alpha: 0.20),
+                ),
               ),
               child: Text(
                 state.errorMessage!,
@@ -179,7 +187,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           const SizedBox(height: 12),
 
           AuthPrimaryButton(
-            text: 'Sign Up',
+            text: loc.signUpTitle,
             isLoading: state.isLoading,
             onPressed: acceptPolicy
                 ? () {
@@ -189,35 +197,30 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
                     if (fullName.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please enter your full name'),
-                        ),
+                        SnackBar(content: Text(loc.pleaseEnterFullName)),
                       );
                       return;
                     }
 
                     if (email.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please enter your email'),
-                        ),
+                        SnackBar(content: Text(loc.pleaseEnterEmail)),
                       );
                       return;
                     }
 
                     if (rawPassword.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please enter your password'),
-                        ),
+                        SnackBar(content: Text(loc.pleaseEnterPassword)),
                       );
                       return;
                     }
 
                     if (!passwordStrength.isValidStrongPassword) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please choose a stronger password'),
+                        SnackBar(
+                          content:
+                              Text(loc.pleaseChooseStrongerPassword),
                         ),
                       );
                       return;
@@ -225,9 +228,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
                     final name = _splitName(fullName);
 
-                    ref
-                        .read(authControllerProvider.notifier)
-                        .register(
+                    ref.read(authControllerProvider.notifier).register(
                           firstName: name.$1,
                           lastName: name.$2,
                           email: email,
@@ -240,8 +241,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           const SizedBox(height: 20),
 
           AuthBottomLink(
-            text: 'Already have an account ? ',
-            actionText: 'Login',
+            text: loc.alreadyHaveAccount,
+            actionText: loc.login,
             onTap: () => context.go('/login'),
           ),
         ],

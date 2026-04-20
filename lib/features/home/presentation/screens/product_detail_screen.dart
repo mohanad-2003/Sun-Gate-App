@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/features/home/data/models/product_model.dart';
+import 'package:sun_gate_app/features/home/presentation/extentions/home_localization_extention.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/product_owner_card.dart';
 
 class ProductDetailScreen extends StatelessWidget {
@@ -11,6 +13,7 @@ class ProductDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
@@ -36,14 +39,14 @@ class ProductDetailScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Positioned(
+                Positioned(
                   top: 20,
                   left: 0,
                   right: 0,
                   child: Center(
                     child: Text(
-                      'Portal Solar Detail',
-                      style: TextStyle(
+                      loc.productDetailTitle,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
                       ),
@@ -57,21 +60,21 @@ class ProductDetailScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
                 children: [
                   Text(
-                    product.name,
+                    loc.productByKey(product.nameKey),
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 18),
                   Text(
-                    'Description',
+                    loc.description,
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    product.description,
+                    loc.productByKey(product.descriptionKey),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       height: 1.65,
@@ -79,14 +82,14 @@ class ProductDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'How it Works',
+                    loc.howItWorks,
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  ...product.howItWorks.map(
-                    (item) => Padding(
+                  ...product.howItWorksKeys.map(
+                    (itemKey) => Padding(
                       padding: const EdgeInsets.only(bottom: 6),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +97,7 @@ class ProductDetailScreen extends StatelessWidget {
                           const Text('• '),
                           Expanded(
                             child: Text(
-                              item,
+                              loc.productByKey(itemKey),
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: colorScheme.onSurfaceVariant,
                                 height: 1.6,
@@ -107,22 +110,23 @@ class ProductDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Contact owner',
+                    loc.contactOwner,
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 10),
                   ProductOwnerCard(
-                    ownerName: product.ownerName,
-                    ownerRole: product.ownerRole,
+                    ownerName: loc.productByKey(product.ownerNameKey),
+                    ownerRole: loc.productByKey(product.ownerRoleKey),
                     ownerPhone: product.ownerPhone,
+                    ownerEmail: product.ownerEmail,
                   ),
                   const SizedBox(height: 22),
                   Row(
                     children: [
                       Text(
-                        'Price',
+                        loc.price,
                         style: theme.textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),

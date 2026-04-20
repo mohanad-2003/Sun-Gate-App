@@ -19,7 +19,7 @@ class CategoryProductsScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(category.title), centerTitle: true),
+      appBar: AppBar(title: Text(category.titleKey), centerTitle: true),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
@@ -54,7 +54,7 @@ class CategoryProductsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            category.title,
+            category.titleKey,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
             ),

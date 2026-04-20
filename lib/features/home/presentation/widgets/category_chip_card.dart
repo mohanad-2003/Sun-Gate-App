@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/features/home/data/models/category_item_model.dart';
+import 'package:sun_gate_app/features/home/presentation/extentions/home_localization_extention.dart';
 
 class CategoryChipCard extends StatelessWidget {
   final CategoryItemModel category;
@@ -16,6 +18,7 @@ class CategoryChipCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final colorScheme = theme.colorScheme;
+    final loc = AppLocalizations.of(context)!;
 
     return InkWell(
       onTap: onTap,
@@ -27,12 +30,14 @@ class CategoryChipCard extends StatelessWidget {
           color: isDark
               ? colorScheme.surfaceContainerHighest
               : const Color(0xFFE7E7E7),
-          border: Border.all(color: colorScheme.outline.withOpacity(0.08)),
+          border: Border.all(
+            color: colorScheme.outline.withValues(alpha: 0.08),
+          ),
           image: DecorationImage(
             image: AssetImage(category.imagePath),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(isDark ? 0.35 : 0.28),
+              Colors.black.withValues(alpha: isDark ? 0.35 : 0.28),
               BlendMode.darken,
             ),
           ),
@@ -42,7 +47,7 @@ class CategoryChipCard extends StatelessWidget {
           child: Align(
             alignment: Alignment.bottomLeft,
             child: Text(
-              category.title,
+              loc.categoryByKey(category.titleKey),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.bodyMedium?.copyWith(
