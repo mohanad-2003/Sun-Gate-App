@@ -20,7 +20,6 @@ import 'package:sun_gate_app/features/home/data/models/product_model.dart';
 import 'package:sun_gate_app/features/home/presentation/screens/all_company_screen.dart';
 import 'package:sun_gate_app/features/home/presentation/screens/category_products_screen.dart';
 import 'package:sun_gate_app/features/home/presentation/screens/company_detail_screen.dart';
-import 'package:sun_gate_app/features/home/presentation/screens/create_product_screen.dart';
 import 'package:sun_gate_app/features/home/presentation/screens/home_screen.dart';
 import 'package:sun_gate_app/features/home/presentation/screens/market_screen.dart';
 import 'package:sun_gate_app/features/home/presentation/screens/product_detail_screen.dart';
@@ -124,10 +123,7 @@ class AppRouter {
           return CategoryProductsScreen(category: category);
         },
       ),
-      GoRoute(
-        path: RouteNames.createProduct,
-        builder: (context, state) => const CreateProductScreen(),
-      ),
+
       GoRoute(
         path: RouteNames.market,
         builder: (context, state) => const MarketScreen(),

@@ -253,5 +253,14 @@
     }
   },
   "listItems": "List Items",
-  "noProductsForCompany": "No products available for this company yet."
+  "noProductsForCompany": "No products available for this company yet.",
+  "market": "Market",
+  "searchInMarket": "Search in our market app",
+  "itemsYouCanBuy": "Items you can buy",
+  "marketDescription": "Browse the available products in our market and explore suitable solar solutions, batteries, inverters, and related energy items.",
+  "listItem": "List Items",
+  "search": "Search...",
+  "suppliersList": "Suppliers List",
+  "suppliers": "Suppliers",
+  "noProductsForCategory": "No products available for this category."
 }

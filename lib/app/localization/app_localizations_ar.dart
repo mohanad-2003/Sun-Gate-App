@@ -774,8 +774,37 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get listItems => 'المنتجات';
+  String get listItems => 'List Items';
 
   @override
-  String get noProductsForCompany => 'لا توجد منتجات متاحة لهذه الشركة حاليًا.';
+  String get noProductsForCompany =>
+      'No products available for this company yet.';
+
+  @override
+  String get market => 'المتجر';
+
+  @override
+  String get searchInMarket => 'ابحث في متجرنا';
+
+  @override
+  String get itemsYouCanBuy => 'المنتجات المتاحة للشراء';
+
+  @override
+  String get marketDescription =>
+      'تصفح المنتجات المتاحة في المتجر واستكشف الحلول المناسبة من الألواح الشمسية والبطاريات والمحولات ومستلزمات الطاقة المختلفة.';
+
+  @override
+  String get listItem => 'عناصر القائمة';
+
+  @override
+  String get search => 'بحث...';
+
+  @override
+  String get suppliersList => 'قائمة الموردين';
+
+  @override
+  String get suppliers => 'الموردين';
+
+  @override
+  String get noProductsForCategory => 'لا توجد منتجات متاحة لهذه الفئة.';
 }

@@ -6,8 +6,8 @@ import 'package:sun_gate_app/features/home/data/models/product_model.dart';
 class HomeState {
   final bool isLoading;
   final List<CategoryItemModel> categories;
-  final List<CompanyModel> companies;
   final List<ProductModel> products;
+  final List<CompanyModel> companies;
 
   const HomeState({
     this.isLoading = false,
@@ -57,81 +57,75 @@ final homeControllerProvider = Provider<HomeState>((ref) {
   final companies = [
     CompanyModel(
       id: '1',
-      nameKey: 'Luminance Solar',
+      nameKey: 'companyLuminanceName',
       coverImagePath: 'assets/images/company_luminance.jpeg',
       logoPath: 'assets/images/companies/logo_luminance.png',
-      shortDescriptionKey: 'Expert installation of high-efficiency panels',
-      descriptionKey:
-          'Luminance Solar specializes in modern solar panel systems for homes and small businesses with strong performance and reliable maintenance support.',
-      locationKey: 'Amman, Jordan',
+      shortDescriptionKey: 'companyLuminanceShortDescription',
+      descriptionKey: 'companyLuminanceDescription',
+      locationKey: 'companyLuminanceLocation',
       rating: 4.7,
       reviewCount: 31,
-      tagKeys: ['Batteries', 'Panels'],
+      tagKeys: ['categoryBatteries', 'categoryPanels'],
     ),
     CompanyModel(
       id: '2',
-      nameKey: 'VoltGuard Com',
+      nameKey: 'companyVoltGuardName',
       coverImagePath: 'assets/images/company_voltguard.jpeg',
       logoPath: 'assets/images/companies/logo_voltguard.png',
-      shortDescriptionKey: 'Advanced battery and inverter management',
-      descriptionKey:
-          'VoltGuard provides advanced inverter solutions and backup battery systems suitable for residential and commercial energy needs.',
-      locationKey: 'Zarqa, Jordan',
+      shortDescriptionKey: 'companyVoltGuardShortDescription',
+      descriptionKey: 'companyVoltGuardDescription',
+      locationKey: 'companyVoltGuardLocation',
       rating: 4.5,
       reviewCount: 24,
-      tagKeys: ['Batteries', 'Inverter'],
+      tagKeys: ['categoryBatteries', 'categoryInverters'],
     ),
     CompanyModel(
       id: '3',
-      nameKey: 'EcoVolt Solar',
+      nameKey: 'companyEcoVoltName',
       coverImagePath: 'assets/images/company_ecovolt.jpeg',
       logoPath: 'assets/images/companies/logo_ecovolt.png',
-      shortDescriptionKey: 'Residential and commercial solar solutions',
-      descriptionKey:
-          'EcoVolt Solar focuses on complete solar energy solutions including design, supply, installation, and after-sales support.',
-      locationKey: 'Irbid, Jordan',
+      shortDescriptionKey: 'companyEcoVoltShortDescription',
+      descriptionKey: 'companyEcoVoltDescription',
+      locationKey: 'companyEcoVoltLocation',
       rating: 4.6,
       reviewCount: 28,
-      tagKeys: ['Panels', 'Suppliers'],
+      tagKeys: ['categoryPanels', 'categorySuppliers'],
     ),
     CompanyModel(
       id: '4',
-      nameKey: 'Zenith Power',
+      nameKey: 'companyZenithName',
       coverImagePath: 'assets/images/company_zenith.jpeg',
       logoPath: 'assets/images/companies/logo_zenith.png',
-      shortDescriptionKey: 'High-performance lithium battery solutions',
-      descriptionKey:
-          'Zenith Power delivers high-capacity battery systems and smart energy storage units designed for dependable long-term use.',
-      locationKey: 'Aqaba, Jordan',
+      shortDescriptionKey: 'companyZenithShortDescription',
+      descriptionKey: 'companyZenithDescription',
+      locationKey: 'companyZenithLocation',
       rating: 4.8,
       reviewCount: 19,
-      tagKeys: ['Batteries', 'Suppliers'],
+      tagKeys: ['categoryBatteries', 'categorySuppliers'],
     ),
     CompanyModel(
       id: '5',
-      nameKey: 'SunCore Energy',
+      nameKey: 'companySunCoreName',
       coverImagePath: 'assets/images/company_suncore.jpeg',
       logoPath: 'assets/images/companies/logo_suncore.png',
-      shortDescriptionKey: 'Reliable solar products for modern projects',
-      descriptionKey:
-          'SunCore Energy serves solar projects with quality modules, trusted installation materials, and strong technical consultation.',
-      locationKey: 'Nablus, Palestine',
+      shortDescriptionKey: 'companySunCoreShortDescription',
+      descriptionKey: 'companySunCoreDescription',
+      locationKey: 'companySunCoreLocation',
       rating: 4.4,
       reviewCount: 16,
-      tagKeys: ['Panels', 'Inverter'],
+      tagKeys: ['categoryPanels', 'categoryInverters'],
     ),
     CompanyModel(
       id: '6',
-      nameKey: 'NovaGrid Solutions',
+      nameKey: 'companyNovaGridName',
       coverImagePath: 'assets/images/company_novagrid.jpg',
       logoPath: 'assets/images/logo_novagrid.png',
-      shortDescriptionKey: 'Smart renewable systems and supplier services',
-      descriptionKey:
-          'NovaGrid Solutions combines smart controllers, renewable products, and supply services for scalable clean-energy setups.',
-      locationKey: 'Ramallah, Palestine',
+      shortDescriptionKey: 'companyNovaGridShortDescription',
+      descriptionKey: 'companyNovaGridDescription',
+      locationKey: 'companyNovaGridLocation',
       rating: 4.6,
       reviewCount: 22,
-      tagKeys: ['Suppliers', 'Panels'],
+      tagKeys: ['categorySuppliers', 'categoryPanels'],
     ),
   ];
   const products = [

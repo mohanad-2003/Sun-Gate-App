@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/home/presentation/controllers/home_mock_data_provider.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/category_chip_card.dart';
@@ -15,6 +16,7 @@ class AllCompanyScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final homeState = ref.watch(homeControllerProvider);
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -45,7 +47,7 @@ class AllCompanyScreen extends ConsumerWidget {
                       ),
                       const Spacer(),
                       Text(
-                        'Suppliers',
+                        loc.suppliers, // ✅ بدل Suppliers
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -60,15 +62,17 @@ class AllCompanyScreen extends ConsumerWidget {
 
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                  child: HomeSearchBar(hintText: 'Search . . .'),
+                  child: HomeSearchBar(
+                    hintText: loc.search, // ✅ بدل Search...
+                  ),
                 ),
 
                 const SizedBox(height: 18),
 
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                  child: const SectionTitleRow(
-                    title: 'Category',
+                  child: SectionTitleRow(
+                    title: loc.category, // ✅ بدل Category
                     actionText: '',
                   ),
                 ),
@@ -106,8 +110,8 @@ class AllCompanyScreen extends ConsumerWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                   child: SectionTitleRow(
-                    title: 'Suppliers List',
-                    actionText: 'See all',
+                    title: loc.suppliersList, // ✅ بدل Suppliers List
+                    actionText: loc.seeAll, // ✅ بدل See all
                     onTap: () {},
                   ),
                 ),

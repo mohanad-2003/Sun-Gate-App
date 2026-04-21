@@ -1561,6 +1561,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No products available for this company yet.'**
   String get noProductsForCompany;
+
+  /// No description provided for @market.
+  ///
+  /// In en, this message translates to:
+  /// **'Market'**
+  String get market;
+
+  /// No description provided for @searchInMarket.
+  ///
+  /// In en, this message translates to:
+  /// **'Search in our market app'**
+  String get searchInMarket;
+
+  /// No description provided for @itemsYouCanBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Items you can buy'**
+  String get itemsYouCanBuy;
+
+  /// No description provided for @marketDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse the available products in our market and explore suitable solar solutions, batteries, inverters, and related energy items.'**
+  String get marketDescription;
+
+  /// No description provided for @listItem.
+  ///
+  /// In en, this message translates to:
+  /// **'List Items'**
+  String get listItem;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search...'**
+  String get search;
+
+  /// No description provided for @suppliersList.
+  ///
+  /// In en, this message translates to:
+  /// **'Suppliers List'**
+  String get suppliersList;
+
+  /// No description provided for @suppliers.
+  ///
+  /// In en, this message translates to:
+  /// **'Suppliers'**
+  String get suppliers;
+
+  /// No description provided for @noProductsForCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'No products available for this category.'**
+  String get noProductsForCategory;
 }
 
 class _AppLocalizationsDelegate

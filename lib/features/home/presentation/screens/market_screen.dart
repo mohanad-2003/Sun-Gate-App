@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/home/presentation/controllers/home_mock_data_provider.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/home_search_bar.dart';
@@ -14,26 +15,29 @@ class MarketScreen extends ConsumerWidget {
     final state = ref.watch(homeControllerProvider);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Market'),
+        title: Text(loc.market),
         centerTitle: true,
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
-          const HomeSearchBar(hintText: 'Search in our market app'),
+          HomeSearchBar(
+            hintText: loc.searchInMarket,
+          ),
           const SizedBox(height: 20),
           Text(
-            'Items you can buy',
+            loc.itemsYouCanBuy,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 10),
           Text(
-            'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s.',
+            loc.marketDescription,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
               height: 1.55,

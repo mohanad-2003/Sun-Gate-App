@@ -783,4 +783,33 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noProductsForCompany =>
       'No products available for this company yet.';
+
+  @override
+  String get market => 'Market';
+
+  @override
+  String get searchInMarket => 'Search in our market app';
+
+  @override
+  String get itemsYouCanBuy => 'Items you can buy';
+
+  @override
+  String get marketDescription =>
+      'Browse the available products in our market and explore suitable solar solutions, batteries, inverters, and related energy items.';
+
+  @override
+  String get listItem => 'List Items';
+
+  @override
+  String get search => 'Search...';
+
+  @override
+  String get suppliersList => 'Suppliers List';
+
+  @override
+  String get suppliers => 'Suppliers';
+
+  @override
+  String get noProductsForCategory =>
+      'No products available for this category.';
 }

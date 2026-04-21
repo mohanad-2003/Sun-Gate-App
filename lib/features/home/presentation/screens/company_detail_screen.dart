@@ -52,7 +52,9 @@ class CompanyDetailScreen extends ConsumerWidget {
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(
-                        alpha: theme.brightness == Brightness.dark ? 0.22 : 0.06,
+                        alpha: theme.brightness == Brightness.dark
+                            ? 0.22
+                            : 0.06,
                       ),
                       blurRadius: 18,
                       offset: const Offset(0, -4),
@@ -130,7 +132,7 @@ class CompanyDetailScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 22),
                     Text(
-                      loc.listItems,
+                      loc.listItem,
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
