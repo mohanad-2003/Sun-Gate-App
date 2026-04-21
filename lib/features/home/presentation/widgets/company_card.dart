@@ -7,11 +7,7 @@ class CompanyCard extends StatelessWidget {
   final CompanyModel company;
   final VoidCallback onTap;
 
-  const CompanyCard({
-    super.key,
-    required this.company,
-    required this.onTap,
-  });
+  const CompanyCard({super.key, required this.company, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +111,9 @@ class CompanyCard extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.75),
+                      color: theme.textTheme.bodySmall?.color?.withValues(
+                        alpha: 0.75,
+                      ),
                       height: 1.45,
                     ),
                   ),

@@ -47,7 +47,7 @@ class CompanyCoverHeader extends StatelessWidget {
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.black.withOpacity(0.18),
-                  Colors.black.withOpacity(0.34),
+                  Colors.black.withOpacity(0.20),
                 ],
               ),
             ),

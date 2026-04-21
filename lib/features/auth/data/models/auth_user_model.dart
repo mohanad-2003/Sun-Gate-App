@@ -1,4 +1,3 @@
-
 import 'package:sun_gate_app/features/auth/domain/entities/auth_user.dart';
 
 class AuthUserModel extends AuthUser {
@@ -9,7 +8,7 @@ class AuthUserModel extends AuthUser {
   final bool? isEmailVerified;
   final DateTime? createdAt;
   final DateTime? updatedAt;
-
+  
   const AuthUserModel({
     required super.id,
     required super.email,

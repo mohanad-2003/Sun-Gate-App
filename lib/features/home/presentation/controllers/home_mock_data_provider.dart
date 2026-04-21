@@ -54,7 +54,6 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       imagePath: 'assets/images/suppliers.jpg',
     ),
   ];
-
   final companies = [
     CompanyModel(
       id: '1',

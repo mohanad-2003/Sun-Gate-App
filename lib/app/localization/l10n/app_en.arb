@@ -239,5 +239,19 @@
   "productP12Description": "Lightweight solar kit.",
   "productP12How1": "Easy to carry.",
   "productP12How2": "Quick installation.",
-  "productP12How3": "Perfect for outdoor use."
+  "productP12How3": "Perfect for outdoor use.",
+  "companyDetailTitle": "{name} Detail",
+  "@companyDetailTitle": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "reviewsCount": "({count} reviews)",
+  "@reviewsCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "listItems": "List Items",
+  "noProductsForCompany": "No products available for this company yet."
 }

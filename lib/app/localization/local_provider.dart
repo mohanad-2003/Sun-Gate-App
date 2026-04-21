@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,7 +12,6 @@ final appLocaleProvider = StateNotifierProvider<AppLocaleNotifier, Locale?>((
 
 class AppLocaleNotifier extends StateNotifier<Locale?> {
   AppLocaleNotifier() : super(const Locale('en'));
-
   static const String _localeKey = 'app_locale';
 
   Future<void> loadSavedLocale() async {
@@ -32,4 +33,6 @@ class AppLocaleNotifier extends StateNotifier<Locale?> {
   Future<void> setArabic() async {
     await changeLanguage('ar');
   }
+
+ 
 }

@@ -762,4 +762,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get productP12How3 => 'مثالي للرحلات.';
+
+  @override
+  String companyDetailTitle(Object name) {
+    return 'تفاصيل $name';
+  }
+
+  @override
+  String reviewsCount(Object count) {
+    return '($count مراجعة)';
+  }
+
+  @override
+  String get listItems => 'المنتجات';
+
+  @override
+  String get noProductsForCompany => 'لا توجد منتجات متاحة لهذه الشركة حاليًا.';
 }

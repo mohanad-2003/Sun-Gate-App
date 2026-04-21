@@ -766,4 +766,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get productP12How3 => 'Perfect for outdoor use.';
+
+  @override
+  String companyDetailTitle(Object name) {
+    return '$name Detail';
+  }
+
+  @override
+  String reviewsCount(Object count) {
+    return '($count reviews)';
+  }
+
+  @override
+  String get listItems => 'List Items';
+
+  @override
+  String get noProductsForCompany =>
+      'No products available for this company yet.';
 }

@@ -1537,6 +1537,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Perfect for outdoor use.'**
   String get productP12How3;
+
+  /// No description provided for @companyDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} Detail'**
+  String companyDetailTitle(Object name);
+
+  /// No description provided for @reviewsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'({count} reviews)'**
+  String reviewsCount(Object count);
+
+  /// No description provided for @listItems.
+  ///
+  /// In en, this message translates to:
+  /// **'List Items'**
+  String get listItems;
+
+  /// No description provided for @noProductsForCompany.
+  ///
+  /// In en, this message translates to:
+  /// **'No products available for this company yet.'**
+  String get noProductsForCompany;
 }
 
 class _AppLocalizationsDelegate

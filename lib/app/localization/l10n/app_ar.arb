@@ -236,5 +236,19 @@
   "productP12Description": "طقم خفيف الوزن.",
   "productP12How1": "سهل الحمل.",
   "productP12How2": "تركيب سريع.",
-  "productP12How3": "مثالي للرحلات."
+  "productP12How3": "مثالي للرحلات.",
+  "companyDetailTitle": "تفاصيل {name}",
+  "@companyDetailTitle": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "reviewsCount": "({count} مراجعة)",
+  "@reviewsCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "listItems": "المنتجات",
+  "noProductsForCompany": "لا توجد منتجات متاحة لهذه الشركة حاليًا."
 }

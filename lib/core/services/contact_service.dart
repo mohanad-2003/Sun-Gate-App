@@ -10,12 +10,12 @@ class ContactService {
     }
   }
 
-  static Future<void> email(String email) async {
-    final Uri url = Uri(scheme: email, query: 'subject-contact&body=Hello');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      throw 'Cannot launch email';
-    }
-  }
+  // static Future<void> email(String email) async {
+  //   final Uri url = Uri(scheme: email, query: 'subject-contact&body=Hello');
+  //   if (await canLaunchUrl(url)) {
+  //     await launchUrl(url);
+  //   } else {
+  //     throw 'Cannot launch email';
+  //   }
+  // }
 }
