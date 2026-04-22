@@ -1,29 +1,41 @@
 class AuthState {
   final bool isLoading;
-  final String? errorMessage;
   final bool isSuccess;
+  final String? errorMessage;
   final String? message;
+  final String? resetToken;
 
   const AuthState({
-    this.isLoading = false,
+    required this.isLoading,
+    required this.isSuccess,
     this.errorMessage,
-    this.isSuccess = false,
     this.message,
+    this.resetToken,
   });
 
-  AuthState copyWith({
-    bool? isLoading,
-    String? errorMessage,
-    bool? isSuccess,
-    String? message,
-  }) {
-    return AuthState(
-      isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage,
-      isSuccess: isSuccess ?? this.isSuccess,
-      message: message ?? this.message,
+  factory AuthState.initial() {
+    return const AuthState(
+      isLoading: false,
+      isSuccess: false,
+      errorMessage: null,
+      message: null,
+      resetToken: null,
     );
   }
 
-  factory AuthState.initial() => const AuthState();
+  AuthState copyWith({
+    bool? isLoading,
+    bool? isSuccess,
+    String? errorMessage,
+    String? message,
+    String? resetToken,
+  }) {
+    return AuthState(
+      isLoading: isLoading ?? this.isLoading,
+      isSuccess: isSuccess ?? this.isSuccess,
+      errorMessage: errorMessage,
+      message: message,
+      resetToken: resetToken ?? this.resetToken,
+    );
+  }
 }

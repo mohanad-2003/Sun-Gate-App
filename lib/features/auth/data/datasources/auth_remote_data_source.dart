@@ -16,8 +16,10 @@ abstract class AuthRemoteDataSource {
 
   Future<BasicMessageResponseModel> verifyOtp(VerifyOtpRequestDto request);
   Future<BasicMessageResponseModel> resetPassword(
-    ResetPasswordRequestDto request,
-  );
+    ResetPasswordRequestDto request, {
+    required String passwordResetToken,
+  });
+  Future<BasicMessageResponseModel> verifyEmail(VerifyOtpRequestDto request);
   Future<BasicMessageResponseModel> forgotPassword(
     ForgotPasswordRequestDto request,
   );
@@ -119,7 +121,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<BasicMessageResponseModel> verifyOtp(
+  Future<BasicMessageResponseModel> verifyEmail(
     VerifyOtpRequestDto request,
   ) async {
     try {
@@ -128,17 +130,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: request.toJson(),
       );
 
-      debugPrint('VERIFY OTP STATUS: ${response.statusCode}');
-      debugPrint('VERIFY OTP DATA: ${response.data}');
-
       return BasicMessageResponseModel.fromJson(
         response.data as Map<String, dynamic>,
       );
     } on DioException catch (e) {
-      debugPrint('VERIFY OTP ERROR STATUS: ${e.response?.statusCode}');
-      debugPrint('VERIFY OTP ERROR DATA: ${e.response?.data}');
-      debugPrint('VERIFY OTP ERROR MESSAGE: ${e.message}');
-
       final data = e.response?.data;
       final message = data is Map<String, dynamic>
           ? data['message']?.toString()
@@ -156,16 +151,48 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw Exception('Verification token has expired');
       }
 
-      if (e.response?.statusCode == 500) {
-        throw Exception('Internal server error');
+      throw Exception('Email verification failed');
+    }
+  }
+
+  @override
+  Future<BasicMessageResponseModel> verifyOtp(
+    VerifyOtpRequestDto request,
+  ) async {
+    try {
+      final response = await dio.post(
+        ApiConstants.verifyResetOtp,
+        data: request.toJson(),
+      );
+
+      debugPrint('VERIFY RESET OTP RESPONSE: ${response.data}');
+
+      return BasicMessageResponseModel.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final message = data is Map<String, dynamic>
+          ? data['message']?.toString()
+          : null;
+
+      if (message != null && message.isNotEmpty) {
+        throw Exception(message);
       }
 
-      throw Exception(
-        'OTP verification failed: ${e.response?.statusCode ?? 'no-status'}',
-      );
-    } catch (e) {
-      debugPrint('VERIFY OTP PARSE ERROR: $e');
-      throw Exception('Verify OTP parse error: $e');
+      if (e.response?.statusCode == 400) {
+        throw Exception('Validation error');
+      }
+
+      if (e.response?.statusCode == 403) {
+        throw Exception('Invalid or expired code');
+      }
+
+      if (e.response?.statusCode == 404) {
+        throw Exception('Email not found');
+      }
+
+      throw Exception('OTP verification failed');
     }
   }
 
@@ -273,29 +300,48 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<BasicMessageResponseModel> resetPassword(
-    ResetPasswordRequestDto request,
-  ) async {
+    ResetPasswordRequestDto request, {
+    required String passwordResetToken,
+  }) async {
     try {
       final response = await dio.post(
         ApiConstants.resetPassword,
         data: request.toJson(),
+        options: Options(
+          headers: {'Authorization': 'Bearer $passwordResetToken'},
+        ),
       );
-
-      debugPrint('RESET PASSWORD REQUEST: ${request.toJson()}');
-      debugPrint('RESET PASSWORD STATUS: ${response.statusCode}');
-      debugPrint('RESET PASSWORD DATA: ${response.data}');
 
       return BasicMessageResponseModel.fromJson(
         response.data as Map<String, dynamic>,
       );
     } on DioException catch (e) {
-      debugPrint('RESET PASSWORD ERROR STATUS: ${e.response?.statusCode}');
-      debugPrint('RESET PASSWORD ERROR DATA: ${e.response?.data}');
-      throw Exception(
-        e.response?.data is Map<String, dynamic>
-            ? e.response?.data['message']?.toString() ?? 'Reset password failed'
-            : 'Reset password failed',
-      );
+      final data = e.response?.data;
+      final message = data is Map<String, dynamic>
+          ? data['message']?.toString()
+          : null;
+
+      if (message != null && message.isNotEmpty) {
+        throw Exception(message);
+      }
+
+      if (e.response?.statusCode == 400) {
+        throw Exception('Validation error');
+      }
+
+      if (e.response?.statusCode == 401) {
+        throw Exception('Missing or invalid password-reset session');
+      }
+
+      if (e.response?.statusCode == 403) {
+        throw Exception('Reset window expired after verification');
+      }
+
+      if (e.response?.statusCode == 404) {
+        throw Exception('User not found');
+      }
+
+      throw Exception('Reset password failed');
     }
   }
 }

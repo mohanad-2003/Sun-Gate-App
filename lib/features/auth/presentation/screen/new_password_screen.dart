@@ -23,12 +23,10 @@ class NewPasswordScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<NewPasswordScreen> createState() =>
-      _NewPasswordScreenState();
+  ConsumerState<NewPasswordScreen> createState() => _NewPasswordScreenState();
 }
 
-class _NewPasswordScreenState
-    extends ConsumerState<NewPasswordScreen> {
+class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
@@ -54,9 +52,7 @@ class _NewPasswordScreenState
     ref.listen(authControllerProvider, (previous, next) {
       if (next.isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(next.message ?? loc.passwordResetSuccess),
-          ),
+          SnackBar(content: Text(next.message ?? loc.passwordResetSuccess)),
         );
         context.go(RouteNames.login);
       }
@@ -111,9 +107,7 @@ class _NewPasswordScreenState
             onChanged: (_) => setState(() {}),
             suffixIcon: IconButton(
               onPressed: () {
-                ref
-                        .read(confirmPasswordVisiableProvider.notifier)
-                        .state =
+                ref.read(confirmPasswordVisiableProvider.notifier).state =
                     !confirmVisible;
               },
               icon: Icon(
@@ -127,17 +121,14 @@ class _NewPasswordScreenState
           const SizedBox(height: 12),
 
           /// PASSWORD MATCH ERROR
-          if (confirmPassword.isNotEmpty &&
-              password != confirmPassword)
+          if (confirmPassword.isNotEmpty && password != confirmPassword)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.red.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.red.withValues(alpha: 0.20),
-                ),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.20)),
               ),
               child: Text(
                 loc.passwordsDoNotMatch,
@@ -157,14 +148,11 @@ class _NewPasswordScreenState
               decoration: BoxDecoration(
                 color: Colors.red.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.red.withValues(alpha: 0.20),
-                ),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.20)),
               ),
               child: Text(
                 state.errorMessage!,
-                style:
-                    const TextStyle(color: Colors.red, fontSize: 13),
+                style: const TextStyle(color: Colors.red, fontSize: 13),
               ),
             ),
           ],
@@ -176,49 +164,39 @@ class _NewPasswordScreenState
             text: loc.next,
             isLoading: state.isLoading,
             onPressed: () {
-              if (widget.email.trim().isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(loc.emailMissing)),
-                );
-                return;
-              }
-
               if (widget.token.trim().isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(loc.tokenMissing)),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(loc.tokenMissing)));
                 return;
               }
 
               if (password.isEmpty || confirmPassword.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text(loc.pleaseFillAllPasswordFields)),
+                  SnackBar(content: Text(loc.pleaseFillAllPasswordFields)),
                 );
                 return;
               }
 
               if (password != confirmPassword) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text(loc.passwordsDoNotMatch)),
+                  SnackBar(content: Text(loc.passwordsDoNotMatch)),
                 );
                 return;
               }
 
               if (!passwordStrength.isValidStrongPassword) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content:
-                          Text(loc.pleaseChooseStrongerPassword)),
+                  SnackBar(content: Text(loc.pleaseChooseStrongerPassword)),
                 );
                 return;
               }
 
-              ref.read(authControllerProvider.notifier).resetPassword(
-                    email: widget.email,
-                    token: widget.token,
+              ref
+                  .read(authControllerProvider.notifier)
+                  .resetPassword(
                     password: password,
+                    passwordResetToken: widget.token,
                   );
             },
           ),

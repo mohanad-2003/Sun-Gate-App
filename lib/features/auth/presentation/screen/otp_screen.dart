@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
+import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_back_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_header.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_primary_button.dart';
@@ -12,7 +13,8 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_bo
 
 class OtpScreen extends ConsumerStatefulWidget {
   final String email;
-  const OtpScreen({super.key, required this.email});
+  final OtpFlowType flowType;
+  const OtpScreen({super.key, required this.email, required this.flowType});
 
   @override
   ConsumerState<OtpScreen> createState() => _OtpScreenState();
@@ -37,8 +39,12 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
   @override
   void dispose() {
-    for (final c in _controllers) c.dispose();
-    for (final n in _focusNodes) n.dispose();
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    for (final n in _focusNodes) {
+      n.dispose();
+    }
     _timer?.cancel();
     super.dispose();
   }
@@ -79,6 +85,26 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
     final loc = AppLocalizations.of(context)!;
+
+    ref.listen(authControllerProvider, (previous, next) {
+      if (!next.isSuccess) return;
+
+      if (widget.flowType == OtpFlowType.verifyEmail) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.message ?? 'Email verified successfully'),
+          ),
+        );
+        context.go(RouteNames.login);
+      } else {
+        if (next.resetToken?.isNotEmpty ?? false) {
+          context.push(
+            RouteNames.newPassword,
+            extra: {'email': widget.email, 'token': next.resetToken!},
+          );
+        }
+      }
+    });
     return AuthScaffoldBody(
       child: Column(
         children: [
@@ -192,11 +218,16 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
             text: loc.continues,
             isLoading: state.isLoading,
             onPressed: _otpCode.length == 6
-                ? () {
-                    context.push(
-                      RouteNames.newPassword,
-                      extra: {'email': widget.email, 'token': _otpCode},
-                    );
+                ? () async {
+                    if (widget.flowType == OtpFlowType.verifyEmail) {
+                      await ref
+                          .read(authControllerProvider.notifier)
+                          .verifyEmail(email: widget.email, code: _otpCode);
+                    } else {
+                      await ref
+                          .read(authControllerProvider.notifier)
+                          .verifyOtp(email: widget.email, code: _otpCode);
+                    }
                   }
                 : null,
           ),

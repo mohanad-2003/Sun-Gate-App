@@ -21,8 +21,11 @@ class HomeHeaderSection extends ConsumerWidget {
     final theme = Theme.of(context);
     final previewCompanies = homeState.companies.take(2).toList();
 
-    final userName = _resolveUserName(profileState.profile?.firstName);
-
+    final userName = _resolveUserName(
+      profileState.profile?.firstName.isNotEmpty == true
+          ? profileState.profile!.firstName
+          : profileState.profile?.fullName,
+    );
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;

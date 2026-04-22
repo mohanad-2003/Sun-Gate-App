@@ -13,10 +13,7 @@ import 'package:sun_gate_app/features/home/presentation/widgets/product_list_tit
 class CategoryProductsScreen extends ConsumerWidget {
   final CategoryItemModel category;
 
-  const CategoryProductsScreen({
-    super.key,
-    required this.category,
-  });
+  const CategoryProductsScreen({super.key, required this.category});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,16 +28,11 @@ class CategoryProductsScreen extends ConsumerWidget {
     }).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizedCategoryTitle),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(localizedCategoryTitle), centerTitle: true),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
-          HomeSearchBar(
-            hintText: loc.search,
-          ),
+          HomeSearchBar(hintText: loc.search),
           const SizedBox(height: 18),
           Text(
             loc.category,
@@ -90,10 +82,7 @@ class CategoryProductsScreen extends ConsumerWidget {
               (product) => ProductListTile(
                 product: product,
                 onTap: () {
-                  context.push(
-                    RouteNames.productDetail,
-                    extra: product,
-                  );
+                  context.push(RouteNames.productDetail, extra: product);
                 },
               ),
             ),

@@ -19,6 +19,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
   late final TextEditingController emailController;
   late final TextEditingController locationController;
 
+  bool _didPopulateInitialData = false;
   final _picker = ImagePicker();
 
   Future<void> _pickImage(ImageSource source) async {
@@ -62,6 +63,18 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
     final profile = state.profile;
     final loc = AppLocalizations.of(context)!;
 
+    if (profile != null && !_didPopulateInitialData) {
+      firstNameController.text = profile.firstName;
+      lastNameController.text = profile.lastName;
+      emailController.text = profile.email;
+      locationController.text = profile.location ?? '';
+
+      selectedGender = (profile.gender?.isNotEmpty ?? false)
+          ? profile.gender!
+          : 'male';
+
+      _didPopulateInitialData = true;
+    }
     ref.listen(profileControllerProvider, (previous, next) {
       if (next.successMessage != null && next.successMessage!.isNotEmpty) {
         ScaffoldMessenger.of(
@@ -85,14 +98,14 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                       radius: 34,
                       backgroundImage:
                           (profile?.imageUrl != null &&
-                                  profile!.imageUrl!.isNotEmpty)
-                              ? NetworkImage(profile.imageUrl!)
-                              : null,
+                              profile!.imageUrl!.isNotEmpty)
+                          ? NetworkImage(profile.imageUrl!)
+                          : null,
                       child:
                           (profile?.imageUrl == null ||
-                                  profile!.imageUrl!.isEmpty)
-                              ? const Icon(Icons.person, size: 32)
-                              : null,
+                              profile!.imageUrl!.isEmpty)
+                          ? const Icon(Icons.person, size: 32)
+                          : null,
                     ),
                     Positioned(
                       right: 0,

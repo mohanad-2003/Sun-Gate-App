@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
+import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auht_text_field.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_back_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_header.dart';
@@ -44,7 +45,10 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
         context.push(
           RouteNames.otp,
-          extra: emailController.text.trim(),
+          extra: {
+            'email': emailController.text.trim(),
+            'flowType': OtpFlowType.resetPassword,
+          },
         );
       }
     });

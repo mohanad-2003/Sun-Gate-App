@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
+import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/forgot_password_screen.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/login_screen.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/new_password_screen.dart';
@@ -60,8 +61,13 @@ class AppRouter {
       GoRoute(
         path: RouteNames.otp,
         builder: (context, state) {
-          final email = state.extra as String? ?? '';
-          return OtpScreen(email: email);
+          final args = state.extra as Map<String, dynamic>? ?? {};
+
+          return OtpScreen(
+            email: args['email'] as String? ?? '',
+            flowType:
+                args['flowType'] as OtpFlowType? ?? OtpFlowType.verifyEmail,
+          );
         },
       ),
       GoRoute(

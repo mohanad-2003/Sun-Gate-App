@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
+import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auht_text_field.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_back_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_bottom_link.dart';
@@ -71,10 +72,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
     ref.listen(authControllerProvider, (previous, next) {
       if (next.isSuccess) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(loc.registrationSuccess)),
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(loc.registrationSuccess)));
+        context.go(
+          RouteNames.otp,
+          extra: {
+            'email': emailController.text.trim(),
+            'flowType': OtpFlowType.verifyEmail,
+          },
         );
-        context.go(RouteNames.otp, extra: emailController.text.trim());
       }
     });
 
@@ -86,10 +93,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
           Text(
             loc.signUpTitle,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
           ),
 
           const SizedBox(height: 26),
@@ -127,8 +131,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             obscureText: obscurePassword,
             onChanged: (_) => setState(() {}),
             enabledBorderColor: passwordBorderColor,
-            focusedBorderColor:
-                passwordBorderColor ?? const Color(0xFF274777),
+            focusedBorderColor: passwordBorderColor ?? const Color(0xFF274777),
             suffixIcon: IconButton(
               onPressed: () {
                 setState(() {
@@ -158,10 +161,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             },
             dense: true,
             contentPadding: EdgeInsets.zero,
-            title: Text(
-              loc.acceptPolicy,
-              style: const TextStyle(fontSize: 12),
-            ),
+            title: Text(loc.acceptPolicy, style: const TextStyle(fontSize: 12)),
             controlAffinity: ListTileControlAffinity.leading,
           ),
 
@@ -173,9 +173,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               decoration: BoxDecoration(
                 color: Colors.red.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.red.withValues(alpha: 0.20),
-                ),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.20)),
               ),
               child: Text(
                 state.errorMessage!,
@@ -219,8 +217,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     if (!passwordStrength.isValidStrongPassword) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content:
-                              Text(loc.pleaseChooseStrongerPassword),
+                          content: Text(loc.pleaseChooseStrongerPassword),
                         ),
                       );
                       return;
@@ -228,7 +225,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
                     final name = _splitName(fullName);
 
-                    ref.read(authControllerProvider.notifier).register(
+                    ref
+                        .read(authControllerProvider.notifier)
+                        .register(
                           firstName: name.$1,
                           lastName: name.$2,
                           email: email,

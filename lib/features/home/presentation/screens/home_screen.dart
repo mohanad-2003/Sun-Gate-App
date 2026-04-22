@@ -5,7 +5,6 @@ import 'package:sun_gate_app/features/profile/presentation/controllers/profile_c
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
-  
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -13,9 +12,9 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
+  @override
   void initState() {
     super.initState();
-
     Future.microtask(() {
       ref.read(profileControllerProvider.notifier).getMyProfile();
     });
@@ -26,10 +25,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
-      body: SingleChildScrollView(
-        //  physics: BouncingScrollPhysics(),
-        child: HomeHeaderSection(),
-      ),
+      body: SingleChildScrollView(child: HomeHeaderSection()),
     );
   }
 }
