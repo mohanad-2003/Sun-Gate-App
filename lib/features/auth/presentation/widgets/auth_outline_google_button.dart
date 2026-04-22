@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 
 class AuthOutlineGoogleButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -10,11 +11,11 @@ class AuthOutlineGoogleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return InkWell(
       onTap: onPressed,
-
       borderRadius: BorderRadius.circular(12),
-
       child: Container(
         height: 55,
         alignment: Alignment.center,
@@ -22,7 +23,7 @@ class AuthOutlineGoogleButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.grey),
         ),
-        child: const Text('Continue with Google'),
+        child: Text(loc.continueWithGoogle),
       ),
     );
   }

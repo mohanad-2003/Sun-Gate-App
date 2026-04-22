@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/core/widgets/app_scaffold.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/legal_contact_card.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/legal_header_card.dart';
@@ -21,28 +22,28 @@ class _LegalPoliciesBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         const _LegalPoliciesAppBar(),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 LegalHeaderCard(
-                  title: 'SunGate Legal Center',
-                  subtitle:
-                      'Please read these policies carefully before using the application and services.',
-                  lastUpdated: 'Last updated: April 2026',
+                  title: loc.legalCenterTitle,
+                  subtitle: loc.legalCenterSubtitle,
+                  lastUpdated: loc.lastUpdated,
                 ),
-                SizedBox(height: 16),
-                LegalPolicySectionList(),
-                SizedBox(height: 20),
+                const SizedBox(height: 16),
+                const LegalPolicySectionList(),
+                const SizedBox(height: 20),
                 LegalContactCard(
-                  title: 'Need help?',
-                  note:
-                      'If you have any legal questions or privacy concerns, please contact our support team.',
+                  title: loc.needHelp,
+                  note: loc.legalSupportNote,
                   email: 'support@sungate.com',
                 ),
               ],
@@ -60,6 +61,7 @@ class _LegalPoliciesAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 6, 8, 8),
@@ -75,7 +77,7 @@ class _LegalPoliciesAppBar extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              'Legal and Policies',
+              loc.legal_and_policies,
               textAlign: TextAlign.center,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,

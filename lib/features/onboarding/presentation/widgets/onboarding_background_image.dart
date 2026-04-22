@@ -21,7 +21,7 @@ class OnboardingBackgroundImage extends StatelessWidget {
           Image.asset(
             imagePath,
             fit: BoxFit.cover,
-            alignment: Alignment.center,
+            alignment: Alignment.bottomCenter,
             errorBuilder: (_, _, _) {
               return Container(
                 color: Colors.grey.shade300,

@@ -21,29 +21,36 @@ class UserProfileModels extends UserProfileEntity {
   });
 
   factory UserProfileModels.fromJson(Map<String, dynamic> json) {
-    final firstName = json['firstName']?.toString() ?? '';
-    final lastName = json['lastName']?.toString() ?? '';
-    final fullNameValue = json['fullName']?.toString() ?? '';
-    final calculateFullName = fullNameValue.isNotEmpty
+    final firstName = json['firstName']?.toString().trim() ?? '';
+    final lastName = json['lastName']?.toString().trim() ?? '';
+    final fullNameValue = json['fullName']?.toString().trim() ?? '';
+
+    final calculatedFullName = fullNameValue.isNotEmpty
         ? fullNameValue
-        : '$firstName,$lastName'.trim();
+        : '$firstName $lastName'.trim();
+
     return UserProfileModels(
       id: json['_id']?.toString() ?? '',
       firstName: firstName,
       lastName: lastName,
-      fullName: calculateFullName,
+      fullName: calculatedFullName,
       email: json['email']?.toString() ?? '',
       authProvider: json['authProvider']?.toString() ?? '',
       googleId: json['googleId']?.toString(),
       profileImage: json['profileImage']?.toString(),
       imageUrl: json['imageUrl']?.toString(),
-      isEmailVarified: json['isEmailVarified'] as bool? ?? false,
+      isEmailVarified:
+          (json['isEmailVerified'] as bool?) ??
+          (json['isEmailVarified'] as bool?) ??
+          false,
       birthDate: json['birthDate']?.toString(),
       gender: json['gender']?.toString(),
       location: json['location']?.toString(),
-      whatsappnumbers: json['whatsappNumbers']?.toString(),
-      createdAt: json['cratedAt']?.toString(),
-      updatedAt: json['updateAt']?.toString(),
+      whatsappnumbers:
+          json['whatsappNumbers']?.toString() ??
+          json['whatsappnumbers']?.toString(),
+      createdAt: json['createdAt']?.toString() ?? json['cratedAt']?.toString(),
+      updatedAt: json['updatedAt']?.toString() ?? json['updateAt']?.toString(),
     );
   }
 }

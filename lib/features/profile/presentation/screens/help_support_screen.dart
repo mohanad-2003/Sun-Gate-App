@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/core/widgets/app_scaffold.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/help_support_contact_card.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/help_support_faq_list.dart';
@@ -22,31 +23,31 @@ class _HelpSupportBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         const _HelpSupportAppBar(),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 HelpSupportHeader(
-                  title: 'Help & Support Center',
-                  subtitle:
-                      'Find answers to common questions and contact our support team if you need more help.',
+                  title: loc.helpSupportCenterTitle,
+                  subtitle: loc.helpSupportCenterSubtitle,
                 ),
-                SizedBox(height: 16),
-                HelpSupportSearchBar(),
-                SizedBox(height: 16),
-                HelpSupportFaqList(),
-                SizedBox(height: 20),
+                const SizedBox(height: 16),
+                const HelpSupportSearchBar(),
+                const SizedBox(height: 16),
+                const HelpSupportFaqList(),
+                const SizedBox(height: 20),
                 HelpSupportContactCard(
-                  title: 'Still need help?',
+                  title: loc.stillNeedHelp,
                   email: 'support@sungate.com',
                   phone: '+970 59 000 0000',
-                  note:
-                      'Our support team is here to assist you with account issues, password recovery, and general questions.',
+                  note: loc.helpSupportContactNote,
                 ),
               ],
             ),
@@ -63,6 +64,7 @@ class _HelpSupportAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 6, 8, 8),
@@ -78,7 +80,7 @@ class _HelpSupportAppBar extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              'Help & Support',
+              loc.helpSupportTitle,
               textAlign: TextAlign.center,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,

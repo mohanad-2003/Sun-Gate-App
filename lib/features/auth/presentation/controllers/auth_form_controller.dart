@@ -116,9 +116,8 @@ class AuthFormController extends StateNotifier<AuthState> {
   }
 
   Future<void> resetPassword({
-    required String email,
-    required String token,
     required String password,
+    required String passwordResetToken,
   }) async {
     state = state.copyWith(
       isLoading: true,
@@ -129,9 +128,8 @@ class AuthFormController extends StateNotifier<AuthState> {
 
     try {
       final message = await repository.resetPassword(
-        email: email,
-        token: token,
         password: password,
+        passwordResetToken: passwordResetToken,
       );
 
       state = state.copyWith(
@@ -150,7 +148,10 @@ class AuthFormController extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> verifyOtp({required String email, required String code}) async {
+  Future<void> verifyEmail({
+    required String email,
+    required String code,
+  }) async {
     state = state.copyWith(
       isLoading: true,
       errorMessage: null,
@@ -159,7 +160,7 @@ class AuthFormController extends StateNotifier<AuthState> {
     );
 
     try {
-      final message = await repository.verifyOtp(email: email, code: code);
+      final message = await repository.verifyEmail(email: email, code: code);
 
       state = state.copyWith(
         isLoading: false,
@@ -174,6 +175,23 @@ class AuthFormController extends StateNotifier<AuthState> {
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
         message: null,
       );
+    }
+  }
+
+  Future<void> verifyOtp({required String email, required String code}) async {
+    state = state.copyWith(isLoading: true);
+
+    try {
+      final token = await repository.verifyOtp(email: email, code: code);
+
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: true,
+        errorMessage: null,
+        resetToken: token,
+      );
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
   }
 

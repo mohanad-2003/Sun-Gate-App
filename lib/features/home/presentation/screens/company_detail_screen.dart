@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/home/data/models/company_model.dart';
 import 'package:sun_gate_app/features/home/presentation/controllers/home_mock_data_provider.dart';
+import 'package:sun_gate_app/features/home/presentation/extentions/home_localization_extention.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/company_cover_header.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/product_list_title.dart';
 
@@ -18,18 +20,23 @@ class CompanyDetailScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final screenWidth = MediaQuery.sizeOf(context).width;
+    final loc = AppLocalizations.of(context)!;
 
     final horizontalPadding = screenWidth < 360 ? 14.0 : 16.0;
     final companyProducts = state.products
         .where((product) => product.companyId == company.id)
         .toList();
 
+    final companyName = loc.companyByKey(company.nameKey);
+    final companyLocation = loc.companyByKey(company.locationKey);
+    final companyDescription = loc.companyByKey(company.descriptionKey);
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Column(
         children: [
           CompanyCoverHeader(
-            title: '${company.name} Detail',
+            title: loc.companyDetailTitle(companyName),
             imagePath: company.coverImagePath,
           ),
           Expanded(
@@ -44,8 +51,10 @@ class CompanyDetailScreen extends ConsumerWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(
-                        theme.brightness == Brightness.dark ? 0.22 : 0.06,
+                      color: Colors.black.withValues(
+                        alpha: theme.brightness == Brightness.dark
+                            ? 0.22
+                            : 0.06,
                       ),
                       blurRadius: 18,
                       offset: const Offset(0, -4),
@@ -62,7 +71,7 @@ class CompanyDetailScreen extends ConsumerWidget {
                   ),
                   children: [
                     Text(
-                      company.name,
+                      companyName,
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -79,7 +88,7 @@ class CompanyDetailScreen extends ConsumerWidget {
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            company.location,
+                            companyLocation,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: theme.textTheme.bodySmall?.copyWith(
@@ -95,9 +104,9 @@ class CompanyDetailScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
+                          '${company.rating} ${loc.reviewsCount(company.reviewCount)}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          '${company.rating} (${company.reviewCount} reviews)',
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
@@ -106,16 +115,16 @@ class CompanyDetailScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Description',
+                      loc.description,
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
+                      companyDescription,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 3,
-                      company.description,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                         height: 1.65,
@@ -123,7 +132,7 @@ class CompanyDetailScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 22),
                     Text(
-                      'List Items',
+                      loc.listItem,
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -137,7 +146,7 @@ class CompanyDetailScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(18),
                         ),
                         child: Text(
-                          'No products available for this company yet.',
+                          loc.noProductsForCompany,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),

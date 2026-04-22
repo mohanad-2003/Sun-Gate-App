@@ -1,63 +1,63 @@
 class ProductModel {
   final String id;
   final String companyId;
-  final String name;
+  final String nameKey;
   final String imagePath;
   final String imageProfile;
-  final String description;
-  final List<String> howItWorks;
+  final String descriptionKey;
+  final List<String> howItWorksKeys;
   final double price;
-  final String ownerName;
-  final String ownerRole;
+  final String ownerNameKey;
+  final String ownerRoleKey;
   final String ownerPhone;
   final String ownerEmail;
-  final List<String> tags;
+  final List<String> tagKeys;
 
   const ProductModel({
     required this.id,
     required this.companyId,
-    required this.name,
+    required this.nameKey,
     required this.imagePath,
-    required this.description,
-    required this.howItWorks,
+    required this.descriptionKey,
+    required this.howItWorksKeys,
     required this.price,
-    required this.ownerName,
-    required this.ownerRole,
+    required this.ownerNameKey,
+    required this.ownerRoleKey,
     required this.ownerPhone,
     required this.ownerEmail,
-    this.tags = const [],
+    this.tagKeys = const [],
     required this.imageProfile,
   });
 
   ProductModel copyWith({
     String? id,
     String? companyId,
-    String? name,
+    String? nameKey,
     String? imagePath,
-    String? description,
-    List<String>? howItWorks,
+    String? imageProfile,
+    String? descriptionKey,
+    List<String>? howItWorksKeys,
     double? price,
-    String? ownerName,
-    String? ownerRole,
+    String? ownerNameKey,
+    String? ownerRoleKey,
     String? ownerPhone,
     String? ownerEmail,
-    List<String>? tags,
-    String? imageProfile,
+    List<String>? tagKeys,
   }) {
     return ProductModel(
       id: id ?? this.id,
       companyId: companyId ?? this.companyId,
-      name: name ?? this.name,
+      nameKey: nameKey ?? this.nameKey,
       imagePath: imagePath ?? this.imagePath,
-      description: description ?? this.description,
-      howItWorks: howItWorks ?? this.howItWorks,
+      imageProfile: imageProfile ?? this.imageProfile,
+      descriptionKey: descriptionKey ?? this.descriptionKey,
+      howItWorksKeys: howItWorksKeys ?? this.howItWorksKeys,
       price: price ?? this.price,
-      ownerName: ownerName ?? this.ownerName,
-      ownerRole: ownerRole ?? this.ownerRole,
+      ownerNameKey: ownerNameKey ?? this.ownerNameKey,
+      ownerRoleKey: ownerRoleKey ?? this.ownerRoleKey,
       ownerPhone: ownerPhone ?? this.ownerPhone,
       ownerEmail: ownerEmail ?? this.ownerEmail,
-      tags: tags ?? this.tags,
-      imageProfile: imageProfile ?? this.imageProfile,
+      tagKeys: tagKeys ?? this.tagKeys,
     );
   }
 
@@ -65,16 +65,17 @@ class ProductModel {
     return {
       'id': id,
       'companyId': companyId,
-      'name': name,
+      'nameKey': nameKey,
       'imagePath': imagePath,
-      'description': description,
-      'howItWorks': howItWorks,
+      'imageProfile': imageProfile,
+      'descriptionKey': descriptionKey,
+      'howItWorksKeys': howItWorksKeys,
       'price': price,
-      'ownerName': ownerName,
-      'ownerRole': ownerRole,
+      'ownerNameKey': ownerNameKey,
+      'ownerRoleKey': ownerRoleKey,
       'ownerPhone': ownerPhone,
       'ownerEmail': ownerEmail,
-      'tags': tags,
+      'tagKeys': tagKeys,
     };
   }
 
@@ -82,17 +83,17 @@ class ProductModel {
     return ProductModel(
       id: map['id']?.toString() ?? '',
       companyId: map['companyId']?.toString() ?? '',
-      name: map['name']?.toString() ?? '',
+      nameKey: map['nameKey']?.toString() ?? '',
       imagePath: map['imagePath']?.toString() ?? '',
-      description: map['description']?.toString() ?? '',
-      howItWorks: List<String>.from(map['howItWorks'] ?? const []),
+      imageProfile: map['imageProfile']?.toString() ?? '',
+      descriptionKey: map['descriptionKey']?.toString() ?? '',
+      howItWorksKeys: List<String>.from(map['howItWorksKeys'] ?? const []),
       price: (map['price'] as num?)?.toDouble() ?? 0.0,
-      ownerName: map['ownerName']?.toString() ?? '',
-      ownerRole: map['ownerRole']?.toString() ?? '',
+      ownerNameKey: map['ownerNameKey']?.toString() ?? '',
+      ownerRoleKey: map['ownerRoleKey']?.toString() ?? '',
       ownerPhone: map['ownerPhone']?.toString() ?? '',
       ownerEmail: map['ownerEmail']?.toString() ?? '',
-      tags: List<String>.from(map['tags'] ?? const []),
-      imageProfile: map['imageProfile']?.toString() ?? '',
+      tagKeys: List<String>.from(map['tagKeys'] ?? const []),
     );
   }
 }

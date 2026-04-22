@@ -12,9 +12,9 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
+  @override
   void initState() {
     super.initState();
-
     Future.microtask(() {
       ref.read(profileControllerProvider.notifier).getMyProfile();
     });
@@ -24,10 +24,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: HomeHeaderSection(),
-      ),
+
+      body: SingleChildScrollView(child: HomeHeaderSection()),
     );
   }
 }

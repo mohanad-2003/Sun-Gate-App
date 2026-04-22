@@ -11,15 +11,13 @@ abstract class AuthRepository {
   });
 
   Future<String> forgotPassword({required String email});
-
+  Future<String> verifyEmail({required String email, required String code});
   Future<String> verifyOtp({required String email, required String code});
 
   Future<String> resetPassword({
-    required String email,
     required String password,
-    required String token,
+    required String passwordResetToken,
   });
-
   Future<AuthResult> googleLogin({required String idToken});
 
   Future<void> logout();

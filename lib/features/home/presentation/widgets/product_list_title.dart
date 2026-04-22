@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/features/home/data/models/product_model.dart';
+import 'package:sun_gate_app/features/home/presentation/extentions/home_localization_extention.dart';
 
 class ProductListTile extends StatelessWidget {
   final ProductModel product;
@@ -9,7 +11,6 @@ class ProductListTile extends StatelessWidget {
     super.key,
     required this.product,
     required this.onTap,
-  
   });
 
   @override
@@ -18,6 +19,7 @@ class ProductListTile extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final screenWidth = MediaQuery.sizeOf(context).width;
     final imageSize = screenWidth < 360 ? 54.0 : 60.0;
+    final loc = AppLocalizations.of(context)!;
 
     return InkWell(
       onTap: onTap,
@@ -28,7 +30,7 @@ class ProductListTile extends StatelessWidget {
           color: colorScheme.surface,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: colorScheme.outlineVariant.withOpacity(0.45),
+            color: colorScheme.outlineVariant.withValues(alpha: 0.45),
           ),
         ),
         child: Row(
@@ -61,7 +63,7 @@ class ProductListTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product.name,
+                    loc.productByKey(product.nameKey),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleSmall?.copyWith(
@@ -70,7 +72,7 @@ class ProductListTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    product.description,
+                    loc.productByKey(product.descriptionKey),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(

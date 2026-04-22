@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sun_gate_app/core/theme/app_colors.dart';
 
-
 class OnboardingIndicator extends StatelessWidget {
   final int currentIndex;
   final int totalCount;
@@ -15,7 +14,7 @@ class OnboardingIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 4,
+      spacing: 6,
       children: List.generate(totalCount, (index) {
         final isActive = currentIndex == index;
 

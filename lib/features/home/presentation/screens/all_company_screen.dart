@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/home/presentation/controllers/home_mock_data_provider.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/category_chip_card.dart';
@@ -14,8 +15,8 @@ class AllCompanyScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final homeState = ref.watch(homeControllerProvider);
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -39,14 +40,14 @@ class AllCompanyScreen extends ConsumerWidget {
                   child: Row(
                     children: [
                       IconButton(
-                        onPressed: () => context.pop(),
+                        onPressed: () => context.go(RouteNames.main),
                         icon: const Icon(Icons.arrow_back_ios_new_rounded),
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                       ),
                       const Spacer(),
                       Text(
-                        'Suppliers',
+                        loc.suppliers, // ✅ بدل Suppliers
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -62,7 +63,7 @@ class AllCompanyScreen extends ConsumerWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                   child: HomeSearchBar(
-                    hintText: 'Search . . .',
+                    hintText: loc.search, // ✅ بدل Search...
                   ),
                 ),
 
@@ -70,8 +71,8 @@ class AllCompanyScreen extends ConsumerWidget {
 
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                  child: const SectionTitleRow(
-                    title: 'Category',
+                  child: SectionTitleRow(
+                    title: loc.category, // ✅ بدل Category
                     actionText: '',
                   ),
                 ),
@@ -109,8 +110,8 @@ class AllCompanyScreen extends ConsumerWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                   child: SectionTitleRow(
-                    title: 'Suppliers List',
-                    actionText: 'See all',
+                    title: loc.suppliersList, // ✅ بدل Suppliers List
+                    actionText: loc.seeAll, // ✅ بدل See all
                     onTap: () {},
                   ),
                 ),
@@ -129,11 +130,11 @@ class AllCompanyScreen extends ConsumerWidget {
                     itemCount: homeState.companies.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 14,
-                      mainAxisSpacing: 18,
-                      childAspectRatio: 0.73,
-                    ),
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 14,
+                          mainAxisSpacing: 18,
+                          childAspectRatio: 0.73,
+                        ),
                     itemBuilder: (context, index) {
                       final company = homeState.companies[index];
 

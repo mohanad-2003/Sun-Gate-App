@@ -21,4 +21,13 @@ class RouteNames {
   static const String market = '/market';
 
   static const String main = '/main';
+
+  static const calculator = '/calculator';
+  static const deviceConsumption = '/device-consumption';
+  static const numberOfPanels = '/number-of-panels';
+  static const batteryCapacity = '/batter-capacity';
+  static const tiltOfPanels = '/tilt-of-panels';
+  static const systemEfficiency = '/system-efficiency';
+  static const returnOnInvestment = '/return-on-investment';
+  static const calculatorSummary = '/calculator-summary';
 }

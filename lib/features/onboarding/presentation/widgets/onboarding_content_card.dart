@@ -19,7 +19,7 @@ class OnboardingContentCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
       decoration: BoxDecoration(
         color: AppColors.primary,
         borderRadius: BorderRadius.only(

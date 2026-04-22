@@ -28,16 +28,27 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     if (!mounted) return;
 
-    final hasToken = await ref.read(splashControllerProvider).hasAccessToken();
+    final target = await ref
+        .read(splashControllerProvider)
+        .getNavigationTarget();
 
     if (!mounted) return;
+
     Future.microtask(() {
       if (!mounted) return;
 
-      if (hasToken) {
-        context.go(RouteNames.main);
-      } else {
-        context.go(RouteNames.onboarding);
+      switch (target) {
+        case SplashNavigationTarget.onboarding:
+          context.go(RouteNames.onboarding);
+          break;
+
+        case SplashNavigationTarget.authenticated:
+          context.go(RouteNames.main);
+          break;
+
+        case SplashNavigationTarget.unauthenticated:
+          context.go(RouteNames.login);
+          break;
       }
     });
   }

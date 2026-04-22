@@ -33,7 +33,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
     if (result.refreshToken != null && result.refreshToken!.isNotEmpty) {
       await localDataSource.saveRefreshToken(result.refreshToken!);
-    } 
+    }
 
     return result;
   }
@@ -66,41 +66,59 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-Future<AuthResult> googleLogin({required String idToken}) async {
-  final result = await remoteDataSource.googleLogin(
-    GoogleLoginRequestDto(idToken: idToken),
-  );
+  Future<AuthResult> googleLogin({required String idToken}) async {
+    final result = await remoteDataSource.googleLogin(
+      GoogleLoginRequestDto(idToken: idToken),
+    );
 
-  if (result.accessToken != null && result.accessToken!.isNotEmpty) {
-    await localDataSource.saveAccessToken(result.accessToken!);
+    if (result.accessToken != null && result.accessToken!.isNotEmpty) {
+      await localDataSource.saveAccessToken(result.accessToken!);
+    }
+
+    if (result.refreshToken != null && result.refreshToken!.isNotEmpty) {
+      await localDataSource.saveRefreshToken(result.refreshToken!);
+    }
+
+    return result;
   }
 
-  if (result.refreshToken != null && result.refreshToken!.isNotEmpty) {
-    await localDataSource.saveRefreshToken(result.refreshToken!);
-  }
-
-  return result;
-}
   @override
   Future<String> verifyOtp({
     required String email,
     required String code,
   }) async {
-    final result = await remoteDataSource.verifyOtp(
+    final response = await remoteDataSource.verifyOtp(
       VerifyOtpRequestDto(email: email, code: code),
+    );
+
+    final token = response.passwordResetToken;
+    if (token == null || token.isEmpty) {
+      throw Exception('Password reset token was not returned');
+    }
+
+    return token;
+  }
+
+  @override
+  Future<String> resetPassword({
+    required String password,
+    required String passwordResetToken,
+  }) async {
+    final result = await remoteDataSource.resetPassword(
+      ResetPasswordRequestDto(password: password),
+      passwordResetToken: passwordResetToken,
     );
 
     return result.message;
   }
 
   @override
-  Future<String> resetPassword({
+  Future<String> verifyEmail({
     required String email,
-    required String token,
-    required String password,
+    required String code,
   }) async {
-    final result = await remoteDataSource.resetPassword(
-      ResetPasswordRequestDto(email: email, token: token, password: password),
+    final result = await remoteDataSource.verifyEmail(
+      VerifyOtpRequestDto(email: email, code: code),
     );
 
     return result.message;

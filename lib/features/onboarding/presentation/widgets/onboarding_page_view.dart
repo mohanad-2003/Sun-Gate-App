@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sun_gate_app/core/widgets/app_text.dart';
 import 'package:sun_gate_app/features/onboarding/data/model/onboarding_item_model.dart';
-
 import 'onboarding_background_image.dart';
 import 'onboarding_content_card.dart';
-
 class OnboardingPageView extends StatelessWidget {
   final OnboardingItemModel item;
   final String title;

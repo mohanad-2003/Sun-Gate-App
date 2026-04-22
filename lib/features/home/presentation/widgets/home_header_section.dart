@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/home/presentation/controllers/home_mock_data_provider.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/category_chip_card.dart';
@@ -20,15 +21,18 @@ class HomeHeaderSection extends ConsumerWidget {
     final theme = Theme.of(context);
     final previewCompanies = homeState.companies.take(2).toList();
 
-    final userName = _resolveUserName(profileState.profile?.firstName);
-
+    final userName = _resolveUserName(
+      profileState.profile?.firstName.isNotEmpty == true
+          ? profileState.profile!.firstName
+          : profileState.profile?.fullName,
+    );
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
         final horizontalPadding = width < 360 ? 12.0 : 16.0;
         final headerHeight = width < 360 ? 220.0 : 270.0;
         final categoriesHeight = width < 360 ? 96.0 : 108.0;
-
+        final loc = AppLocalizations.of(context)!;
         return Column(
           children: [
             SizedBox(
@@ -117,7 +121,7 @@ class HomeHeaderSection extends ConsumerWidget {
                         horizontal: horizontalPadding,
                       ),
                       child: SectionTitleRow(
-                        title: 'Category',
+                        title: loc.category,
                         actionText: '',
                         onTap: () {},
                       ),
@@ -157,8 +161,8 @@ class HomeHeaderSection extends ConsumerWidget {
                         horizontal: horizontalPadding,
                       ),
                       child: SectionTitleRow(
-                        title: 'Popular Companies',
-                        actionText: 'See all',
+                        title: loc.popularCompanies,
+                        actionText: loc.seeAll,
                         onTap: () {
                           context.push(RouteNames.allCompanies);
                         },

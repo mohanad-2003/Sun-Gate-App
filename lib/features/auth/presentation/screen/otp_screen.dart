@@ -1,35 +1,32 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
+import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_back_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_header.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_body.dart';
 
-
-
 class OtpScreen extends ConsumerStatefulWidget {
   final String email;
-
-  const OtpScreen({
-    super.key,
-    required this.email,
-  });
+  final OtpFlowType flowType;
+  const OtpScreen({super.key, required this.email, required this.flowType});
 
   @override
   ConsumerState<OtpScreen> createState() => _OtpScreenState();
 }
 
 class _OtpScreenState extends ConsumerState<OtpScreen> {
-  final List<TextEditingController> _controllers =
-      List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _controllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
 
-  final List<FocusNode> _focusNodes =
-      List.generate(6, (_) => FocusNode());
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
   int _seconds = 0;
   Timer? _timer;
@@ -42,11 +39,11 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
   @override
   void dispose() {
-    for (final controller in _controllers) {
-      controller.dispose();
+    for (final c in _controllers) {
+      c.dispose();
     }
-    for (final node in _focusNodes) {
-      node.dispose();
+    for (final n in _focusNodes) {
+      n.dispose();
     }
     _timer?.cancel();
     super.dispose();
@@ -57,8 +54,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   void _onChanged(String value, int index) {
     if (value.length > 1) {
       _controllers[index].text = value.substring(value.length - 1);
-      _controllers[index].selection =
-          const TextSelection.collapsed(offset: 1);
+      _controllers[index].selection = const TextSelection.collapsed(offset: 1);
     }
 
     if (value.isNotEmpty && index < _focusNodes.length - 1) {
@@ -74,15 +70,13 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
   void _startTimer() {
     _seconds = 30;
-
     _timer?.cancel();
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_seconds == 0) {
         timer.cancel();
       } else {
-        setState(() {
-          _seconds--;
-        });
+        setState(() => _seconds--);
       }
     });
   }
@@ -90,29 +84,37 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
+    final loc = AppLocalizations.of(context)!;
 
     ref.listen(authControllerProvider, (previous, next) {
-      if (next.isSuccess) {
+      if (!next.isSuccess) return;
+
+      if (widget.flowType == OtpFlowType.verifyEmail) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              next.message ?? 'Code resent successfully',
-            ),
+            content: Text(next.message ?? 'Email verified successfully'),
           ),
         );
+        context.go(RouteNames.login);
+      } else {
+        if (next.resetToken?.isNotEmpty ?? false) {
+          context.push(
+            RouteNames.newPassword,
+            extra: {'email': widget.email, 'token': next.resetToken!},
+          );
+        }
       }
     });
-
     return AuthScaffoldBody(
       child: Column(
         children: [
-          AuthBackButton(onTap: () => context.pop()),
+          AuthBackButton(onTap: () => context.go(RouteNames.signUp)),
+
           const SizedBox(height: 48),
 
           AuthHeader(
-            title: 'Enter OTP',
-            subtitle:
-                'We have just sent you 6 digit code via your\nemail ${widget.email}',
+            title: loc.enterOtp,
+            subtitle: '${loc.otpSubtitle}\n${widget.email}',
           ),
 
           const SizedBox(height: 28),
@@ -140,9 +142,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(
-                          color: Color(0xFF274777),
-                        ),
+                        borderSide: const BorderSide(color: Color(0xFF274777)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -165,28 +165,23 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
           Wrap(
             alignment: WrapAlignment.center,
             children: [
-              const Text(
-                "Didn't receive code ? ",
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey,
-                ),
+              Text(
+                loc.didNotReceiveCode,
+                style: const TextStyle(fontSize: 13, color: Colors.grey),
               ),
               GestureDetector(
                 onTap: _seconds == 0
                     ? () {
                         ref
                             .read(authControllerProvider.notifier)
-                            .forgotPassword(
-                              email: widget.email,
-                            );
+                            .forgotPassword(email: widget.email);
                         _startTimer();
                       }
                     : null,
                 child: Text(
                   _seconds == 0
-                      ? 'Resend Code'
-                      : 'Resend in $_seconds s',
+                      ? loc.resendCode
+                      : '${loc.resendIn} $_seconds ${loc.seconds}',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -207,36 +202,32 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.08),
+                color: Colors.red.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.red.withOpacity(0.20),
-                ),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.20)),
               ),
               child: Text(
                 state.errorMessage!,
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontSize: 13,
-                ),
+                style: const TextStyle(color: Colors.red, fontSize: 13),
               ),
             ),
             const SizedBox(height: 16),
           ],
 
-          /// CONTINUE BUTTON
           AuthPrimaryButton(
-            text: 'Continue',
+            text: loc.continues,
             isLoading: state.isLoading,
             onPressed: _otpCode.length == 6
-                ? () {
-                    context.push(
-                      RouteNames.newPassword,
-                      extra: {
-                        'email': widget.email,
-                        'token': _otpCode,
-                      },
-                    );
+                ? () async {
+                    if (widget.flowType == OtpFlowType.verifyEmail) {
+                      await ref
+                          .read(authControllerProvider.notifier)
+                          .verifyEmail(email: widget.email, code: _otpCode);
+                    } else {
+                      await ref
+                          .read(authControllerProvider.notifier)
+                          .verifyOtp(email: widget.email, code: _otpCode);
+                    }
                   }
                 : null,
           ),

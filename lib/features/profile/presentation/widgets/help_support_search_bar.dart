@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 
 class HelpSupportSearchBar extends StatelessWidget {
   const HelpSupportSearchBar({super.key});
@@ -7,6 +8,7 @@ class HelpSupportSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final loc = AppLocalizations.of(context)!;
 
     return Container(
       height: 54,
@@ -22,7 +24,7 @@ class HelpSupportSearchBar extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              'Search for help...',
+              loc.searchForHelp,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.hintColor,
               ),

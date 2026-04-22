@@ -1,81 +1,83 @@
 class CompanyModel {
   final String id;
-  final String name;
+  final String nameKey;
   final String logoPath;
   final String coverImagePath;
-  final String shortDescription;
-  final String description;
-  final String location;
+  final String shortDescriptionKey;
+  final String descriptionKey;
+  final String locationKey;
   final double rating;
   final int reviewCount;
-  final List<String> tags;
+  final List<String> tagKeys;
 
   const CompanyModel({
     required this.id,
-    required this.name,
+    required this.nameKey,
     required this.logoPath,
     required this.coverImagePath,
-    required this.shortDescription,
-    required this.description,
-    required this.location,
+    required this.shortDescriptionKey,
+    required this.descriptionKey,
+    required this.locationKey,
     required this.rating,
     required this.reviewCount,
-    this.tags = const [],
+    this.tagKeys = const [],
   });
 
   CompanyModel copyWith({
     String? id,
-    String? name,
+    String? nameKey,
     String? logoPath,
     String? coverImagePath,
-    String? shortDescription,
-    String? description,
-    String? location,
+    String? shortDescriptionKey,
+    String? descriptionKey,
+    String? locationKey,
     double? rating,
     int? reviewCount,
-    List<String>? tags,
+    List<String>? tagKeys,
   }) {
     return CompanyModel(
       id: id ?? this.id,
-      name: name ?? this.name,
+      nameKey: nameKey ?? this.nameKey,
       logoPath: logoPath ?? this.logoPath,
       coverImagePath: coverImagePath ?? this.coverImagePath,
-      shortDescription: shortDescription ?? this.shortDescription,
-      description: description ?? this.description,
-      location: location ?? this.location,
+      shortDescriptionKey:
+          shortDescriptionKey ?? this.shortDescriptionKey,
+      descriptionKey: descriptionKey ?? this.descriptionKey,
+      locationKey: locationKey ?? this.locationKey,
       rating: rating ?? this.rating,
       reviewCount: reviewCount ?? this.reviewCount,
-      tags: tags ?? this.tags,
+      tagKeys: tagKeys ?? this.tagKeys,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'name': name,
+      'nameKey': nameKey,
       'logoPath': logoPath,
       'coverImagePath': coverImagePath,
-      'shortDescription': shortDescription,
-      'description': description,
-      'location': location,
+      'shortDescriptionKey': shortDescriptionKey,
+      'descriptionKey': descriptionKey,
+      'locationKey': locationKey,
       'rating': rating,
       'reviewCount': reviewCount,
-      'tags': tags,
+      'tagKeys': tagKeys,
     };
   }
 
   factory CompanyModel.fromMap(Map<String, dynamic> map) {
     return CompanyModel(
       id: map['id']?.toString() ?? '',
-      name: map['name']?.toString() ?? '',
+      nameKey: map['nameKey']?.toString() ?? '',
       logoPath: map['logoPath']?.toString() ?? '',
       coverImagePath: map['coverImagePath']?.toString() ?? '',
-      shortDescription: map['shortDescription']?.toString() ?? '',
-      description: map['description']?.toString() ?? '',
-      location: map['location']?.toString() ?? '',
+      shortDescriptionKey:
+          map['shortDescriptionKey']?.toString() ?? '',
+      descriptionKey: map['descriptionKey']?.toString() ?? '',
+      locationKey: map['locationKey']?.toString() ?? '',
       rating: (map['rating'] as num?)?.toDouble() ?? 0.0,
       reviewCount: (map['reviewCount'] as num?)?.toInt() ?? 0,
-      tags: List<String>.from(map['tags'] ?? const []),
+      tagKeys: List<String>.from(map['tagKeys'] ?? const []),
     );
   }
 }

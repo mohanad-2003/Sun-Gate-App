@@ -10,6 +10,7 @@ class SplashLogo extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
 
         children: [
           Center(
@@ -33,13 +34,15 @@ class SplashLogo extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           Text(
             AppStrings.get(context, 'sun_gate'),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w700,
+              fontSize: 30,
             ),
+
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

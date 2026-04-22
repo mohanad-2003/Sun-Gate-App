@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/profile_gender_selector.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/profile_section_label.dart';
@@ -17,6 +18,8 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
   late final TextEditingController lastNameController;
   late final TextEditingController emailController;
   late final TextEditingController locationController;
+
+  bool _didPopulateInitialData = false;
   final _picker = ImagePicker();
 
   Future<void> _pickImage(ImageSource source) async {
@@ -58,7 +61,20 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(profileControllerProvider);
     final profile = state.profile;
+    final loc = AppLocalizations.of(context)!;
 
+    if (profile != null && !_didPopulateInitialData) {
+      firstNameController.text = profile.firstName;
+      lastNameController.text = profile.lastName;
+      emailController.text = profile.email;
+      locationController.text = profile.location ?? '';
+
+      selectedGender = (profile.gender?.isNotEmpty ?? false)
+          ? profile.gender!
+          : 'male';
+
+      _didPopulateInitialData = true;
+    }
     ref.listen(profileControllerProvider, (previous, next) {
       if (next.successMessage != null && next.successMessage!.isNotEmpty) {
         ScaffoldMessenger.of(
@@ -68,7 +84,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
     });
 
     return Scaffold(
-      appBar: AppBar(title: const Text('User Info')),
+      appBar: AppBar(title: Text(loc.userInfo)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -117,9 +133,9 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         const SizedBox(height: 8),
-                                        const Text(
-                                          'Change your picture',
-                                          style: TextStyle(
+                                        Text(
+                                          loc.changeYourPicture,
+                                          style: const TextStyle(
                                             fontWeight: FontWeight.w700,
                                             fontSize: 16,
                                           ),
@@ -129,7 +145,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                                           leading: const Icon(
                                             Icons.camera_alt_outlined,
                                           ),
-                                          title: const Text('Take a photo'),
+                                          title: Text(loc.takePhoto),
                                           onTap: () async {
                                             Navigator.of(context).pop();
                                             await _pickImage(
@@ -141,9 +157,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                                           leading: const Icon(
                                             Icons.folder_outlined,
                                           ),
-                                          title: const Text(
-                                            'Choose from your file',
-                                          ),
+                                          title: Text(loc.chooseFromFiles),
                                           onTap: () async {
                                             Navigator.of(context).pop();
                                             await _pickImage(
@@ -167,22 +181,22 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
               ),
               const SizedBox(height: 28),
 
-              const ProfileSectionLabel(title: 'First Name'),
+              ProfileSectionLabel(title: loc.firstName),
               const SizedBox(height: 8),
               TextField(controller: firstNameController),
               const SizedBox(height: 16),
 
-              const ProfileSectionLabel(title: 'Last Name'),
+              ProfileSectionLabel(title: loc.lastName),
               const SizedBox(height: 8),
               TextField(controller: lastNameController),
               const SizedBox(height: 16),
 
-              const ProfileSectionLabel(title: 'Email'),
+              ProfileSectionLabel(title: loc.email),
               const SizedBox(height: 8),
               TextField(controller: emailController, enabled: false),
               const SizedBox(height: 16),
 
-              const ProfileSectionLabel(title: 'Gender'),
+              ProfileSectionLabel(title: loc.gender),
               const SizedBox(height: 8),
               ProfileGenderSelector(
                 selectedGender: selectedGender,
@@ -194,7 +208,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
               ),
               const SizedBox(height: 16),
 
-              const ProfileSectionLabel(title: 'Location'),
+              ProfileSectionLabel(title: loc.location),
               const SizedBox(height: 8),
               TextField(
                 controller: locationController,
@@ -243,7 +257,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                           width: 18,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Text('Save Changes'),
+                      : Text(loc.saveChanges),
                 ),
               ),
             ],
