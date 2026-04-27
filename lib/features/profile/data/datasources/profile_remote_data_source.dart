@@ -25,9 +25,7 @@ abstract class ProfileRemoteDataSource {
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   final Dio dio;
 
-  ProfileRemoteDataSourceImpl({
-    required this.dio,
-  });
+  ProfileRemoteDataSourceImpl({required this.dio});
 
   @override
   Future<UserProfileResponseModel> getMyProfile() async {
@@ -38,7 +36,9 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         response.data as Map<String, dynamic>,
       );
     } on DioException catch (e) {
-      throw Exception(_extractErrorMessage(e, fallback: 'Failed to load profile'));
+      throw Exception(
+        _extractErrorMessage(e, fallback: 'Failed to load profile'),
+      );
     }
   }
 
@@ -47,16 +47,18 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     UpdateProfileRequestDto request,
   ) async {
     try {
+      print(request.toJson());
       final response = await dio.patch(
         ApiConstants.updateMyProfile,
         data: request.toJson(),
-      );  
-
+      );
       return UserProfileResponseModel.fromJson(
         response.data as Map<String, dynamic>,
       );
     } on DioException catch (e) {
-      throw Exception(_extractErrorMessage(e, fallback: 'Failed to update profile'));
+      throw Exception(
+        _extractErrorMessage(e, fallback: 'Failed to update profile'),
+      );
     }
   }
 
@@ -74,7 +76,9 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         response.data as Map<String, dynamic>,
       );
     } on DioException catch (e) {
-      throw Exception(_extractErrorMessage(e, fallback: 'Failed to change password'));
+      throw Exception(
+        _extractErrorMessage(e, fallback: 'Failed to change password'),
+      );
     }
   }
 
@@ -90,9 +94,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       final response = await dio.post(
         ApiConstants.uploadProfilePicture,
         data: formData,
-        options: Options(
-          contentType: 'multipart/form-data',
-        ),
+        options: Options(contentType: 'multipart/form-data'),
       );
 
       return ImageUploadResponseModel.fromJson(
@@ -105,10 +107,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     }
   }
 
-  String _extractErrorMessage(
-    DioException e, {
-    required String fallback,
-  }) {
+  String _extractErrorMessage(DioException e, {required String fallback}) {
     final data = e.response?.data;
 
     if (data is Map<String, dynamic>) {
@@ -119,5 +118,9 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     }
 
     return fallback;
+  }
+
+  Future<void> updateFcmToken(String token) async {
+    await dio.patch(ApiConstants.updateFcmToken, data: {'fcmToken': token});
   }
 }

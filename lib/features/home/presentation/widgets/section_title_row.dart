@@ -38,6 +38,7 @@ class SectionTitleRow extends StatelessWidget {
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.orange,
                   fontWeight: FontWeight.w600,
+                  
                 ),
               ),
             ),

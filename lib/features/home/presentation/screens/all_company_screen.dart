@@ -5,18 +5,35 @@ import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/home/presentation/controllers/home_mock_data_provider.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/category_chip_card.dart';
-import 'package:sun_gate_app/features/home/presentation/widgets/company_card.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/home_search_bar.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/section_title_row.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_controller.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/widget/market_place_company_card.dart';
 
-class AllCompanyScreen extends ConsumerWidget {
+class AllCompanyScreen extends ConsumerStatefulWidget {
   const AllCompanyScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AllCompanyScreen> createState() => _AllCompanyScreenState();
+}
+
+class _AllCompanyScreenState extends ConsumerState<AllCompanyScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      ref.read(marketPlaceControllerProvider.notifier).getCompanies();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final homeState = ref.watch(homeControllerProvider);
     final loc = AppLocalizations.of(context)!;
+
+    final homeState = ref.watch(homeControllerProvider);
+    final marketState = ref.watch(marketPlaceControllerProvider);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -47,7 +64,7 @@ class AllCompanyScreen extends ConsumerWidget {
                       ),
                       const Spacer(),
                       Text(
-                        loc.suppliers, // ✅ بدل Suppliers
+                        loc.suppliers,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -62,19 +79,14 @@ class AllCompanyScreen extends ConsumerWidget {
 
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                  child: HomeSearchBar(
-                    hintText: loc.search, // ✅ بدل Search...
-                  ),
+                  child: HomeSearchBar(hintText: loc.search),
                 ),
 
                 const SizedBox(height: 18),
 
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                  child: SectionTitleRow(
-                    title: loc.category, // ✅ بدل Category
-                    actionText: '',
-                  ),
+                  child: SectionTitleRow(title: loc.category, actionText: ''),
                 ),
 
                 SizedBox(
@@ -110,8 +122,8 @@ class AllCompanyScreen extends ConsumerWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                   child: SectionTitleRow(
-                    title: loc.suppliersList, // ✅ بدل Suppliers List
-                    actionText: loc.seeAll, // ✅ بدل See all
+                    title: loc.suppliersList,
+                    actionText: loc.seeAll,
                     onTap: () {},
                   ),
                 ),
@@ -119,36 +131,50 @@ class AllCompanyScreen extends ConsumerWidget {
                 const SizedBox(height: 12),
 
                 Expanded(
-                  child: GridView.builder(
-                    padding: EdgeInsets.fromLTRB(
-                      horizontalPadding,
-                      0,
-                      horizontalPadding,
-                      24,
-                    ),
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: homeState.companies.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 14,
-                          mainAxisSpacing: 18,
-                          childAspectRatio: 0.73,
-                        ),
-                    itemBuilder: (context, index) {
-                      final company = homeState.companies[index];
+                  child: marketState.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : marketState.errorMessage != null
+                          ? Center(
+                              child: Text(
+                                marketState.errorMessage!,
+                                textAlign: TextAlign.center,
+                              ),
+                            )
+                          : marketState.companies.isEmpty
+                              ? const Center(
+                                  child: Text('No companies found'),
+                                )
+                              : GridView.builder(
+                                  padding: EdgeInsets.fromLTRB(
+                                    horizontalPadding,
+                                    0,
+                                    horizontalPadding,
+                                    24,
+                                  ),
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: marketState.companies.length,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 14,
+                                    mainAxisSpacing: 18,
+                                    childAspectRatio: 0.73,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    final company =
+                                        marketState.companies[index];
 
-                      return CompanyCard(
-                        company: company,
-                        onTap: () {
-                          context.push(
-                            RouteNames.companyDetail,
-                            extra: company,
-                          );
-                        },
-                      );
-                    },
-                  ),
+                                    return MarketplaceCompanyCard(
+                                      company: company,
+                                      onTap: () {
+                                        context.push(
+                                          RouteNames.companyDetail,
+                                          extra: company,
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
                 ),
               ],
             );
