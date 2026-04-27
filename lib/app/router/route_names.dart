@@ -21,7 +21,7 @@ class RouteNames {
   static const String market = '/market';
 
   static const String main = '/main';
-
+  static const String notifications = '/notifications';
   static const calculator = '/calculator';
   static const deviceConsumption = '/device-consumption';
   static const numberOfPanels = '/number-of-panels';

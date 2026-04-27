@@ -31,7 +31,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
         birthDate: birthDate,
         gender: gender,
         location: location,
-        whatsappNumbers: whatsappNumber,
+        whatsappNumber: whatsappNumber,
       ),
     );
 

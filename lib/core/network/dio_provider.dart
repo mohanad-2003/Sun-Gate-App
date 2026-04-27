@@ -23,7 +23,7 @@ final dioProvider = Provider<Dio>((ref) {
     InterceptorsWrapper(
       onRequest: (options, handler) async {
         final token = await localDataSource.getAccessToken();
-
+        print("TOKEN: $token");
         if (token != null && token.isNotEmpty) {
           options.headers['Authorization'] = 'Bearer $token';
         }

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sun_gate_app/features/home/data/models/category_item_model.dart';
-import 'package:sun_gate_app/features/home/data/models/company_model.dart';
 import 'package:sun_gate_app/features/home/data/models/product_model.dart';
+import 'package:sun_gate_app/features/marketplace/data/models/company_model.dart';
 
 class HomeState {
   final bool isLoading;
@@ -54,80 +54,80 @@ final homeControllerProvider = Provider<HomeState>((ref) {
       imagePath: 'assets/images/suppliers.jpg',
     ),
   ];
-  final companies = [
-    CompanyModel(
-      id: '1',
-      nameKey: 'companyLuminanceName',
-      coverImagePath: 'assets/images/company_luminance.jpeg',
-      logoPath: 'assets/images/companies/logo_luminance.png',
-      shortDescriptionKey: 'companyLuminanceShortDescription',
-      descriptionKey: 'companyLuminanceDescription',
-      locationKey: 'companyLuminanceLocation',
-      rating: 4.7,
-      reviewCount: 31,
-      tagKeys: ['categoryBatteries', 'categoryPanels'],
-    ),
-    CompanyModel(
-      id: '2',
-      nameKey: 'companyVoltGuardName',
-      coverImagePath: 'assets/images/company_voltguard.jpeg',
-      logoPath: 'assets/images/companies/logo_voltguard.png',
-      shortDescriptionKey: 'companyVoltGuardShortDescription',
-      descriptionKey: 'companyVoltGuardDescription',
-      locationKey: 'companyVoltGuardLocation',
-      rating: 4.5,
-      reviewCount: 24,
-      tagKeys: ['categoryBatteries', 'categoryInverters'],
-    ),
-    CompanyModel(
-      id: '3',
-      nameKey: 'companyEcoVoltName',
-      coverImagePath: 'assets/images/company_ecovolt.jpeg',
-      logoPath: 'assets/images/companies/logo_ecovolt.png',
-      shortDescriptionKey: 'companyEcoVoltShortDescription',
-      descriptionKey: 'companyEcoVoltDescription',
-      locationKey: 'companyEcoVoltLocation',
-      rating: 4.6,
-      reviewCount: 28,
-      tagKeys: ['categoryPanels', 'categorySuppliers'],
-    ),
-    CompanyModel(
-      id: '4',
-      nameKey: 'companyZenithName',
-      coverImagePath: 'assets/images/company_zenith.jpeg',
-      logoPath: 'assets/images/companies/logo_zenith.png',
-      shortDescriptionKey: 'companyZenithShortDescription',
-      descriptionKey: 'companyZenithDescription',
-      locationKey: 'companyZenithLocation',
-      rating: 4.8,
-      reviewCount: 19,
-      tagKeys: ['categoryBatteries', 'categorySuppliers'],
-    ),
-    CompanyModel(
-      id: '5',
-      nameKey: 'companySunCoreName',
-      coverImagePath: 'assets/images/company_suncore.jpeg',
-      logoPath: 'assets/images/companies/logo_suncore.png',
-      shortDescriptionKey: 'companySunCoreShortDescription',
-      descriptionKey: 'companySunCoreDescription',
-      locationKey: 'companySunCoreLocation',
-      rating: 4.4,
-      reviewCount: 16,
-      tagKeys: ['categoryPanels', 'categoryInverters'],
-    ),
-    CompanyModel(
-      id: '6',
-      nameKey: 'companyNovaGridName',
-      coverImagePath: 'assets/images/company_novagrid.jpg',
-      logoPath: 'assets/images/logo_novagrid.png',
-      shortDescriptionKey: 'companyNovaGridShortDescription',
-      descriptionKey: 'companyNovaGridDescription',
-      locationKey: 'companyNovaGridLocation',
-      rating: 4.6,
-      reviewCount: 22,
-      tagKeys: ['categorySuppliers', 'categoryPanels'],
-    ),
-  ];
+  // final companies = [
+  //   CompanyModel(
+  //     id: '1',
+  //     nameKey: 'companyLuminanceName',
+  //     coverImagePath: 'assets/images/company_luminance.jpeg',
+  //     logoPath: 'assets/images/companies/logo_luminance.png',
+  //     shortDescriptionKey: 'companyLuminanceShortDescription',
+  //     descriptionKey: 'companyLuminanceDescription',
+  //     locationKey: 'companyLuminanceLocation',
+  //     rating: 4.7,
+  //     reviewCount: 31,
+  //     tagKeys: ['categoryBatteries', 'categoryPanels'],
+  //   ),
+  //   CompanyModel(
+  //     id: '2',
+  //     nameKey: 'companyVoltGuardName',
+  //     coverImagePath: 'assets/images/company_voltguard.jpeg',
+  //     logoPath: 'assets/images/companies/logo_voltguard.png',
+  //     shortDescriptionKey: 'companyVoltGuardShortDescription',
+  //     descriptionKey: 'companyVoltGuardDescription',
+  //     locationKey: 'companyVoltGuardLocation',
+  //     rating: 4.5,
+  //     reviewCount: 24,
+  //     tagKeys: ['categoryBatteries', 'categoryInverters'],
+  //   ),
+  //   CompanyModel(
+  //     id: '3',
+  //     nameKey: 'companyEcoVoltName',
+  //     coverImagePath: 'assets/images/company_ecovolt.jpeg',
+  //     logoPath: 'assets/images/companies/logo_ecovolt.png',
+  //     shortDescriptionKey: 'companyEcoVoltShortDescription',
+  //     descriptionKey: 'companyEcoVoltDescription',
+  //     locationKey: 'companyEcoVoltLocation',
+  //     rating: 4.6,
+  //     reviewCount: 28,
+  //     tagKeys: ['categoryPanels', 'categorySuppliers'],
+  //   ),
+  //   CompanyModel(
+  //     id: '4',
+  //     nameKey: 'companyZenithName',
+  //     coverImagePath: 'assets/images/company_zenith.jpeg',
+  //     logoPath: 'assets/images/companies/logo_zenith.png',
+  //     shortDescriptionKey: 'companyZenithShortDescription',
+  //     descriptionKey: 'companyZenithDescription',
+  //     locationKey: 'companyZenithLocation',
+  //     rating: 4.8,
+  //     reviewCount: 19,
+  //     tagKeys: ['categoryBatteries', 'categorySuppliers'],
+  //   ),
+  //   CompanyModel(
+  //     id: '5',
+  //     nameKey: 'companySunCoreName',
+  //     coverImagePath: 'assets/images/company_suncore.jpeg',
+  //     logoPath: 'assets/images/companies/logo_suncore.png',
+  //     shortDescriptionKey: 'companySunCoreShortDescription',
+  //     descriptionKey: 'companySunCoreDescription',
+  //     locationKey: 'companySunCoreLocation',
+  //     rating: 4.4,
+  //     reviewCount: 16,
+  //     tagKeys: ['categoryPanels', 'categoryInverters'],
+  //   ),
+  //   CompanyModel(
+  //     id: '6',
+  //     nameKey: 'companyNovaGridName',
+  //     coverImagePath: 'assets/images/company_novagrid.jpg',
+  //     logoPath: 'assets/images/logo_novagrid.png',
+  //     shortDescriptionKey: 'companyNovaGridShortDescription',
+  //     descriptionKey: 'companyNovaGridDescription',
+  //     locationKey: 'companyNovaGridLocation',
+  //     rating: 4.6,
+  //     reviewCount: 22,
+  //     tagKeys: ['categorySuppliers', 'categoryPanels'],
+  //   ),
+  // ];
   const products = [
     ProductModel(
       id: 'p1',
@@ -312,7 +312,7 @@ final homeControllerProvider = Provider<HomeState>((ref) {
   ];
   return HomeState(
     categories: categories,
-    companies: companies,
+    //   companies: companies,
     products: products,
   );
 });

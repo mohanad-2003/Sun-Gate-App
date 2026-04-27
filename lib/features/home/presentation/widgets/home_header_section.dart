@@ -9,6 +9,7 @@ import 'package:sun_gate_app/features/home/presentation/widgets/company_card.dar
 import 'package:sun_gate_app/features/home/presentation/widgets/home_app_bar_section.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/home_banner_card.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/section_title_row.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/widget/market_place_company_card.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 
 class HomeHeaderSection extends ConsumerWidget {
@@ -193,7 +194,7 @@ class HomeHeaderSection extends ConsumerWidget {
                         itemBuilder: (context, index) {
                           final company = homeState.companies[index];
 
-                          return CompanyCard(
+                          return MarketplaceCompanyCard(
                             company: company,
                             onTap: () {
                               context.push(
