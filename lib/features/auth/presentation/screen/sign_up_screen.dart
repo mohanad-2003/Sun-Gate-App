@@ -22,7 +22,9 @@ class SignUpScreen extends ConsumerStatefulWidget {
 }
 
 class _SignUpScreenState extends ConsumerState<SignUpScreen> {
-  final fullNameController = TextEditingController();
+  // final fullNameController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -31,25 +33,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   @override
   void dispose() {
-    fullNameController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
 
-  (String firstName, String lastName) _splitName(String fullName) {
-    final parts = fullName.trim().split(RegExp(r'\s+'));
 
-    if (parts.isEmpty || parts.first.isEmpty) {
-      return ('', '');
-    }
-
-    if (parts.length == 1) {
-      return (parts.first, '');
-    }
-
-    return (parts.first, parts.sublist(1).join(' '));
-  }
 
   Color? _getPasswordBorderColor(String password) {
     if (password.isEmpty) return null;
@@ -95,7 +86,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AuthBackButton(onTap: () => context.go('/home')),
+                  AuthBackButton(onTap: () => context.go('/login')),
                   const LanguageSwitcherButton(),
                 ],
               ),
@@ -117,11 +108,26 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
           const SizedBox(height: 26),
 
-          AuthTextField(
-            controller: fullNameController,
-            label: loc.fullName,
-            hintText: loc.enterFullName,
-            onChanged: (_) => setState(() {}),
+          Row(
+            children: [
+              Expanded(
+                child: AuthTextField(
+                  controller: firstNameController,
+                  label: loc.firstName,
+                  hintText: loc.enterFirstName,
+                  onChanged: (_) => setState(() {}),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: AuthTextField(
+                  controller: lastNameController,
+                  label: loc.lastName,
+                  hintText: loc.enterLastName,
+                  onChanged: (_) => setState(() {}),
+                ),
+              ),
+            ],
           ),
 
           const SizedBox(height: 14),
@@ -201,13 +207,19 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             isLoading: state.isLoading,
             onPressed: acceptPolicy
                 ? () {
-                    final fullName = fullNameController.text.trim();
                     final email = emailController.text.trim();
                     final rawPassword = passwordController.text;
 
-                    if (fullName.isEmpty) {
+                    if (firstNameController.text.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(loc.pleaseEnterFullName)),
+                        SnackBar(content: Text(loc.pleaseEnterFirstName)),
+                      );
+                      return;
+                    }
+
+                    if (lastNameController.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(loc.pleaseEnterLastName)),
                       );
                       return;
                     }
@@ -235,13 +247,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       return;
                     }
 
-                    final name = _splitName(fullName);
-
                     ref
                         .read(authControllerProvider.notifier)
                         .register(
-                          firstName: name.$1,
-                          lastName: name.$2,
+                          firstName: firstNameController.text.trim(),
+                          lastName: lastNameController.text.trim(),
                           email: email,
                           password: rawPassword,
                         );

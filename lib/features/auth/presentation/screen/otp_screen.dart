@@ -92,7 +92,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Email verified successfully')),
         );
-        context.go(RouteNames.login);
+        context.go(RouteNames.main);
       } else {
         if (next.resetToken?.isNotEmpty ?? false) {
           context.push(
