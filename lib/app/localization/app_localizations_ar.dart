@@ -807,4 +807,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noProductsForCategory => 'لا توجد منتجات متاحة لهذه الفئة.';
+
+  @override
+  String get enterFirstName => 'أدخل الاسم الاول';
+
+  @override
+  String get enterLastName => 'أدخل الأسم الثاني';
+
+  @override
+  String get pleaseEnterFirstName => 'لو سمحت أدخل الاسم الاول';
+
+  @override
+  String get pleaseEnterLastName => 'لو سمحت أدخل الاسم الثاني';
 }

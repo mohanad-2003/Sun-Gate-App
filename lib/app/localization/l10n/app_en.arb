@@ -262,5 +262,9 @@
   "search": "Search...",
   "suppliersList": "Suppliers List",
   "suppliers": "Suppliers",
-  "noProductsForCategory": "No products available for this category."
+  "noProductsForCategory": "No products available for this category.",
+  "enterFirstName": "Enter First Name",
+  "enterLastName": "Enter Last Name",
+  "pleaseEnterFirstName": "Please Enter First Name",
+  "pleaseEnterLastName": "Please Enter Last Name"
 }

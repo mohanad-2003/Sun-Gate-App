@@ -1615,6 +1615,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No products available for this category.'**
   String get noProductsForCategory;
+
+  /// No description provided for @enterFirstName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter First Name'**
+  String get enterFirstName;
+
+  /// No description provided for @enterLastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Last Name'**
+  String get enterLastName;
+
+  /// No description provided for @pleaseEnterFirstName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please Enter First Name'**
+  String get pleaseEnterFirstName;
+
+  /// No description provided for @pleaseEnterLastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please Enter Last Name'**
+  String get pleaseEnterLastName;
 }
 
 class _AppLocalizationsDelegate

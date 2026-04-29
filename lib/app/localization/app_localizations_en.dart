@@ -812,4 +812,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noProductsForCategory =>
       'No products available for this category.';
+
+  @override
+  String get enterFirstName => 'Enter First Name';
+
+  @override
+  String get enterLastName => 'Enter Last Name';
+
+  @override
+  String get pleaseEnterFirstName => 'Please Enter First Name';
+
+  @override
+  String get pleaseEnterLastName => 'Please Enter Last Name';
 }

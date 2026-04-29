@@ -257,5 +257,9 @@
   "search": "بحث...",
   "suppliersList": "قائمة الموردين",
   "suppliers": "الموردين",
-  "noProductsForCategory": "لا توجد منتجات متاحة لهذه الفئة."
+  "noProductsForCategory": "لا توجد منتجات متاحة لهذه الفئة.",
+  "enterFirstName": "أدخل الاسم الاول",
+  "enterLastName": "أدخل الأسم الثاني",
+  "pleaseEnterFirstName": "لو سمحت أدخل الاسم الاول",
+  "pleaseEnterLastName": "لو سمحت أدخل الاسم الثاني"
 }
