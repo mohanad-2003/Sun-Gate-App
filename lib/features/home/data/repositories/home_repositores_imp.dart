@@ -19,8 +19,8 @@ class HomeRepositoryImpl implements HomeRepository {
   //   return localDataSource.getPopularCompanies();
   // }
 
-  @override
-  Future<List<ProductModel>> getPopularProducts() {
-    return localDataSource.getPopularProducts();
-  }
+  // @override
+  // Future<List<ProductModel>> getPopularProducts() {
+  //   return localDataSource.getPopularProducts();
+  // }
 }

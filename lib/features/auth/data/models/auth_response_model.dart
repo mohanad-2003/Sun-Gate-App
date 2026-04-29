@@ -3,7 +3,7 @@ import 'package:sun_gate_app/features/auth/domain/entities/auth_result.dart';
 import 'auth_user_model.dart';
 
 class AuthResponseModel extends AuthResult {
-   AuthResponseModel({
+  AuthResponseModel({
     required super.user,
     super.accessToken,
     super.refreshToken,
@@ -15,9 +15,7 @@ class AuthResponseModel extends AuthResult {
 
     return AuthResponseModel(
       user: AuthUserModel.fromJson(
-        (data?['user'] as Map<String, dynamic>?) ?? {
-          
-        },
+        (data?['user'] as Map<String, dynamic>?) ?? {},
       ),
       accessToken: data?['accessToken']?.toString(),
       refreshToken: data?['refreshToken']?.toString(),

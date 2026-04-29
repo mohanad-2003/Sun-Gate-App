@@ -1,8 +1,5 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/core/theme/app_colors.dart';
-import 'package:sun_gate_app/core/utils/app_string.dart';
 
 class OnboardingFooter extends StatelessWidget {
   final bool isLastPage;
@@ -24,7 +21,6 @@ class OnboardingFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isLastPage) {
       return Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
             width: double.infinity,
@@ -34,36 +30,17 @@ class OnboardingFooter extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.secondary,
                 foregroundColor: AppColors.primary,
-                elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              child: Text(
-                AppStrings.get(context, 'get_started'),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              child: const Text("Get Started"),
             ),
           ),
-          const SizedBox(height: 16),
-          RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              text: AppStrings.get(context, 'dont_have_account'),
-              style: const TextStyle(color: Colors.white70, fontSize: 13),
-              children: [
-                TextSpan(
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () => context.go('/sign-up'),
-                  text: AppStrings.get(context, 'sign_up'),
-                  style: const TextStyle(
-                    color: AppColors.secondary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
+          const SizedBox(height: 12),
+          const Text(
+            "Don't have an account? Sign Up",
+            style: TextStyle(color: Colors.white70),
           ),
         ],
       );
@@ -71,35 +48,56 @@ class OnboardingFooter extends StatelessWidget {
 
     return Row(
       children: [
-        InkWell(
-          onTap: onNext,
-          borderRadius: BorderRadius.circular(50),
-          child: Container(
-            width: 42,
-            height: 42,
-            decoration: const BoxDecoration(
-              color: AppColors.secondary,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: AppColors.primary,
-            ),
-          ),
-        ),
-        const SizedBox(width: 30),
+        /// Skip
         TextButton(
           onPressed: onSkip,
-          child: Text(
-            AppStrings.get(context, 'skip'),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: Colors.white70),
+          child: const Text(
+            "Skip",
+            style: TextStyle(color: Colors.white70),
           ),
         ),
+
         const Spacer(),
-        Flexible(child: indicator),
+
+        /// Indicator
+        indicator,
+
+        const Spacer(),
+
+        /// Arrow
+        AnimatedScale(
+          scale: 1,
+          duration: const Duration(milliseconds: 300),
+          child: InkWell(
+            onTap: onNext,
+            borderRadius: BorderRadius.circular(50),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    AppColors.secondary,
+                    Color(0xFFE8C07D),
+                  ],
+                ),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

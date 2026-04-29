@@ -4,7 +4,7 @@ import 'package:sun_gate_app/features/home/data/models/product_model.dart';
 abstract class HomeLocalDataSource {
   Future<List<CategoryItemModel>> getCategories();
   // Future<List<CompanyModel>> getPopularCompanies();
-  Future<List<ProductModel>> getPopularProducts();
+ //  Future<List<ProductModel>> getPopularProducts();
 }
 
 class HomeLocalDataSourceImpl implements HomeLocalDataSource {
@@ -64,8 +64,8 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
   //   ];
   // }
 
-  @override
-  Future<List<ProductModel>> getPopularProducts() async {
-    return const [];
-  }
+  // @override
+  // Future<List<ProductModel>> getPopularProducts() async {
+  //   return const [];
+  // }
 }

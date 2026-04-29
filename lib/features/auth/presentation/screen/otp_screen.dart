@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
 import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
@@ -14,6 +13,7 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_bo
 class OtpScreen extends ConsumerStatefulWidget {
   final String email;
   final OtpFlowType flowType;
+
   const OtpScreen({super.key, required this.email, required this.flowType});
 
   @override
@@ -84,16 +84,13 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
-    final loc = AppLocalizations.of(context)!;
 
     ref.listen(authControllerProvider, (previous, next) {
       if (!next.isSuccess) return;
 
       if (widget.flowType == OtpFlowType.verifyEmail) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(next.message ?? 'Email verified successfully'),
-          ),
+          const SnackBar(content: Text('Email verified successfully')),
         );
         context.go(RouteNames.login);
       } else {
@@ -105,133 +102,146 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
         }
       }
     });
+
     return AuthScaffoldBody(
-      child: Column(
-        children: [
-          AuthBackButton(onTap: () => context.go(RouteNames.signUp)),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Column(
+          children: [
+            AuthBackButton(onTap: () => context.go(RouteNames.signUp)),
 
-          const SizedBox(height: 48),
+            const SizedBox(height: 48),
 
-          AuthHeader(
-            title: loc.enterOtp,
-            subtitle: '${loc.otpSubtitle}\n${widget.email}',
-          ),
+            AuthHeader(
+              title: 'Enter OTP',
+              subtitle: 'We sent a code to\n${widget.email}',
+            ),
 
-          const SizedBox(height: 28),
+            const SizedBox(height: 28),
 
-          /// OTP BOXES
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(6, (index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                child: SizedBox(
-                  width: 42,
-                  height: 52,
-                  child: TextField(
-                    controller: _controllers[index],
-                    focusNode: _focusNodes[index],
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.center,
-                    maxLength: 1,
-                    decoration: InputDecoration(
-                      counterText: '',
-                      contentPadding: EdgeInsets.zero,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: Color(0xFF274777)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(
-                          color: Color(0xFF274777),
-                          width: 1.5,
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final totalWidth = constraints.maxWidth;
+
+                double itemWidth = (totalWidth - 60) / 6;
+
+                itemWidth = itemWidth.clamp(40, 55);
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(6, (index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: SizedBox(
+                        width: itemWidth,
+                        height: 52,
+                        child: TextField(
+                          controller: _controllers[index],
+                          focusNode: _focusNodes[index],
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          textDirection: TextDirection.ltr,
+                          maxLength: 1,
+                          decoration: InputDecoration(
+                            counterText: '',
+                            contentPadding: EdgeInsets.zero,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
+                              borderSide: const BorderSide(
+                                color: Color(0xFF274777),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
+                              borderSide: const BorderSide(
+                                color: Color(0xFF274777),
+                                width: 1.5,
+                              ),
+                            ),
+                          ),
+                          onChanged: (value) => _onChanged(value, index),
                         ),
                       ),
-                    ),
-                    onChanged: (value) => _onChanged(value, index),
-                  ),
-                ),
-              );
-            }),
-          ),
-
-          const SizedBox(height: 18),
-
-          /// RESEND
-          Wrap(
-            alignment: WrapAlignment.center,
-            children: [
-              Text(
-                loc.didNotReceiveCode,
-                style: const TextStyle(fontSize: 13, color: Colors.grey),
-              ),
-              GestureDetector(
-                onTap: _seconds == 0
-                    ? () {
-                        ref
-                            .read(authControllerProvider.notifier)
-                            .forgotPassword(email: widget.email);
-                        _startTimer();
-                      }
-                    : null,
-                child: Text(
-                  _seconds == 0
-                      ? loc.resendCode
-                      : '${loc.resendIn} $_seconds ${loc.seconds}',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: _seconds == 0
-                        ? const Color(0xFF274777)
-                        : Colors.grey,
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 24),
-
-          /// ERROR
-          if (state.errorMessage != null) ...[
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.red.withValues(alpha: 0.20)),
-              ),
-              child: Text(
-                state.errorMessage!,
-                style: const TextStyle(color: Colors.red, fontSize: 13),
-              ),
+                    );
+                  }),
+                );
+              },
             ),
-            const SizedBox(height: 16),
-          ],
 
-          AuthPrimaryButton(
-            text: loc.continues,
-            isLoading: state.isLoading,
-            onPressed: _otpCode.length == 6
-                ? () async {
-                    if (widget.flowType == OtpFlowType.verifyEmail) {
-                      await ref
-                          .read(authControllerProvider.notifier)
-                          .verifyEmail(email: widget.email, code: _otpCode);
-                    } else {
-                      await ref
-                          .read(authControllerProvider.notifier)
-                          .verifyOtp(email: widget.email, code: _otpCode);
+            const SizedBox(height: 18),
+
+            /// RESEND
+            Wrap(
+              alignment: WrapAlignment.center,
+              children: [
+                const Text(
+                  'Didn’t receive code? ',
+                  style: TextStyle(fontSize: 13, color: Colors.grey),
+                ),
+                GestureDetector(
+                  onTap: _seconds == 0
+                      ? () {
+                          ref
+                              .read(authControllerProvider.notifier)
+                              .forgotPassword(email: widget.email);
+                          _startTimer();
+                        }
+                      : null,
+                  child: Text(
+                    _seconds == 0 ? 'Resend' : 'Resend in $_seconds s',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: _seconds == 0
+                          ? const Color(0xFF274777)
+                          : Colors.grey,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 24),
+
+            if (state.errorMessage != null) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.red.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.red.withValues(alpha: 0.20)),
+                ),
+                child: Text(
+                  state.errorMessage!,
+                  style: const TextStyle(color: Colors.red, fontSize: 13),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+
+            AuthPrimaryButton(
+              text: 'Continue',
+              isLoading: state.isLoading,
+              onPressed: _otpCode.length == 6
+                  ? () async {
+                      if (widget.flowType == OtpFlowType.verifyEmail) {
+                        await ref
+                            .read(authControllerProvider.notifier)
+                            .verifyEmail(email: widget.email, code: _otpCode);
+                      } else {
+                        await ref
+                            .read(authControllerProvider.notifier)
+                            .verifyOtp(email: widget.email, code: _otpCode);
+                      }
                     }
-                  }
-                : null,
-          ),
-        ],
+                  : null,
+            ),
+          ],
+        ),
       ),
     );
   }

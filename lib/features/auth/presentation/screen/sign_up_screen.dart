@@ -11,6 +11,7 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_bottom_link
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_header.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_body.dart';
+import 'package:sun_gate_app/features/auth/presentation/widgets/langauge_switcher.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/password_strength_indicator.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
@@ -88,7 +89,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     return AuthScaffoldBody(
       child: Column(
         children: [
-          AuthBackButton(onTap: () => context.go('/login')),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AuthBackButton(onTap: () => context.go('/home')),
+                  const LanguageSwitcherButton(),
+                ],
+              ),
+            ],
+          ),
           const SizedBox(height: 4),
 
           Text(

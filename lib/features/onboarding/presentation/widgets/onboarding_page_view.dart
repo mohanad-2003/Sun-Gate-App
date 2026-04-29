@@ -1,9 +1,11 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:palette_generator_master/palette_generator_master.dart';
 import 'package:sun_gate_app/core/widgets/app_text.dart';
 import 'package:sun_gate_app/features/onboarding/data/model/onboarding_item_model.dart';
 import 'onboarding_background_image.dart';
-import 'onboarding_content_card.dart';
-class OnboardingPageView extends StatelessWidget {
+
+class OnboardingPageView extends StatefulWidget {
   final OnboardingItemModel item;
   final String title;
   final String description;
@@ -18,103 +20,106 @@ class OnboardingPageView extends StatelessWidget {
   });
 
   @override
+  State<OnboardingPageView> createState() => _OnboardingPageViewState();
+}
+
+class _OnboardingPageViewState extends State<OnboardingPageView> {
+  Color dominantColor = const Color(0xFF274777);
+
+  @override
+  void initState() {
+    super.initState();
+    _generateColor();
+  }
+
+  Future<void> _generateColor() async {
+    final palette = await PaletteGeneratorMaster.fromImageProvider(
+      AssetImage(widget.item.imagePath),
+    );
+
+    setState(() {
+      dominantColor = palette.dominantColor?.color ?? const Color(0xFF274777);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (item.isLastPage) {
-      return Stack(
-        fit: StackFit.expand,
-        children: [
-          OnboardingBackgroundImage(
-            imagePath: item.imagePath,
-            useDarkOverlay: true,
-            isLastPage: true,
-          ),
-          SafeArea(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        OnboardingBackgroundImage(
+          imagePath: widget.item.imagePath,
+          useDarkOverlay: false,
+          isLastPage: widget.item.isLastPage,
+        ),
+
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
                 width: double.infinity,
                 padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
                     colors: [
-                      const Color(0xFF264069).withOpacity(0.35),
-                      const Color(0xFF264069).withOpacity(0.72),
-                      const Color(0xFF264069).withOpacity(0.95),
+                      dominantColor.withOpacity(0.6),
+                      dominantColor.withOpacity(0.85),
                     ],
-                    stops: const [0.0, 0.45, 1.0],
+                  ),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(30),
                   ),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AppText(
-                      title,
-                      style: Theme.of(context).textTheme.headlineMedium
-                          ?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 24,
-                            height: 1.35,
-                          ),
-                      maxLines: 3,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 12),
-                    AppText(
-                      description,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white.withOpacity(0.92),
-                        fontSize: 14,
-                        height: 1.5,
+                    /// Animated Text
+                    TweenAnimationBuilder(
+                      duration: const Duration(milliseconds: 500),
+                      tween: Tween<Offset>(
+                        begin: const Offset(0, 30),
+                        end: Offset.zero,
                       ),
-                      maxLines: 3,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
+                      builder: (context, value, child) {
+                        return Transform.translate(offset: value, child: child);
+                      },
+                      child: Column(
+                        children: [
+                          AppText(
+                            widget.title,
+                            style: Theme.of(context).textTheme.headlineMedium
+                                ?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 26,
+                                ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 12),
+                          AppText(
+                            widget.description,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Colors.white.withOpacity(0.9),
+                                  fontSize: 15,
+                                  height: 1.6,
+                                ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
+
                     const SizedBox(height: 28),
-                    footer,
+
+                    widget.footer,
                   ],
                 ),
               ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        OnboardingBackgroundImage(
-          imagePath: item.imagePath,
-          useDarkOverlay: false,
-          isLastPage: false,
-        ),
-
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 20),
-            //  margin: const EdgeInsets.symmetric(horizontal: 0),
-            decoration: const BoxDecoration(
-              color: Color(0xFF274777),
-              borderRadius: BorderRadius.only(topRight: Radius.circular(40)),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                OnboardingContentCard(title: title, description: description),
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  color: const Color(0xFF274777),
-                  child: footer,
-                ),
-              ],
             ),
           ),
         ),
