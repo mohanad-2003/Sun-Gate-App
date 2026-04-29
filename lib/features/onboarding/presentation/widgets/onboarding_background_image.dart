@@ -21,32 +21,23 @@ class OnboardingBackgroundImage extends StatelessWidget {
           Image.asset(
             imagePath,
             fit: BoxFit.cover,
-            alignment: Alignment.bottomCenter,
-            errorBuilder: (_, _, _) {
-              return Container(
-                color: Colors.grey.shade300,
-                alignment: Alignment.center,
-                child: const Icon(Icons.image_not_supported_outlined, size: 48),
-              );
-            },
+            alignment: Alignment.topCenter,
           ),
-          if (isLastPage)
-            DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    const Color(0xFF264069).withOpacity(0.63),
-                    const Color(0xFFE1C886).withOpacity(0.20),
-                    const Color(0xFF264069).withOpacity(0.95),
-                  ],
-                  stops: const [0.0, 0.42, 1.0],
-                ),
+
+          /// Gradient cinematic overlay
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black.withOpacity(0.2),
+                  Colors.transparent,
+                  Colors.black.withOpacity(0.6),
+                ],
               ),
-            )
-          else if (useDarkOverlay)
-            Container(color: Colors.black.withOpacity(0.06)),
+            ),
+          ),
         ],
       ),
     );

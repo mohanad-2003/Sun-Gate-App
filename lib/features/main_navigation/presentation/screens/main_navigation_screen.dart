@@ -4,6 +4,7 @@ import 'package:sun_gate_app/features/calculator/presentation/screens/calculator
 import 'package:sun_gate_app/features/home/presentation/screens/home_screen.dart';
 import 'package:sun_gate_app/features/main_navigation/presentation/controllers/home_bottom_nav_provider.dart';
 import 'package:sun_gate_app/features/main_navigation/presentation/widgets/app_bottom_nav_bar.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/screen/product_screen.dart';
 import 'package:sun_gate_app/features/profile/presentation/screens/profile_screen.dart';
 
 class MainNavigationScreen extends ConsumerWidget {
@@ -19,6 +20,7 @@ class MainNavigationScreen extends ConsumerWidget {
       InstructionsScreen(),
       SuppliersScreen(),
       ProfileScreen(),
+      //  ProductsScreen(),
     ];
 
     return Scaffold(

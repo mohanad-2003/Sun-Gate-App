@@ -44,14 +44,14 @@ class MarketScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 12),
-          ...state.products.map(
-            (product) => ProductListTile(
-              product: product,
-              onTap: () {
-                context.push(RouteNames.productDetail, extra: product);
-              },
-            ),
-          ),
+          // ...state.products.map(
+          //   (product) => ProductListTile(
+          //     product: product,
+          //     onTap: () {
+          //       context.push(RouteNames.productDetail, extra: product);
+          //     },
+          //   ),
+          // ),
         ],
       ),
     );

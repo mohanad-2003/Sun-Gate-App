@@ -13,6 +13,7 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_header.dart
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_outline_google_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_body.dart';
+import 'package:sun_gate_app/features/auth/presentation/widgets/langauge_switcher.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -50,16 +51,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         key: formKey,
         child: Column(
           children: [
-            AuthBackButton(
-              onTap: () => context.go('/onboarding'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AuthBackButton(onTap: () => context.go('/onboarding')),
+                    const LanguageSwitcherButton(),
+                  ],
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             Text(
               loc.login,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 24),
             AuthHeader(
@@ -102,9 +109,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 decoration: BoxDecoration(
                   color: Colors.red.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: Colors.red.withValues(alpha: 0.25),
-                  ),
+                  border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
                 ),
                 child: Text(
                   state.errorMessage!,
@@ -133,7 +138,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               text: loc.login,
               isLoading: state.isLoading,
               onPressed: () {
-                ref.read(authControllerProvider.notifier).login(
+                ref
+                    .read(authControllerProvider.notifier)
+                    .login(
                       email: emailController.text,
                       password: passwordController.text,
                     );
@@ -154,9 +161,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   if (!context.mounted) return;
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(loc.googleSignInFailed),
-                    ),
+                    SnackBar(content: Text(loc.googleSignInFailed)),
                   );
                   return;
                 }

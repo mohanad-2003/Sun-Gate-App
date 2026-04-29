@@ -17,10 +17,7 @@ class AuthBottomLink extends StatelessWidget {
     return Wrap(
       alignment: WrapAlignment.center,
       children: [
-        Text(
-          text,
-          style: const TextStyle(fontSize: 13, color: Colors.grey),
-        ),
+        Text(text, style: const TextStyle(fontSize: 13, color: Colors.grey)),
         GestureDetector(
           onTap: onTap,
           child: Text(

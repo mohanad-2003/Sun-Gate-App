@@ -23,9 +23,9 @@ class CategoryProductsScreen extends ConsumerWidget {
 
     final localizedCategoryTitle = loc.categoryByKey(category.titleKey);
 
-    final filteredProducts = state.products.where((product) {
-      return product.tagKeys.contains(category.titleKey);
-    }).toList();
+    // final filteredProducts = state.products.where((product) {
+    //   return product.tagKeys.contains(category.titleKey);
+    // }).toList();
 
     return Scaffold(
       appBar: AppBar(title: Text(localizedCategoryTitle), centerTitle: true),
@@ -69,23 +69,23 @@ class CategoryProductsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 8),
-          if (filteredProducts.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Text(
-                loc.noProductsForCategory,
-                style: theme.textTheme.bodyMedium,
-              ),
-            )
-          else
-            ...filteredProducts.map(
-              (product) => ProductListTile(
-                product: product,
-                onTap: () {
-                  context.push(RouteNames.productDetail, extra: product);
-                },
-              ),
-            ),
+          // if (filteredProducts.isEmpty)
+          //   Padding(
+          //     padding: const EdgeInsets.symmetric(vertical: 16),
+          //     child: Text(
+          //       loc.noProductsForCategory,
+          //       style: theme.textTheme.bodyMedium,
+          //     ),
+          //   )
+          // else
+          //   ...filteredProducts.map(
+          //     (product) => ProductListTile(
+          //       product: product,
+          //       onTap: () {
+          //         context.push(RouteNames.productDetail, extra: product);
+          //       },
+          //     ),
+          //  ),
         ],
       ),
     );

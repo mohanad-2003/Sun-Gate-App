@@ -5,9 +5,9 @@ import 'package:sun_gate_app/features/home/presentation/extentions/home_localiza
 import 'package:sun_gate_app/features/home/presentation/widgets/product_owner_card.dart';
 
 class ProductDetailScreen extends StatelessWidget {
-  final ProductModel product;
+ // final ProductModel product;
 
-  const ProductDetailScreen({super.key, required this.product});
+  const ProductDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +22,12 @@ class ProductDetailScreen extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Image.asset(
-                  product.imagePath,
-                  width: double.infinity,
-                  height: 250,
-                  fit: BoxFit.cover,
-                ),
+                // Image.asset(
+                //   product.imagePath,
+                //   width: double.infinity,
+                //   height: 250,
+                //   fit: BoxFit.cover,
+                // ),
                 Positioned(
                   top: 14,
                   left: 14,
@@ -71,12 +71,12 @@ class ProductDetailScreen extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
                 children: [
-                  Text(
-                    loc.productByKey(product.nameKey),
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  // Text(
+                  //   loc.productByKey(product.nameKey),
+                  //   style: theme.textTheme.titleLarge?.copyWith(
+                  //     fontWeight: FontWeight.w700,
+                  //   ),
+                  // ),
                   const SizedBox(height: 18),
                   Text(
                     loc.description,
@@ -85,13 +85,13 @@ class ProductDetailScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    loc.productByKey(product.descriptionKey),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                      height: 1.65,
-                    ),
-                  ),
+                  // Text(
+                  //   loc.productByKey(product.descriptionKey),
+                  //   style: theme.textTheme.bodyMedium?.copyWith(
+                  //     color: colorScheme.onSurfaceVariant,
+                  //     height: 1.65,
+                  //   ),
+                  // ),
                   const SizedBox(height: 20),
                   Text(
                     loc.howItWorks,
@@ -100,26 +100,26 @@ class ProductDetailScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  ...product.howItWorksKeys.map(
-                    (itemKey) => Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('• '),
-                          Expanded(
-                            child: Text(
-                              loc.productByKey(itemKey),
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                                height: 1.6,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // ...product.howItWorksKeys.map(
+                  //   (itemKey) => Padding(
+                  //     padding: const EdgeInsets.only(bottom: 6),
+                  //     child: Row(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       children: [
+                  //         const Text('• '),
+                  //         Expanded(
+                  //           child: Text(
+                  //             loc.productByKey(itemKey),
+                  //             style: theme.textTheme.bodyMedium?.copyWith(
+                  //               color: colorScheme.onSurfaceVariant,
+                  //               height: 1.6,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(height: 20),
                   Text(
                     loc.contactOwner,
@@ -128,12 +128,12 @@ class ProductDetailScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  ProductOwnerCard(
-                    ownerName: loc.productByKey(product.ownerNameKey),
-                    ownerRole: loc.productByKey(product.ownerRoleKey),
-                    ownerPhone: product.ownerPhone,
-                    ownerEmail: product.ownerEmail,
-                  ),
+                  // ProductOwnerCard(
+                  //   ownerName: loc.productByKey(product.ownerNameKey),
+                  //   ownerRole: loc.productByKey(product.ownerRoleKey),
+                  //   ownerPhone: product.ownerPhone,
+                  //   ownerEmail: product.ownerEmail,
+                  // ),
                   const SizedBox(height: 22),
                   Row(
                     children: [
@@ -144,13 +144,13 @@ class ProductDetailScreen extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      Text(
-                        '\$${product.price.toStringAsFixed(2)}',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: colorScheme.primary,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
+                      // Text(
+                      //   '\$${product.price.toStringAsFixed(2)}',
+                      //   style: theme.textTheme.titleMedium?.copyWith(
+                      //     color: colorScheme.primary,
+                      //     fontWeight: FontWeight.w800,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],

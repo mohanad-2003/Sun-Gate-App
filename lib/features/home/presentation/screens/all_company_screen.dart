@@ -7,7 +7,7 @@ import 'package:sun_gate_app/features/home/presentation/controllers/home_mock_da
 import 'package:sun_gate_app/features/home/presentation/widgets/category_chip_card.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/home_search_bar.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/section_title_row.dart';
-import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_controller.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/provider/market_place_provider.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/widget/market_place_company_card.dart';
 
 class AllCompanyScreen extends ConsumerStatefulWidget {
@@ -134,47 +134,44 @@ class _AllCompanyScreenState extends ConsumerState<AllCompanyScreen> {
                   child: marketState.isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : marketState.errorMessage != null
-                          ? Center(
-                              child: Text(
-                                marketState.errorMessage!,
-                                textAlign: TextAlign.center,
+                      ? Center(
+                          child: Text(
+                            marketState.errorMessage!,
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      : marketState.companies.isEmpty
+                      ? const Center(child: Text('No companies found'))
+                      : GridView.builder(
+                          padding: EdgeInsets.fromLTRB(
+                            horizontalPadding,
+                            0,
+                            horizontalPadding,
+                            24,
+                          ),
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: marketState.companies.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 14,
+                                mainAxisSpacing: 18,
+                                childAspectRatio: 0.73,
                               ),
-                            )
-                          : marketState.companies.isEmpty
-                              ? const Center(
-                                  child: Text('No companies found'),
-                                )
-                              : GridView.builder(
-                                  padding: EdgeInsets.fromLTRB(
-                                    horizontalPadding,
-                                    0,
-                                    horizontalPadding,
-                                    24,
-                                  ),
-                                  physics: const BouncingScrollPhysics(),
-                                  itemCount: marketState.companies.length,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 14,
-                                    mainAxisSpacing: 18,
-                                    childAspectRatio: 0.73,
-                                  ),
-                                  itemBuilder: (context, index) {
-                                    final company =
-                                        marketState.companies[index];
+                          itemBuilder: (context, index) {
+                            final company = marketState.companies[index];
 
-                                    return MarketplaceCompanyCard(
-                                      company: company,
-                                      onTap: () {
-                                        context.push(
-                                          RouteNames.companyDetail,
-                                          extra: company,
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
+                            return MarketplaceCompanyCard(
+                              company: company,
+                              onTap: () {
+                                context.push(
+                                  RouteNames.companyDetail,
+                                  extra: company,
+                                );
+                              },
+                            );
+                          },
+                        ),
                 ),
               ],
             );
