@@ -6,7 +6,7 @@ class AuthResult {
   final AuthUser user;
   final String? message;
 
-  AuthResult({
+  const AuthResult({
     this.accessToken,
     this.refreshToken,
     this.message,

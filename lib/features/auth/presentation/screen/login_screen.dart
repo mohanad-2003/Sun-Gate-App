@@ -131,7 +131,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: Text(loc.forgotPassword),
               ),
             ),
-
             const SizedBox(height: 4),
 
             AuthPrimaryButton(
