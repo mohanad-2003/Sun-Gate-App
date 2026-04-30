@@ -22,7 +22,6 @@ class SignUpScreen extends ConsumerStatefulWidget {
 }
 
 class _SignUpScreenState extends ConsumerState<SignUpScreen> {
-  // final fullNameController = TextEditingController();
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
@@ -39,8 +38,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     passwordController.dispose();
     super.dispose();
   }
-
-
 
   Color? _getPasswordBorderColor(String password) {
     if (password.isEmpty) return null;

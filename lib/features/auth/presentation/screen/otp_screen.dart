@@ -197,6 +197,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                       fontWeight: FontWeight.w700,
                       color: _seconds == 0
                           ? const Color(0xFF274777)
+                          
                           : Colors.grey,
                     ),
                   ),

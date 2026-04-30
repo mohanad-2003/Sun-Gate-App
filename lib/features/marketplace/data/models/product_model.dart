@@ -19,7 +19,7 @@ class ProductModel extends ProductEntity {
       title: json['title']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
       category: json['category']?.toString() ?? '',
-      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      price: (json['price'] as num?)?.toDouble() ?? 0,
       condition: json['condition']?.toString() ?? '',
       status: json['status']?.toString() ?? '',
       sellAs: json['sellAs']?.toString() ?? '',

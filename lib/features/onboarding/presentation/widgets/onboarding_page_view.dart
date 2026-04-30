@@ -25,7 +25,6 @@ class OnboardingPageView extends StatefulWidget {
 
 class _OnboardingPageViewState extends State<OnboardingPageView> {
   Color dominantColor = const Color(0xFF274777);
-
   @override
   void initState() {
     super.initState();
@@ -36,7 +35,7 @@ class _OnboardingPageViewState extends State<OnboardingPageView> {
     final palette = await PaletteGeneratorMaster.fromImageProvider(
       AssetImage(widget.item.imagePath),
     );
-
+    if (!mounted) return;
     setState(() {
       dominantColor = palette.dominantColor?.color ?? const Color(0xFF274777);
     });

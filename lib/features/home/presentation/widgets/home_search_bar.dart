@@ -24,9 +24,7 @@ class HomeSearchBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: colorScheme.outline.withOpacity(0.18),
-        ),
+        border: Border.all(color: colorScheme.outline.withOpacity(0.18)),
       ),
       child: Row(
         children: [
@@ -61,10 +59,7 @@ class HomeSearchBar extends StatelessWidget {
           ),
           IconButton(
             onPressed: onFilterTap,
-            icon: Icon(
-              Icons.tune_rounded,
-              color: colorScheme.onSurfaceVariant,
-            ),
+            icon: Icon(Icons.tune_rounded, color: colorScheme.onSurfaceVariant),
           ),
         ],
       ),

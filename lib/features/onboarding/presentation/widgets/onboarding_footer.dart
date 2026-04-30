@@ -38,10 +38,10 @@ class OnboardingFooter extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          const Text(
-            "Don't have an account? Sign Up",
-            style: TextStyle(color: Colors.white70),
-          ),
+          // const Text(
+          //   "Don't have an account? Sign Up",
+          //   style: TextStyle(color: Colors.white70),
+          // ),
         ],
       );
     }
@@ -51,10 +51,7 @@ class OnboardingFooter extends StatelessWidget {
         /// Skip
         TextButton(
           onPressed: onSkip,
-          child: const Text(
-            "Skip",
-            style: TextStyle(color: Colors.white70),
-          ),
+          child: const Text("Skip", style: TextStyle(color: Colors.white70)),
         ),
 
         const Spacer(),
@@ -76,10 +73,7 @@ class OnboardingFooter extends StatelessWidget {
               height: 44,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [
-                    AppColors.secondary,
-                    Color(0xFFE8C07D),
-                  ],
+                  colors: [AppColors.secondary, Color(0xFFE8C07D)],
                 ),
                 shape: BoxShape.circle,
                 boxShadow: [

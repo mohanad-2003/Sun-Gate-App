@@ -72,7 +72,6 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
 
           const SizedBox(height: 34),
 
-          /// NEW PASSWORD
           AuthTextField(
             controller: passwordController,
             label: loc.newPassword,
