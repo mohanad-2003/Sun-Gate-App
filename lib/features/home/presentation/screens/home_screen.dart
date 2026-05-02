@@ -23,7 +23,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(                                                                                                             
+    return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: const SingleChildScrollView(child: HomeHeaderSection()),
     );

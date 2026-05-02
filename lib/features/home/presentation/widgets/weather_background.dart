@@ -29,9 +29,10 @@ class _RainAnimationState extends State<RainAnimation>
 
   @override
   void initState() {
-    controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1))
-          ..repeat();
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat();
     super.initState();
   }
 
@@ -61,14 +62,10 @@ class RainPainter extends CustomPainter {
 
     for (int i = 0; i < 100; i++) {
       final x = random.nextDouble() * size.width;
-      final y = (random.nextDouble() * size.height + progress * 300) %
-          size.height;
+      final y =
+          (random.nextDouble() * size.height + progress * 300) % size.height;
 
-      canvas.drawLine(
-        Offset(x, y),
-        Offset(x + 2, y + 10),
-        paint,
-      );
+      canvas.drawLine(Offset(x, y), Offset(x + 2, y + 10), paint);
     }
   }
 
@@ -78,16 +75,12 @@ class RainPainter extends CustomPainter {
 
 class SunAnimation extends StatelessWidget {
   const SunAnimation({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         gradient: RadialGradient(
-          colors: [
-            Colors.orange.withAlpha(200),
-            Colors.transparent,
-          ],
+          colors: [Colors.orange.withAlpha(200), Colors.transparent],
           radius: 0.8,
           center: Alignment.topLeft,
         ),
