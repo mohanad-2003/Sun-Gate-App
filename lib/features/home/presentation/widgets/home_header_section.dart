@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
@@ -10,6 +11,7 @@ import 'package:sun_gate_app/features/home/presentation/widgets/home_app_bar_sec
 import 'package:sun_gate_app/features/home/presentation/widgets/home_banner_card.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/home_weather_section.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/section_title_row.dart';
+import 'package:sun_gate_app/features/home/presentation/widgets/weather_background.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/widget/market_place_company_card.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 
@@ -31,53 +33,96 @@ class HomeHeaderSection extends ConsumerWidget {
           : profileState.profile?.fullName,
     );
 
-    String headerImage = 'assets/images/sp.jpeg';
-
-    weatherState.when(
-      data: (data) {
-        headerImage = _getHeaderImage(data.condition);
-      },
-      loading: () {},
-      error: (_, _) {},
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
     );
 
     return Column(
       children: [
-        ///  HEADER
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(headerImage),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              HomeAppBarSection(userName: userName),
+        // ================= HEADER =================
+        weatherState.when(
+          data: (data) {
+            final headerImage = _getHeaderImage(data.condition);
 
-              const SizedBox(height: 20),
+            final topOverlay = _getOverlayColor(data.condition);
 
-              ///  WEATHER
-              weatherState.when(
-                data: (data) => HomeWeatherSection(
-                  temp: data.temp,
-                  humidity: data.humidity,
-                  wind: data.wind,
-                  condition: data.condition,
-                  cityName: data.cityName,
-                  hourly: data.hourly,
+            return Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(headerImage),
+                  fit: BoxFit.cover,
                 ),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (_, _) => const SizedBox(),
               ),
-            ],
+
+             
+              child: Stack(
+                children: [
+                  ///  Animated Weather Background
+                  Positioned.fill(
+                    child: WeatherBackground(condition: data.condition),
+                  ),
+
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            topOverlay,
+                            Colors.black.withValues(alpha: 0.25),
+                            Colors.transparent,
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 20,
+                        ),
+                        child: HomeAppBarSection(userName: userName),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeInOut,
+                        child: HomeWeatherSection(
+                          temp: data.temp,
+                          humidity: data.humidity,
+                          wind: data.wind,
+                          condition: data.condition,
+                          cityName: data.cityName,
+                          hourly: data.hourly,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+          loading: () => const SizedBox(
+            height: 250,
+            child: Center(child: CircularProgressIndicator()),
           ),
+          error: (_, _) => const SizedBox(),
         ),
 
-        ///  BODY
+        // ================= BODY =================
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -98,7 +143,7 @@ class HomeHeaderSection extends ConsumerWidget {
 
               const SizedBox(height: 20),
 
-              /// Categories
+              // Categories
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: SectionTitleRow(
@@ -133,7 +178,7 @@ class HomeHeaderSection extends ConsumerWidget {
 
               const SizedBox(height: 20),
 
-              /// Companies
+              // Companies
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: SectionTitleRow(
@@ -176,7 +221,6 @@ class HomeHeaderSection extends ConsumerWidget {
     );
   }
 
-  /// Setting the image according to the weather
   String _getHeaderImage(String condition) {
     switch (condition.toLowerCase()) {
       case 'rain':
@@ -187,6 +231,19 @@ class HomeHeaderSection extends ConsumerWidget {
         return 'assets/images/sun.jpg';
       default:
         return 'assets/images/sp.jpeg';
+    }
+  }
+
+  Color _getOverlayColor(String condition) {
+    switch (condition.toLowerCase()) {
+      case 'clear':
+        return Colors.orange.withValues(alpha: 0.5);
+      case 'clouds':
+        return Colors.black.withValues(alpha: 0.6);
+      case 'rain':
+        return Colors.blueGrey.withValues(alpha: 0.6);
+      default:
+        return Colors.black.withValues(alpha: 0.6);
     }
   }
 
