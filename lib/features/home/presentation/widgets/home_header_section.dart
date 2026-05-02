@@ -33,7 +33,6 @@ class HomeHeaderSection extends ConsumerWidget {
           : profileState.profile?.fullName,
     );
 
-    /// 🔥 Status Bar احترافي
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -44,7 +43,7 @@ class HomeHeaderSection extends ConsumerWidget {
 
     return Column(
       children: [
-        /// ================= HEADER =================
+        // ================= HEADER =================
         weatherState.when(
           data: (data) {
             final headerImage = _getHeaderImage(data.condition);
@@ -61,15 +60,14 @@ class HomeHeaderSection extends ConsumerWidget {
                 ),
               ),
 
-              /// 🔥 أهم جزء (Stack)
+             
               child: Stack(
                 children: [
-                  /// 🌧️ Animated Weather Background
+                  ///  Animated Weather Background
                   Positioned.fill(
                     child: WeatherBackground(condition: data.condition),
                   ),
 
-                  /// 🔥 Overlay ذكي
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
