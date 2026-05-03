@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
+import 'package:sun_gate_app/core/services/location_helper_service.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
 import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auht_text_field.dart';
@@ -157,10 +159,39 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           ),
           const SizedBox(height: 14),
 
-          AuthTextField(
+          TextFormField(
             controller: locationController,
-            label: loc.location,
-            hintText: loc.enterLocation,
+            readOnly: true,
+            decoration: InputDecoration(
+              labelText: loc.location,
+              suffixIcon: const Icon(Icons.location_on),
+            ),
+            onTap: () async {
+              try {
+                final location = await LocationHelper.getCurrentLocationName();
+                locationController.text = location;
+              } catch (e) {
+                print(e); // debugging
+
+                final message = e.toString();
+
+                if (message.contains('disabled')) {
+                  await Geolocator.openLocationSettings();
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('الرجاء تفعيل الموقع (GPS)')),
+                  );
+                } else if (message.contains('permission')) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('الرجاء إعطاء إذن الموقع')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('فشل في جلب الموقع')),
+                  );
+                }
+              }
+            },
           ),
 
           const SizedBox(height: 12),
