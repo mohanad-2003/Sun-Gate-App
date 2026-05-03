@@ -59,15 +59,12 @@ class HomeWeatherSection extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              /// 🔥 Glass effect حقيقي
               color: Colors.white.withOpacity(0.08),
 
               borderRadius: BorderRadius.circular(24),
 
-              /// ✨ Border ناعم
               border: Border.all(color: Colors.white.withOpacity(0.15)),
 
-              /// 💡 Shadow خفيف جداً
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -79,7 +76,7 @@ class HomeWeatherSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// 🔥 TOP
+                //  TOP
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -121,7 +118,7 @@ class HomeWeatherSection extends StatelessWidget {
 
                 const SizedBox(height: 12),
 
-                /// DETAILS
+                // DETAILS
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

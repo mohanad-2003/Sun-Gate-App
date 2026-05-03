@@ -60,10 +60,9 @@ class HomeHeaderSection extends ConsumerWidget {
                 ),
               ),
 
-             
               child: Stack(
                 children: [
-                  ///  Animated Weather Background
+                  //  Animated Weather Background
                   Positioned.fill(
                     child: WeatherBackground(condition: data.condition),
                   ),
@@ -204,7 +203,6 @@ class HomeHeaderSection extends ConsumerWidget {
                   ),
                   itemBuilder: (context, index) {
                     final company = previewCompanies[index];
-
                     return MarketplaceCompanyCard(
                       company: company,
                       onTap: () {

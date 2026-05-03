@@ -66,7 +66,7 @@ class ProductOwnerCard extends StatelessWidget {
             icon: const Icon(Icons.call),
             tooltip: loc.call,
             onPressed: () {
-           //   ContactService.call(ownerPhone);
+              //   ContactService.call(ownerPhone);
             },
           ),
           const SizedBox(width: 12),
@@ -74,7 +74,7 @@ class ProductOwnerCard extends StatelessWidget {
             icon: const Icon(Icons.email),
             tooltip: loc.email,
             onPressed: () {
-           //   ContactService.email(ownerEmail);
+              //   ContactService.email(ownerEmail);
             },
           ),
         ],
