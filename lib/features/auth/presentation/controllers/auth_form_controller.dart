@@ -55,7 +55,8 @@ class AuthFormController extends StateNotifier<AuthState> {
     required String firstName,
     required String lastName,
     required String email,
-    required String password,
+    required String birthDate,
+    required String location,
   }) async {
     state = state.copyWith(
       isLoading: true,
@@ -69,7 +70,8 @@ class AuthFormController extends StateNotifier<AuthState> {
         firstName: firstName,
         lastname: lastName,
         email: email,
-        password: password,
+        birthDate: birthDate,
+        location: location,
       );
 
       state = state.copyWith(

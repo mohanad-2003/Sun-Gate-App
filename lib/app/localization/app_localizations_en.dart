@@ -824,4 +824,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pleaseEnterLastName => 'Please Enter Last Name';
+
+  @override
+  String get birthDate => 'Birth Date';
+
+  @override
+  String get enterBirthDate => 'Select your birth date';
+
+  @override
+  String get enterLocation => 'Enter your location';
 }

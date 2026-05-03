@@ -261,5 +261,8 @@
   "enterFirstName": "أدخل الاسم الاول",
   "enterLastName": "أدخل الأسم الثاني",
   "pleaseEnterFirstName": "لو سمحت أدخل الاسم الاول",
-  "pleaseEnterLastName": "لو سمحت أدخل الاسم الثاني"
+  "pleaseEnterLastName": "لو سمحت أدخل الاسم الثاني",
+  "birthDate": "تاريخ الميلاد",
+  "enterBirthDate": "اختر تاريخ الميلاد",
+  "enterLocation": "أدخل موقعك"
 }
