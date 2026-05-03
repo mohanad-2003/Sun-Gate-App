@@ -62,7 +62,7 @@ class HomeHeaderSection extends ConsumerWidget {
 
               child: Stack(
                 children: [
-                  ///  Animated Weather Background
+                  //  Animated Weather Background
                   Positioned.fill(
                     child: WeatherBackground(condition: data.condition),
                   ),

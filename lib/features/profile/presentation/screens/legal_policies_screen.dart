@@ -44,7 +44,7 @@ class _LegalPoliciesBody extends StatelessWidget {
                 LegalContactCard(
                   title: loc.needHelp,
                   note: loc.legalSupportNote,
-                  email: 'support@sungate.com',
+                  email: 'support@gmail.com',
                 ),
               ],
             ),
