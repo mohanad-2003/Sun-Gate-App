@@ -25,7 +25,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final birthDateController = TextEditingController();
+  final locationController = TextEditingController();
 
   bool acceptPolicy = false;
   bool obscurePassword = true;
@@ -35,7 +36,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     firstNameController.dispose();
     lastNameController.dispose();
     emailController.dispose();
-    passwordController.dispose();
+    birthDateController.dispose();
+    locationController.dispose();
     super.dispose();
   }
 
@@ -54,10 +56,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
     final loc = AppLocalizations.of(context)!;
-
-    final password = passwordController.text.trim();
-    final passwordStrength = evaluatePasswordStrength(password);
-    final passwordBorderColor = _getPasswordBorderColor(password);
 
     ref.listen(authControllerProvider, (previous, next) {
       if (next.isSuccess) {
@@ -138,32 +136,32 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           ),
 
           const SizedBox(height: 14),
+          AuthTextField(
+            controller: birthDateController,
+            label: loc.birthDate,
+            hintText: loc.enterBirthDate,
+            readOnly: true,
+            onTap: () async {
+              final date = await showDatePicker(
+                context: context,
+                firstDate: DateTime(1950),
+                lastDate: DateTime.now(),
+                initialDate: DateTime(2000),
+              );
+
+              if (date != null) {
+                birthDateController.text =
+                    "${date.year}-${date.month}-${date.day}";
+              }
+            },
+          ),
+          const SizedBox(height: 14),
 
           AuthTextField(
-            controller: passwordController,
-            label: loc.password,
-            hintText: loc.enterPassword,
-            obscureText: obscurePassword,
-            onChanged: (_) => setState(() {}),
-            enabledBorderColor: passwordBorderColor,
-            focusedBorderColor: passwordBorderColor ?? const Color(0xFF274777),
-            suffixIcon: IconButton(
-              onPressed: () {
-                setState(() {
-                  obscurePassword = !obscurePassword;
-                });
-              },
-              icon: Icon(
-                obscurePassword
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined,
-              ),
-            ),
+            controller: locationController,
+            label: loc.location,
+            hintText: loc.enterLocation,
           ),
-
-          const SizedBox(height: 10),
-
-          PasswordStrengthIndicator(password: password),
 
           const SizedBox(height: 12),
 
@@ -205,7 +203,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             onPressed: acceptPolicy
                 ? () {
                     final email = emailController.text.trim();
-                    final rawPassword = passwordController.text;
 
                     if (firstNameController.text.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -228,29 +225,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       return;
                     }
 
-                    if (rawPassword.trim().isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(loc.pleaseEnterPassword)),
-                      );
-                      return;
-                    }
-
-                    if (!passwordStrength.isValidStrongPassword) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(loc.pleaseChooseStrongerPassword),
-                        ),
-                      );
-                      return;
-                    }
-
                     ref
                         .read(authControllerProvider.notifier)
                         .register(
                           firstName: firstNameController.text.trim(),
                           lastName: lastNameController.text.trim(),
                           email: email,
-                          password: rawPassword,
+                          birthDate: birthDateController.text.trim(),
+                          location: locationController.text.trim(),
                         );
                   }
                 : null,

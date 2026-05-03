@@ -819,4 +819,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pleaseEnterLastName => 'لو سمحت أدخل الاسم الثاني';
+
+  @override
+  String get birthDate => 'تاريخ الميلاد';
+
+  @override
+  String get enterBirthDate => 'اختر تاريخ الميلاد';
+
+  @override
+  String get enterLocation => 'أدخل موقعك';
 }

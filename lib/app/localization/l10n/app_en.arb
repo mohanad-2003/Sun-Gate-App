@@ -266,5 +266,8 @@
   "enterFirstName": "Enter First Name",
   "enterLastName": "Enter Last Name",
   "pleaseEnterFirstName": "Please Enter First Name",
-  "pleaseEnterLastName": "Please Enter Last Name"
+  "pleaseEnterLastName": "Please Enter Last Name",
+  "birthDate": "Birth Date",
+  "enterBirthDate": "Select your birth date",
+  "enterLocation": "Enter your location"
 }

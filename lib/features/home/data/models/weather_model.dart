@@ -5,8 +5,10 @@ class WeatherModel {
   final int humidity;
   final double wind;
   final String condition;
+  final String mainCondition;
   final String cityName;
   final List<HourlyWeather> hourly;
+
   const WeatherModel({
     required this.temp,
     required this.humidity,
@@ -14,6 +16,7 @@ class WeatherModel {
     required this.condition,
     required this.cityName,
     required this.hourly,
+    required this.mainCondition,
   });
 
   factory WeatherModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +25,7 @@ class WeatherModel {
       humidity: json['main']['humidity'],
       wind: json['wind']['speed'].toDouble(),
       condition: json['weather'][0]['main'],
+      mainCondition: json['weather'][0]['description'],
       cityName: json['cityName'],
       hourly: json['hourly'],
     );

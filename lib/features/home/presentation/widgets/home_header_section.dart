@@ -46,9 +46,9 @@ class HomeHeaderSection extends ConsumerWidget {
         // ================= HEADER =================
         weatherState.when(
           data: (data) {
-            final headerImage = _getHeaderImage(data.condition);
+            final headerImage = _getHeaderImage(data.mainCondition);
 
-            final topOverlay = _getOverlayColor(data.condition);
+            final topOverlay = _getOverlayColor(data.mainCondition);
 
             return Container(
               width: double.infinity,
@@ -219,8 +219,8 @@ class HomeHeaderSection extends ConsumerWidget {
     );
   }
 
-  String _getHeaderImage(String condition) {
-    switch (condition.toLowerCase()) {
+  String _getHeaderImage(String mainCondition) {
+    switch (mainCondition.toLowerCase()) {
       case 'rain':
         return 'assets/images/rain.jpg';
       case 'clouds':
@@ -228,12 +228,12 @@ class HomeHeaderSection extends ConsumerWidget {
       case 'clear':
         return 'assets/images/sun.jpg';
       default:
-        return 'assets/images/sp.jpeg';
+        return 'assets/images/sp.jpg';
     }
   }
 
-  Color _getOverlayColor(String condition) {
-    switch (condition.toLowerCase()) {
+  Color _getOverlayColor(String mainCondition) {
+    switch (mainCondition.toLowerCase()) {
       case 'clear':
         return Colors.orange.withValues(alpha: 0.5);
       case 'clouds':

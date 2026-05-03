@@ -43,14 +43,16 @@ class AuthRepositoryImpl implements AuthRepository {
     required String firstName,
     required String lastname,
     required String email,
-    required String password,
+    required String birthDate,
+    required String location,
   }) async {
     final result = await remoteDataSource.register(
       RegisterRequestDto(
         firstName: firstName,
         lastName: lastname,
         email: email,
-        password: password,
+        birthDate: birthDate,
+        location: location,
       ),
     );
 

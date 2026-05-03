@@ -41,7 +41,7 @@ class SummaryEfficiencyGauge extends StatelessWidget {
                   height: 200,
                   child: CircularProgressIndicator(
                     value: normalized,
-                    strokeWidth: 10,
+                    strokeWidth: 20,
                     backgroundColor: colorScheme.surfaceContainerHighest,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       colorScheme.primary,

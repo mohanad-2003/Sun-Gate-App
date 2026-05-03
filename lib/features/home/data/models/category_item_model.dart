@@ -18,10 +18,6 @@ class CategoryItemModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'titleKey': titleKey,
-      'imagePath': imagePath,
-    };
+    return {'id': id, 'titleKey': titleKey, 'imagePath': imagePath};
   }
 }

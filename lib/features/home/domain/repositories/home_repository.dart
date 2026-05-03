@@ -6,3 +6,4 @@ abstract class HomeRepository {
   // Future<List<CompanyModel>> getPopularCompanies();
  // Future<List<ProductModel>> getPopularProducts();
 }
+

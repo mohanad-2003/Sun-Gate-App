@@ -12,20 +12,20 @@ final weatherProvider =
     });
 
 class WeatherNotifier extends StateNotifier<AsyncValue<WeatherModel>> {
-  WeatherNotifier() : super(const AsyncLoading()) {
-    fetchWeather();
-    _startAutoRefresh();
-  }
+  WeatherNotifier() : super(const AsyncLoading());
 
   Timer? _timer;
 
-  Future<void> fetchWeather() async {
+  Future<void> fetchWeather(String lang) async {
     try {
       final position = await LocationService.getLocation();
+
       final service = WeatherRemoteDataSource(Dio());
+
       final data = await service.getWeather(
         position.latitude,
         position.longitude,
+        lang,
       );
 
       state = AsyncData(data);
@@ -34,9 +34,11 @@ class WeatherNotifier extends StateNotifier<AsyncValue<WeatherModel>> {
     }
   }
 
-  void _startAutoRefresh() {
+  void startAutoRefresh(String lang) {
+    _timer?.cancel();
+
     _timer = Timer.periodic(const Duration(minutes: 10), (_) {
-      fetchWeather();
+      fetchWeather(lang);
     });
   }
 
