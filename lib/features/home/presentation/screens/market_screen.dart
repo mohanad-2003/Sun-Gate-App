@@ -18,16 +18,11 @@ class MarketScreen extends ConsumerWidget {
     final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.market),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(loc.market), centerTitle: true),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
-          HomeSearchBar(
-            hintText: loc.searchInMarket,
-          ),
+          HomeSearchBar(hintText: loc.searchInMarket),
           const SizedBox(height: 20),
           Text(
             loc.itemsYouCanBuy,

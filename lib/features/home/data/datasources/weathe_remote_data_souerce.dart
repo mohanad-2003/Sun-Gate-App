@@ -7,25 +7,28 @@ class WeatherRemoteDataSource {
 
   WeatherRemoteDataSource(this.dio);
 
-  Future<WeatherModel> getWeather(double lat, double lon) async {
+  Future<WeatherModel> getWeather(double lat, double lon, String lang) async {
     final response = await dio.get(
       'https://api.openweathermap.org/data/2.5/forecast',
       queryParameters: {
-        'lat': lat,
-        'lon': lon,
+        'lat': 31.5017,
+        'lon': 34.4668,
         'appid': '0070208a29b941b5f2e54c6f61c61e0d',
         'units': 'metric',
+        'lang': lang,
       },
     );
 
     final data = response.data;
-
     final current = data['list'][0];
 
     final temp = current['main']['temp'].toDouble();
     final humidity = current['main']['humidity'];
     final wind = current['wind']['speed'].toDouble();
-    final condition = current['weather'][0]['main'];
+    
+
+    final mainCondition = current['weather'][0]['main'];
+    final description = current['weather'][0]['description'];
     final cityName = data['city']['name'];
 
     final List<HourlyWeather> hourly = [];
@@ -43,7 +46,8 @@ class WeatherRemoteDataSource {
       temp: temp,
       humidity: humidity,
       wind: wind,
-      condition: condition,
+      condition: description,
+      mainCondition: mainCondition,
       cityName: cityName,
       hourly: hourly,
     );
