@@ -24,6 +24,10 @@ abstract class AuthRemoteDataSource {
     ForgotPasswordRequestDto request,
   );
   Future<AuthResponseModel> googleLogin(GoogleLoginRequestDto request);
+  Future<BasicMessageResponseModel> assignPassword({
+    required String email,
+    required String password,
+  });
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -115,7 +119,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
               : 'Internal server error',
         );
       }
-
+      print(request.toJson());
       throw Exception('Something went wrong');
     }
   }
@@ -156,22 +160,22 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<BasicMessageResponseModel> verifyOtp(
-    VerifyOtpRequestDto request,
-  ) async {
+  Future<BasicMessageResponseModel> assignPassword({
+    required String email,
+    required String password,
+  }) async {
     try {
       final response = await dio.post(
-        ApiConstants.verifyResetOtp,
-        data: request.toJson(),
+        '/api/auth/assing-password',
+        data: {'email': email, 'password': password},
       );
-
-      debugPrint('VERIFY RESET OTP RESPONSE: ${response.data}');
 
       return BasicMessageResponseModel.fromJson(
         response.data as Map<String, dynamic>,
       );
     } on DioException catch (e) {
       final data = e.response?.data;
+
       final message = data is Map<String, dynamic>
           ? data['message']?.toString()
           : null;
@@ -180,19 +184,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw Exception(message);
       }
 
-      if (e.response?.statusCode == 400) {
-        throw Exception('Validation error');
-      }
-
-      if (e.response?.statusCode == 403) {
-        throw Exception('Invalid or expired code');
-      }
-
-      if (e.response?.statusCode == 404) {
-        throw Exception('Email not found');
-      }
-
-      throw Exception('OTP verification failed');
+      throw Exception('Assign password failed');
     }
   }
 
@@ -342,6 +334,34 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
 
       throw Exception('Reset password failed');
+    }
+  }
+
+  @override
+  Future<BasicMessageResponseModel> verifyOtp(
+    VerifyOtpRequestDto request,
+  ) async {
+    try {
+      final response = await dio.post(
+        ApiConstants.verifyResetOtp,
+        data: request.toJson(),
+      );
+
+      return BasicMessageResponseModel.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+    } on DioException catch (e) {
+      final data = e.response?.data;
+
+      final message = data is Map<String, dynamic>
+          ? data['message']?.toString()
+          : null;
+
+      if (message != null && message.isNotEmpty) {
+        throw Exception(message);
+      }
+
+      throw Exception('OTP verification failed');
     }
   }
 }

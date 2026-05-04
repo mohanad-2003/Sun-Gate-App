@@ -38,7 +38,7 @@ class UserProfileEntity {
     if (fullName.trim().isNotEmpty) return fullName;
     return '$firstName, $lastName'.trim();
   }
-
+  
   UserProfileEntity copyWith({
     String? id,
     String? firstName,

@@ -1,24 +1,24 @@
 class RegisterRequestDto {
-  final String firstName;
-  final String lastName;
+  final String fullName;
   final String email;
   final String birthDate;
-  final String location;
-  const RegisterRequestDto({
-    required this.firstName,
-    required this.lastName,
+  final String? location;
+  final String? gender;
+
+  RegisterRequestDto({
+    required this.fullName,
     required this.email,
     required this.birthDate,
-    required this.location,
+    this.location,
+    this.gender,
   });
-
   Map<String, dynamic> toJson() {
-    return {
-      'firstName': firstName.trim(),
-      'lastName': lastName.trim(),
-      'email': email.trim(),
-      'birthDate': birthDate,
-      'location': location,
-    };
+    final data = {"fullName": fullName, "email": email, "birthDate": birthDate};
+
+    if (location != null && location!.isNotEmpty) {
+      data["location"] = location!;
+    }
+
+    return data;
   }
 }

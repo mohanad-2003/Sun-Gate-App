@@ -154,9 +154,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               onPressed: () async {
                 final googleService = ref.read(googleAuthServiceProvider);
 
-                final idToken = await googleService.signInAndGetIdToken();
+                final account = await googleService.signIn();
 
-                if (idToken == null) {
+                if (account == null) {
                   if (!context.mounted) return;
 
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -165,9 +165,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   return;
                 }
 
+                final auth = await account.authentication;
+                final idToken = auth.idToken;
+                final photo = account.photoUrl;
+
+                if (idToken == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(loc.googleSignInFailed)),
+                  );
+                  return;
+                }
+
                 await ref
                     .read(authControllerProvider.notifier)
-                    .googleLogin(idToken: idToken);
+                    .googleLogin(idToken: idToken, ref: ref, photoUrl: photo);
               },
             ),
 

@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import '../../data/models/hourly_weather_model.dart';
+import 'package:sun_gate_app/features/home/data/models/hourly_weather_model.dart';
 
 class TemperatureChart extends StatelessWidget {
   final List<HourlyWeather> hourly;

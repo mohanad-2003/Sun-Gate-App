@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
+import 'package:sun_gate_app/core/services/location_helper_service.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
 import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auht_text_field.dart';
@@ -12,7 +14,6 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_header.dart
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_body.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/langauge_switcher.dart';
-import 'package:sun_gate_app/features/auth/presentation/widgets/password_strength_indicator.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -26,7 +27,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
   final birthDateController = TextEditingController();
-  final locationController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+  final genderController = TextEditingController();
 
   bool acceptPolicy = false;
   bool obscurePassword = true;
@@ -38,24 +40,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     emailController.dispose();
     birthDateController.dispose();
     locationController.dispose();
+    genderController.dispose();
     super.dispose();
-  }
-
-  Color? _getPasswordBorderColor(String password) {
-    if (password.isEmpty) return null;
-
-    final result = evaluatePasswordStrength(password);
-
-    if (result.level == PasswordStrengthLevel.strong) return Colors.green;
-    if (result.level == PasswordStrengthLevel.medium) return Colors.orange;
-
-    return Colors.red;
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
     final loc = AppLocalizations.of(context)!;
+    final locationText = locationController.text;
 
     ref.listen(authControllerProvider, (previous, next) {
       if (next.isSuccess) {
@@ -63,7 +56,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           context,
         ).showSnackBar(SnackBar(content: Text(loc.registrationSuccess)));
         context.go(
-          RouteNames.otp,
+          RouteNames.newPassword,
           extra: {
             'email': emailController.text.trim(),
             'flowType': OtpFlowType.verifyEmail,
@@ -150,17 +143,48 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               );
 
               if (date != null) {
-                birthDateController.text =
-                    "${date.year}-${date.month}-${date.day}";
+                final month = date.month.toString().padLeft(2, '0');
+                final day = date.day.toString().padLeft(2, '0');
+
+                birthDateController.text = "${date.year}-$month-$day";
               }
             },
           ),
           const SizedBox(height: 14),
 
-          AuthTextField(
+          TextFormField(
             controller: locationController,
-            label: loc.location,
-            hintText: loc.enterLocation,
+            readOnly: true,
+            decoration: InputDecoration(
+              labelText: loc.location,
+              suffixIcon: const Icon(Icons.location_on),
+            ),
+            onTap: () async {
+              try {
+                final location = await LocationHelper.getCurrentLocationName();
+                locationController.text = location;
+              } catch (e) {
+                print(e);
+
+                final message = e.toString();
+
+                if (message.contains('disabled')) {
+                  await Geolocator.openLocationSettings();
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('الرجاء تفعيل الموقع (GPS)')),
+                  );
+                } else if (message.contains('permission')) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('الرجاء إعطاء إذن الموقع')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('فشل في جلب الموقع')),
+                  );
+                }
+              }
+            },
           ),
 
           const SizedBox(height: 12),
@@ -180,6 +204,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
           if (state.errorMessage != null) ...[
             const SizedBox(height: 8),
+
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
@@ -224,15 +249,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       );
                       return;
                     }
-
                     ref
                         .read(authControllerProvider.notifier)
                         .register(
                           firstName: firstNameController.text.trim(),
                           lastName: lastNameController.text.trim(),
-                          email: email,
+                          email: emailController.text.trim(),
                           birthDate: birthDateController.text.trim(),
-                          location: locationController.text.trim(),
+
+                          location: (locationText.isNotEmpty)
+                              ? locationText.trim()
+                              : null,
                         );
                   }
                 : null,

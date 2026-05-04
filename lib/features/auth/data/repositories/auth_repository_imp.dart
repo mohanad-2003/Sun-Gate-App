@@ -31,28 +31,25 @@ class AuthRepositoryImpl implements AuthRepository {
       await localDataSource.saveAccessToken(result.accessToken!);
     }
 
-    if (result.refreshToken != null && result.refreshToken!.isNotEmpty) {
-      await localDataSource.saveRefreshToken(result.refreshToken!);
-    }
-
     return result;
   }
 
   @override
   Future<AuthResult> register({
     required String firstName,
-    required String lastname,
+    required String lastName,
     required String email,
     required String birthDate,
-    required String location,
+    String? location,
+    String? gender,
   }) async {
+    final fullName = '$firstName $lastName';
+
     final result = await remoteDataSource.register(
       RegisterRequestDto(
-        firstName: firstName,
-        lastName: lastname,
+        fullName: fullName,
         email: email,
         birthDate: birthDate,
-        location: location,
       ),
     );
 
@@ -60,28 +57,37 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<String> forgotPassword({required String email}) async {
-    final result = await remoteDataSource.forgotPassword(
-      ForgotPasswordRequestDto(email: email),
+  Future<String> assignPassword({
+    required String email,
+    required String password,
+  }) async {
+    final result = await remoteDataSource.assignPassword(
+      email: email,
+      password: password,
     );
+
     return result.message;
   }
 
   @override
-  Future<AuthResult> googleLogin({required String idToken}) async {
-    final result = await remoteDataSource.googleLogin(
-      GoogleLoginRequestDto(idToken: idToken),
+  Future<String> forgotPassword({required String email}) async {
+    final result = await remoteDataSource.forgotPassword(
+      ForgotPasswordRequestDto(email: email),
     );
 
-    if (result.accessToken != null && result.accessToken!.isNotEmpty) {
-      await localDataSource.saveAccessToken(result.accessToken!);
-    }
+    return result.message;
+  }
 
-    if (result.refreshToken != null && result.refreshToken!.isNotEmpty) {
-      await localDataSource.saveRefreshToken(result.refreshToken!);
-    }
+  @override
+  Future<String> verifyEmail({
+    required String email,
+    required String code,
+  }) async {
+    final result = await remoteDataSource.verifyEmail(
+      VerifyOtpRequestDto(email: email, code: code),
+    );
 
-    return result;
+    return result.message;
   }
 
   @override
@@ -115,15 +121,12 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<String> verifyEmail({
-    required String email,
-    required String code,
-  }) async {
-    final result = await remoteDataSource.verifyEmail(
-      VerifyOtpRequestDto(email: email, code: code),
+  Future<AuthResult> googleLogin({required String idToken}) async {
+    final result = await remoteDataSource.googleLogin(
+      GoogleLoginRequestDto(idToken: idToken),
     );
 
-    return result.message;
+    return result;
   }
 
   @override

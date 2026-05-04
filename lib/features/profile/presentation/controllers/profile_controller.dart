@@ -47,6 +47,10 @@ class ProfileController extends StateNotifier<ProfileState> {
     }
   }
 
+  void setGooglePhoto(String? photo) {
+    state = state.copyWith(googlePhoto: photo);
+  }
+
   Future<void> updateProfile({
     String? firstName,
     String? lastName,
