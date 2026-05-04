@@ -15,10 +15,13 @@ class HomeAppBarSection extends ConsumerWidget {
     final profileState = ref.watch(profileControllerProvider);
     final notificationState = ref.watch(notificationControllerProvider);
 
-    final imageUrl =
-        profileState.profile?.imageUrl ?? profileState.profile?.profileImage;
+    final profile = profileState.profile;
+    final googlePhoto = profileState.googlePhoto;
+
+    final imageUrl = profile?.imageUrl ?? profile?.profileImage;
 
     final loc = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.only(top: 6),
       child: Column(
@@ -32,14 +35,21 @@ class HomeAppBarSection extends ConsumerWidget {
               CircleAvatar(
                 radius: 30,
                 backgroundColor: Colors.white24,
-                backgroundImage: imageUrl != null && imageUrl.isNotEmpty
+                backgroundImage: (imageUrl != null && imageUrl.isNotEmpty)
                     ? NetworkImage(imageUrl)
+                    : (profileState.googlePhoto != null &&
+                          profileState.googlePhoto!.isNotEmpty)
+                    ? NetworkImage(profileState.googlePhoto!)
                     : null,
-                child: (imageUrl == null || imageUrl.isEmpty)
+                child:
+                    (imageUrl == null || imageUrl.isEmpty) &&
+                        (profileState.googlePhoto == null ||
+                            profileState.googlePhoto!.isEmpty)
                     ? const Icon(Icons.person, color: Colors.white, size: 28)
                     : null,
               ),
 
+              // 🔔 Notifications
               Stack(
                 clipBehavior: Clip.none,
                 children: [
@@ -90,9 +100,10 @@ class HomeAppBarSection extends ConsumerWidget {
           ),
 
           const SizedBox(height: 10),
+
           Text(
             loc.hiUser(userName),
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 20,
               fontWeight: FontWeight.w400,

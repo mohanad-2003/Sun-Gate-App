@@ -1,4 +1,3 @@
-
 import 'package:sun_gate_app/features/profile/domain/entities/user_profile_entity.dart';
 
 class ProfileState {
@@ -7,6 +6,7 @@ class ProfileState {
   final String? errorMessage;
   final String? successMessage;
   final UserProfileEntity? profile;
+  final String? googlePhoto;
 
   const ProfileState({
     this.isLoading = false,
@@ -14,6 +14,7 @@ class ProfileState {
     this.errorMessage,
     this.successMessage,
     this.profile,
+    this.googlePhoto,
   });
 
   ProfileState copyWith({
@@ -22,6 +23,7 @@ class ProfileState {
     String? errorMessage,
     String? successMessage,
     UserProfileEntity? profile,
+    String? googlePhoto,
   }) {
     return ProfileState(
       isLoading: isLoading ?? this.isLoading,
@@ -29,6 +31,7 @@ class ProfileState {
       errorMessage: errorMessage,
       successMessage: successMessage,
       profile: profile ?? this.profile,
+      googlePhoto: googlePhoto ?? this.googlePhoto,
     );
   }
 

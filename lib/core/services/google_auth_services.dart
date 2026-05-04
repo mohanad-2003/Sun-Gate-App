@@ -4,7 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class GoogleAuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
 
-  Future<String?> signInAndGetIdToken() async {
+  Future<GoogleSignInAccount?> signIn() async {
     try {
       await _googleSignIn.initialize(
         serverClientId:
@@ -15,11 +15,10 @@ class GoogleAuthService {
         await _googleSignIn.signOut();
       } catch (_) {}
 
-      final GoogleSignInAccount account = await _googleSignIn.authenticate();
+      final GoogleSignInAccount account =
+          await _googleSignIn.authenticate();
 
-      final authentication = account.authentication;
-
-      return authentication.idToken;
+      return account; 
     } on GoogleSignInException catch (e) {
       debugPrint('GOOGLE SIGN IN ERROR CODE: ${e.code}');
       debugPrint('GOOGLE SIGN IN ERROR DESCRIPTION: ${e.description}');

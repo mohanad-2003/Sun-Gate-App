@@ -14,7 +14,6 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_header.dart
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_body.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/langauge_switcher.dart';
-import 'package:sun_gate_app/features/auth/presentation/widgets/password_strength_indicator.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -28,7 +27,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
   final birthDateController = TextEditingController();
-  final locationController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+  final genderController = TextEditingController();
 
   bool acceptPolicy = false;
   bool obscurePassword = true;
@@ -40,24 +40,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     emailController.dispose();
     birthDateController.dispose();
     locationController.dispose();
+    genderController.dispose();
     super.dispose();
-  }
-
-  Color? _getPasswordBorderColor(String password) {
-    if (password.isEmpty) return null;
-
-    final result = evaluatePasswordStrength(password);
-
-    if (result.level == PasswordStrengthLevel.strong) return Colors.green;
-    if (result.level == PasswordStrengthLevel.medium) return Colors.orange;
-
-    return Colors.red;
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
     final loc = AppLocalizations.of(context)!;
+    final locationText = locationController.text;
 
     ref.listen(authControllerProvider, (previous, next) {
       if (next.isSuccess) {
@@ -65,7 +56,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           context,
         ).showSnackBar(SnackBar(content: Text(loc.registrationSuccess)));
         context.go(
-          RouteNames.otp,
+          RouteNames.newPassword,
           extra: {
             'email': emailController.text.trim(),
             'flowType': OtpFlowType.verifyEmail,
@@ -152,8 +143,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               );
 
               if (date != null) {
-                birthDateController.text =
-                    "${date.year}-${date.month}-${date.day}";
+                final month = date.month.toString().padLeft(2, '0');
+                final day = date.day.toString().padLeft(2, '0');
+
+                birthDateController.text = "${date.year}-$month-$day";
               }
             },
           ),
@@ -171,7 +164,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 final location = await LocationHelper.getCurrentLocationName();
                 locationController.text = location;
               } catch (e) {
-                print(e); // debugging
+                print(e);
 
                 final message = e.toString();
 
@@ -211,6 +204,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
           if (state.errorMessage != null) ...[
             const SizedBox(height: 8),
+
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
@@ -255,15 +249,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       );
                       return;
                     }
-
                     ref
                         .read(authControllerProvider.notifier)
                         .register(
                           firstName: firstNameController.text.trim(),
                           lastName: lastNameController.text.trim(),
-                          email: email,
+                          email: emailController.text.trim(),
                           birthDate: birthDateController.text.trim(),
-                          location: locationController.text.trim(),
+
+                          location: (locationText.isNotEmpty)
+                              ? locationText.trim()
+                              : null,
                         );
                   }
                 : null,

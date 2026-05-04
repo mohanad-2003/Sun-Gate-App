@@ -52,7 +52,7 @@ class HomeHeaderSection extends ConsumerWidget {
 
             return Container(
               width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
+              padding: const EdgeInsets.fromLTRB(10, 50, 10, 20),
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(headerImage),
@@ -62,7 +62,6 @@ class HomeHeaderSection extends ConsumerWidget {
 
               child: Stack(
                 children: [
-                  //  Animated Weather Background
                   Positioned.fill(
                     child: WeatherBackground(condition: data.condition),
                   ),
@@ -132,7 +131,7 @@ class HomeHeaderSection extends ConsumerWidget {
             children: [
               const SizedBox(height: 20),
 
-              /// Banner
+              // Banner
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: HomeBannerCard(

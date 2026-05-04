@@ -12,6 +12,8 @@ class ApiConstants {
   static final String changePassword = '/api/users/change-password';
   static final String uploadProfilePicture = '/api/users/profile/picture';
   static final String home = '/api/home';
+  static final String setPassword = '/api/auht/assing-password';
+
   static const String verifyResetOtp = '/api/auth/verify-password-reset-token';
   static const getNotifications = '/api/notifications';
   static const unreadCount = '/api/notifications/unread-count';
