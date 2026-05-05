@@ -21,6 +21,8 @@ class OtpScreen extends ConsumerStatefulWidget {
 }
 
 class _OtpScreenState extends ConsumerState<OtpScreen> {
+  bool _isVerifyingOtp = false;
+
   final List<TextEditingController> _controllers = List.generate(
     6,
     (_) => TextEditingController(),
@@ -84,7 +86,6 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
-    bool _isVerifyingOtp = false;
     ref.listen(authControllerProvider, (previous, next) {
       if (!_isVerifyingOtp) return;
       if (!next.isSuccess) return;
@@ -200,6 +201,16 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                           _startTimer();
                         }
                       : null,
+                  child: Text(
+                    _seconds == 0 ? 'Resend' : 'Resend in $_seconds s',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: _seconds == 0
+                          ? const Color(0xFF274777)
+                          : Colors.grey,
+                    ),
+                  ),
                 ),
               ],
             ),
