@@ -31,6 +31,10 @@ class AuthRepositoryImpl implements AuthRepository {
       await localDataSource.saveAccessToken(result.accessToken!);
     }
 
+    if (result.refreshToken != null && result.refreshToken!.isNotEmpty) {
+      await localDataSource.saveRefreshToken(result.refreshToken!);
+    }
+
     return result;
   }
 
@@ -47,9 +51,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
     final result = await remoteDataSource.register(
       RegisterRequestDto(
-        fullName: fullName,
+        fullName: fullName.trim(),
         email: email,
         birthDate: birthDate,
+        gender: gender,
+        location: location,
       ),
     );
 
@@ -100,6 +106,7 @@ class AuthRepositoryImpl implements AuthRepository {
     );
 
     final token = response.passwordResetToken;
+
     if (token == null || token.isEmpty) {
       throw Exception('Password reset token was not returned');
     }
@@ -125,6 +132,14 @@ class AuthRepositoryImpl implements AuthRepository {
     final result = await remoteDataSource.googleLogin(
       GoogleLoginRequestDto(idToken: idToken),
     );
+
+    if (result.accessToken != null && result.accessToken!.isNotEmpty) {
+      await localDataSource.saveAccessToken(result.accessToken!);
+    }
+
+    if (result.refreshToken != null && result.refreshToken!.isNotEmpty) {
+      await localDataSource.saveRefreshToken(result.refreshToken!);
+    }
 
     return result;
   }

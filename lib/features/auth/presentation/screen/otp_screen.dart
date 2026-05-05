@@ -88,12 +88,23 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     ref.listen(authControllerProvider, (previous, next) {
       if (!next.isSuccess) return;
 
+      // 🔥 VERIFY EMAIL FLOW
       if (widget.flowType == OtpFlowType.verifyEmail) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Email verified successfully')),
         );
-        context.go(RouteNames.main);
-      } else {
+
+        // ✅ روح على Create Password
+        context.push(
+          RouteNames.newPassword,
+          extra: {
+            'email': widget.email,
+            'token': '', // 🔥 مش مطلوب في هاد الفلو
+          },
+        );
+      }
+      // 🔥 FORGOT PASSWORD FLOW
+      else {
         if (next.resetToken?.isNotEmpty ?? false) {
           context.push(
             RouteNames.newPassword,
@@ -197,7 +208,6 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                       fontWeight: FontWeight.w700,
                       color: _seconds == 0
                           ? const Color(0xFF274777)
-                          
                           : Colors.grey,
                     ),
                   ),

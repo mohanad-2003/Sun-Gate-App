@@ -56,7 +56,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           context,
         ).showSnackBar(SnackBar(content: Text(loc.registrationSuccess)));
         context.push(
-          RouteNames.newPassword,
+          RouteNames.otp,
           extra: {
             'email': emailController.text.trim(),
             'flowType': OtpFlowType.verifyEmail,
