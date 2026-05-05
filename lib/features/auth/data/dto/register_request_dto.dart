@@ -12,11 +12,20 @@ class RegisterRequestDto {
     this.location,
     this.gender,
   });
+
   Map<String, dynamic> toJson() {
-    final data = {"fullName": fullName, "email": email, "birthDate": birthDate};
+    final data = {
+      "fullName": fullName.trim(),
+      "email": email.trim(),
+      "birthDate": birthDate.trim(),
+    };
 
     if (location != null && location!.isNotEmpty) {
-      data["location"] = location!;
+      data["location"] = location!.trim();
+    }
+
+    if (gender != null && gender!.isNotEmpty) {
+      data["gender"] = gender!.trim();
     }
 
     return data;

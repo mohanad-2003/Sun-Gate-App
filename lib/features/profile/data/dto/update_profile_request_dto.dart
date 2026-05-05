@@ -20,10 +20,14 @@ class UpdateProfileRequestDto {
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
 
-    final fullName = '${firstName ?? ''} ${lastName ?? ''}'.trim();
-
-    if (fullName.isNotEmpty) {
-      map['fullName'] = fullName;
+    // ✅ fullName logic الصحيح
+    if (fullName != null && fullName!.trim().isNotEmpty) {
+      map['fullName'] = fullName!.trim();
+    } else {
+      final combined = '${firstName ?? ''} ${lastName ?? ''}'.trim();
+      if (combined.isNotEmpty) {
+        map['fullName'] = combined;
+      }
     }
 
     if (gender != null && gender!.trim().isNotEmpty) {
@@ -39,7 +43,7 @@ class UpdateProfileRequestDto {
     }
 
     if (whatsappNumber != null && whatsappNumber!.trim().isNotEmpty) {
-      map['whatsappNumber'] = whatsappNumber!.trim();
+      map['phoneWhatsapp'] = whatsappNumber!.trim();
     }
 
     return map;

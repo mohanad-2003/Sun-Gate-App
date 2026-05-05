@@ -49,15 +49,6 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
 
     final passwordStrength = evaluatePasswordStrength(password);
 
-    ref.listen(authControllerProvider, (previous, next) {
-      if (next.isSuccess) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.message ?? loc.passwordResetSuccess)),
-        );
-        context.go(RouteNames.login);
-      }
-    });
-
     return AuthScaffoldBody(
       child: Column(
         children: [
@@ -97,7 +88,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
 
           const SizedBox(height: 16),
 
-          /// CONFIRM PASSWORD
+          // CONFIRM PASSWORD
           AuthTextField(
             controller: confirmPasswordController,
             label: loc.confirmPassword,
@@ -119,7 +110,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
 
           const SizedBox(height: 12),
 
-          /// PASSWORD MATCH ERROR
+          // PASSWORD MATCH ERROR
           if (confirmPassword.isNotEmpty && password != confirmPassword)
             Container(
               width: double.infinity,
@@ -162,13 +153,9 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
           AuthPrimaryButton(
             text: loc.next,
             isLoading: state.isLoading,
-            onPressed: () {
-              if (widget.token.trim().isEmpty) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(loc.tokenMissing)));
-                return;
-              }
+            onPressed: () async {
+              final password = passwordController.text.trim();
+              final confirmPassword = confirmPasswordController.text.trim();
 
               if (password.isEmpty || confirmPassword.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -184,19 +171,49 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                 return;
               }
 
-              if (!passwordStrength.isValidStrongPassword) {
+              if (!evaluatePasswordStrength(password).isValidStrongPassword) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(loc.pleaseChooseStrongerPassword)),
                 );
                 return;
               }
 
-              ref
-                  .read(authControllerProvider.notifier)
-                  .resetPassword(
-                    password: password,
-                    passwordResetToken: widget.token,
-                  );
+              final authController = ref.read(authControllerProvider.notifier);
+
+              await authController.assignPassword(
+                email: widget.email,
+                password: password,
+              );
+
+              final assignState = ref.read(authControllerProvider);
+
+              if (!assignState.isSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      assignState.errorMessage ?? 'Assign password failed',
+                    ),
+                  ),
+                );
+                return;
+              }
+
+              await authController.login(
+                email: widget.email,
+                password: password,
+              );
+
+              final loginState = ref.read(authControllerProvider);
+
+              if (loginState.isSuccess && context.mounted) {
+                context.go(RouteNames.main);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(loginState.errorMessage ?? 'Login failed'),
+                  ),
+                );
+              }
             },
           ),
         ],
