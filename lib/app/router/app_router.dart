@@ -70,7 +70,7 @@ class AppRouter {
       GoRoute(
         path: RouteNames.newPassword,
         builder: (context, state) {
-          final args = state.extra as Map<String, String>? ?? {};
+          final args = state.extra as Map<String, dynamic>? ?? {};
           return NewPasswordScreen(
             email: args['email'] ?? '',
             token: args['token'] ?? '',

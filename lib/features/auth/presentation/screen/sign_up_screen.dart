@@ -55,7 +55,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(loc.registrationSuccess)));
-        context.go(
+        context.push(
           RouteNames.newPassword,
           extra: {
             'email': emailController.text.trim(),
