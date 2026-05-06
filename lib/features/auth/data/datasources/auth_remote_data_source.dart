@@ -28,6 +28,7 @@ abstract class AuthRemoteDataSource {
     required String email,
     required String password,
   });
+  Future<BasicMessageResponseModel> resendVerification(String email);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -362,6 +363,31 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
 
       throw Exception('OTP verification failed');
+    }
+  }
+
+  @override
+  Future<BasicMessageResponseModel> resendVerification(String email) async {
+    try {
+      final response = await dio.post(
+        ApiConstants.resendCode,
+        data: {'email': email.trim()},
+      );
+
+      return BasicMessageResponseModel.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final message = data is Map<String, dynamic>
+          ? data['message']?.toString()
+          : null;
+
+      if (message != null && message.isNotEmpty) {
+        throw Exception(message);
+      }
+
+      throw Exception('Resend verification failed');
     }
   }
 }

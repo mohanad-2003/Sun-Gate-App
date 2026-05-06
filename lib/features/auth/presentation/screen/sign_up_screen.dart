@@ -51,10 +51,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     final locationText = locationController.text;
 
     ref.listen(authControllerProvider, (previous, next) {
+      if (!context.mounted) return;
+
       if (next.isSuccess) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(loc.registrationSuccess)));
+
         context.push(
           RouteNames.otp,
           extra: {
@@ -64,7 +67,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         );
       }
     });
-
     return AuthScaffoldBody(
       child: Column(
         children: [
@@ -175,12 +177,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     const SnackBar(content: Text('الرجاء تفعيل الموقع (GPS)')),
                   );
                 } else if (message.contains('permission')) {
+                  if (!context.mounted) return;
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('الرجاء إعطاء إذن الموقع')),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('فشل في جلب الموقع')),
                   );
                 }
               }

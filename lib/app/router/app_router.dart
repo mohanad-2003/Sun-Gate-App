@@ -74,6 +74,8 @@ class AppRouter {
           return NewPasswordScreen(
             email: args['email'] ?? '',
             token: args['token'] ?? '',
+            flowType:
+                args['flowType'] as OtpFlowType? ?? OtpFlowType.verifyEmail,
           );
         },
       ),

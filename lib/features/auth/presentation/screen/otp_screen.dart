@@ -21,6 +21,8 @@ class OtpScreen extends ConsumerStatefulWidget {
 }
 
 class _OtpScreenState extends ConsumerState<OtpScreen> {
+  bool _isVerifyingOtp = false;
+
   final List<TextEditingController> _controllers = List.generate(
     6,
     (_) => TextEditingController(),
@@ -84,31 +86,34 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
-
     ref.listen(authControllerProvider, (previous, next) {
+      if (!_isVerifyingOtp) return;
       if (!next.isSuccess) return;
 
-      // 🔥 VERIFY EMAIL FLOW
+      _isVerifyingOtp = false;
+
       if (widget.flowType == OtpFlowType.verifyEmail) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Email verified successfully')),
         );
 
-        // ✅ روح على Create Password
         context.push(
           RouteNames.newPassword,
           extra: {
             'email': widget.email,
-            'token': '', // 🔥 مش مطلوب في هاد الفلو
+            'token': '',
+            'flowType': widget.flowType,
           },
         );
-      }
-      // 🔥 FORGOT PASSWORD FLOW
-      else {
+      } else {
         if (next.resetToken?.isNotEmpty ?? false) {
           context.push(
             RouteNames.newPassword,
-            extra: {'email': widget.email, 'token': next.resetToken!},
+            extra: {
+              'email': widget.email,
+              'token': next.resetToken!,
+              'flowType': widget.flowType,
+            },
           );
         }
       }
@@ -194,10 +199,24 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                 ),
                 GestureDetector(
                   onTap: _seconds == 0
-                      ? () {
-                          ref
-                              .read(authControllerProvider.notifier)
-                              .forgotPassword(email: widget.email);
+                      ? () async {
+                          _isVerifyingOtp = false;
+
+                          if (widget.flowType == OtpFlowType.verifyEmail) {
+                            await ref
+                                .read(authControllerProvider.notifier)
+                                .resendVerification(email: widget.email);
+                          } else {
+                            await ref
+                                .read(authControllerProvider.notifier)
+                                .forgotPassword(email: widget.email);
+                          }
+
+                          for (final controller in _controllers) {
+                            controller.clear();
+                          }
+
+                          _focusNodes.first.requestFocus();
                           _startTimer();
                         }
                       : null,
@@ -239,6 +258,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
               isLoading: state.isLoading,
               onPressed: _otpCode.length == 6
                   ? () async {
+                      _isVerifyingOtp = true;
+
                       if (widget.flowType == OtpFlowType.verifyEmail) {
                         await ref
                             .read(authControllerProvider.notifier)
