@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sun_gate_app/features/home/presentation/controllers/home_mock_data_provider.dart';
 import 'package:sun_gate_app/features/home/presentation/controllers/weather_provider.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/home_header_section.dart';
 import 'package:sun_gate_app/features/notifications/presentation/controllers/notification_controller.dart';
@@ -22,9 +23,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ref.read(notificationControllerProvider.notifier).loadUnreadCount();
 
       final locale = Localizations.localeOf(context).languageCode;
-
+      ref.read(homeControllerProvider.notifier).loadProducts();
       ref.read(weatherProvider.notifier).fetchWeather(locale);
       ref.read(weatherProvider.notifier).startAutoRefresh(locale);
+
+      Future.microtask(() {
+        ref.read(homeControllerProvider.notifier).loadProducts();
+      });
     });
   }
 

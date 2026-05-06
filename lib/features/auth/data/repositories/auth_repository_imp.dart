@@ -27,8 +27,14 @@ class AuthRepositoryImpl implements AuthRepository {
       LoginRequestDto(email: email, password: password),
     );
 
+    print("LOGIN ACCESS TOKEN: ${result.accessToken}");
+    print("LOGIN REFRESH TOKEN: ${result.refreshToken}");
+
     if (result.accessToken != null && result.accessToken!.isNotEmpty) {
       await localDataSource.saveAccessToken(result.accessToken!);
+
+      final savedToken = await localDataSource.getAccessToken();
+      print("SAVED ACCESS TOKEN: $savedToken");
     }
 
     if (result.refreshToken != null && result.refreshToken!.isNotEmpty) {
@@ -147,5 +153,11 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> logout() async {
     await localDataSource.clearSession();
+  }
+
+  @override
+  Future<String> resendVerification({required String email}) async {
+    final result = await remoteDataSource.resendVerification(email);
+    return result.message;
   }
 }

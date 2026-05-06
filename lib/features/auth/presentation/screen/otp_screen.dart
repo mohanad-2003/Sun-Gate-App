@@ -191,13 +191,18 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                 ),
                 GestureDetector(
                   onTap: _seconds == 0
-                      ? () {
+                      ? () async {
                           _isVerifyingOtp = false;
 
-                          ref
+                          await ref
                               .read(authControllerProvider.notifier)
-                              .forgotPassword(email: widget.email);
+                              .resendVerification(email: widget.email);
 
+                          for (final controller in _controllers) {
+                            controller.clear();
+                          }
+
+                          _focusNodes.first.requestFocus();
                           _startTimer();
                         }
                       : null,

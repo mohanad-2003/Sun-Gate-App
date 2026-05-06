@@ -287,4 +287,31 @@ class AuthFormController extends StateNotifier<AuthState> {
       );
     }
   }
+
+  Future<void> resendVerification({required String email}) async {
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      isSuccess: false,
+      message: null,
+    );
+
+    try {
+      final message = await repository.resendVerification(email: email);
+
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: true,
+        errorMessage: null,
+        message: message,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: false,
+        errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        message: null,
+      );
+    }
+  }
 }

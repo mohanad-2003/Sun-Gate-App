@@ -175,7 +175,100 @@ class HomeHeaderSection extends ConsumerWidget {
               ),
 
               const SizedBox(height: 20),
+              // ================= PRODUCTS =================
+              const SizedBox(height: 20),
 
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SectionTitleRow(
+                  title: "Products",
+                  actionText: "",
+                  onTap: () {},
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              Builder(
+                builder: (context) {
+                  final products = homeState.products;
+
+                  if (homeState.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (products.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text("No products yet"),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: products.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemBuilder: (context, index) {
+                      final product = products[index];
+
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: theme.cardColor,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          children: [
+                            // صورة
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.network(
+                                product.imageUrl,
+                                width: 70,
+                                height: 70,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+
+                            const SizedBox(width: 12),
+
+                            // معلومات
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    product.title,
+                                    style: theme.textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    product.description,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    "\$${product.price}",
+                                    style: TextStyle(
+                                      color: theme.colorScheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
               // Companies
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

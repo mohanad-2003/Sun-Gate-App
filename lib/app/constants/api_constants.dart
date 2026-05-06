@@ -8,6 +8,7 @@ class ApiConstants {
   static final String forgotPassword = '/api/auth/forgot-password';
   static final String resetPassword = '/api/auth/reset-password';
   static final String getMyProfile = '/api/users/me';
+  static final String resendCode = '/api/auth/resend-verification';
   static const String updateMyProfile = '/api/users/me';
   static final String changePassword = '/api/users/change-password';
   static final String uploadProfilePicture = '/api/users/profile/picture';
@@ -26,11 +27,11 @@ class ApiConstants {
       '/api/companies/$companyId/logo';
   static const String engineers = '/api/engineers';
   static const myEngineer = '/api/engineers/me';
-  static const products = '/api/products';
   static String productById(String productId) => '/api/products/$productId';
   static const String reservations = '/api/reservations';
   static const String getMyReservations = '/api/reservations/me';
   static const String sellerReservations = '/api/reservations/seller';
   static String updateReservations(String reservationId) =>
       '/api/reservations/$reservationId';
+  static const String products = '/api/products';
 }
