@@ -1,4 +1,4 @@
-class AuthState{
+class AuthState {
   final bool isLoading;
   final bool isSuccess;
   final String? errorMessage;
@@ -12,6 +12,7 @@ class AuthState{
     this.message,
     this.resetToken,
   });
+
   factory AuthState.initial() {
     return const AuthState(
       isLoading: false,
@@ -34,7 +35,7 @@ class AuthState{
       isSuccess: isSuccess ?? this.isSuccess,
       errorMessage: errorMessage,
       message: message,
-      resetToken: resetToken ?? this.resetToken,
+      resetToken: resetToken,
     );
   }
 }

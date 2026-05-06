@@ -21,13 +21,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     Future.microtask(() {
       ref.read(profileControllerProvider.notifier).getMyProfile();
       ref.read(notificationControllerProvider.notifier).loadUnreadCount();
-
       final locale = Localizations.localeOf(context).languageCode;
       ref.read(homeControllerProvider.notifier).loadProducts();
       ref.read(weatherProvider.notifier).fetchWeather(locale);
       ref.read(weatherProvider.notifier).startAutoRefresh(locale);
 
       Future.microtask(() {
+        
         ref.read(homeControllerProvider.notifier).loadProducts();
       });
     });

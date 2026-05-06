@@ -99,13 +99,21 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
         context.push(
           RouteNames.newPassword,
-          extra: {'email': widget.email, 'token': ''},
+          extra: {
+            'email': widget.email,
+            'token': '',
+            'flowType': widget.flowType,
+          },
         );
       } else {
         if (next.resetToken?.isNotEmpty ?? false) {
           context.push(
             RouteNames.newPassword,
-            extra: {'email': widget.email, 'token': next.resetToken!},
+            extra: {
+              'email': widget.email,
+              'token': next.resetToken!,
+              'flowType': widget.flowType,
+            },
           );
         }
       }
@@ -194,9 +202,15 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                       ? () async {
                           _isVerifyingOtp = false;
 
-                          await ref
-                              .read(authControllerProvider.notifier)
-                              .resendVerification(email: widget.email);
+                          if (widget.flowType == OtpFlowType.verifyEmail) {
+                            await ref
+                                .read(authControllerProvider.notifier)
+                                .resendVerification(email: widget.email);
+                          } else {
+                            await ref
+                                .read(authControllerProvider.notifier)
+                                .forgotPassword(email: widget.email);
+                          }
 
                           for (final controller in _controllers) {
                             controller.clear();

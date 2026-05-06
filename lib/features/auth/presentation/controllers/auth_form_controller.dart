@@ -184,7 +184,13 @@ class AuthFormController extends StateNotifier<AuthState> {
   }
 
   Future<void> verifyOtp({required String email, required String code}) async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(
+      isLoading: true,
+      isSuccess: false,
+      errorMessage: null,
+      message: null,
+      resetToken: null,
+    );
 
     try {
       final token = await repository.verifyOtp(email: email, code: code);
@@ -196,7 +202,12 @@ class AuthFormController extends StateNotifier<AuthState> {
         resetToken: token,
       );
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: false,
+        errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        resetToken: null,
+      );
     }
   }
 

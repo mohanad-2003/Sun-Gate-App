@@ -5,21 +5,26 @@ import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/password_visiablity_controller.dart';
+import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auht_text_field.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_back_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_header.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_body.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/password_strength_indicator.dart';
+import 'package:sun_gate_app/features/home/presentation/controllers/home_mock_data_provider.dart';
+import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 
 class NewPasswordScreen extends ConsumerStatefulWidget {
   final String email;
   final String token;
+  final OtpFlowType flowType;
 
   const NewPasswordScreen({
     super.key,
     required this.email,
     required this.token,
+    required this.flowType,
   });
 
   @override
@@ -46,8 +51,6 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
 
     final password = passwordController.text.trim();
     final confirmPassword = confirmPasswordController.text.trim();
-
-    final passwordStrength = evaluatePasswordStrength(password);
 
     return AuthScaffoldBody(
       child: Column(
@@ -180,18 +183,27 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
 
               final authController = ref.read(authControllerProvider.notifier);
 
-              await authController.assignPassword(
-                email: widget.email,
-                password: password,
-              );
+              if (widget.flowType == OtpFlowType.verifyEmail) {
+                /// SIGN UP FLOW
+                await authController.assignPassword(
+                  email: widget.email,
+                  password: password,
+                );
+              } else {
+                /// FORGOT PASSWORD FLOW
+                await authController.resetPassword(
+                  password: password,
+                  passwordResetToken: widget.token,
+                );
+              }
 
-              final assignState = ref.read(authControllerProvider);
+              final currentState = ref.read(authControllerProvider);
 
-              if (!assignState.isSuccess) {
+              if (!currentState.isSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      assignState.errorMessage ?? 'Assign password failed',
+                      currentState.errorMessage ?? 'Assign password failed',
                     ),
                   ),
                 );
@@ -202,7 +214,8 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                 email: widget.email,
                 password: password,
               );
-
+              await ref.read(profileControllerProvider.notifier).getMyProfile();
+              await ref.read(homeControllerProvider.notifier).loadProducts();
               final loginState = ref.read(authControllerProvider);
 
               if (loginState.isSuccess && context.mounted) {
