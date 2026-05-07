@@ -16,9 +16,9 @@ class _EngineersScreenState extends ConsumerState<EngineersScreen> {
   void initState() {
     super.initState();
 
-    Future.microtask(() {
-      ref.read(marketPlaceControllerProvider.notifier).getProducts();
-    });
+    // Future.microtask(() {
+    //   ref.read(marketPlaceControllerProvider.notifier).getProducts();
+    // });
   }
 
   @override

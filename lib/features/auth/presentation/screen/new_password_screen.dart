@@ -12,7 +12,7 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_header.dart
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_body.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/password_strength_indicator.dart';
-import 'package:sun_gate_app/features/home/presentation/controllers/home_mock_data_provider.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 
 class NewPasswordScreen extends ConsumerStatefulWidget {
@@ -215,7 +215,9 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                 password: password,
               );
               await ref.read(profileControllerProvider.notifier).getMyProfile();
-              await ref.read(homeControllerProvider.notifier).loadProducts();
+              await ref
+                  .read(marketPlaceControllerProvider.notifier)
+                  .getProducts();
               final loginState = ref.read(authControllerProvider);
 
               if (loginState.isSuccess && context.mounted) {

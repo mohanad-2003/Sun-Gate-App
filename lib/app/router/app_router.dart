@@ -15,12 +15,14 @@ import 'package:sun_gate_app/features/calculator/presentation/screens/number_of_
 import 'package:sun_gate_app/features/calculator/presentation/screens/return_on_investment_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/system_efficiency_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/title_of_panels_screen.dart';
-import 'package:sun_gate_app/features/home/data/models/category_item_model.dart';
-import 'package:sun_gate_app/features/home/presentation/screens/all_company_screen.dart';
-import 'package:sun_gate_app/features/home/presentation/screens/category_products_screen.dart';
 import 'package:sun_gate_app/features/home/presentation/screens/home_screen.dart';
-import 'package:sun_gate_app/features/home/presentation/screens/market_screen.dart';
 import 'package:sun_gate_app/features/main_navigation/presentation/screens/main_navigation_screen.dart';
+import 'package:sun_gate_app/features/marketplace/domain/entities/company_entity.dart';
+import 'package:sun_gate_app/features/marketplace/domain/entities/product_entity.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/screen/all_company_screen.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/screen/company_details_screen.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/screen/market_screen.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/screen/product_details_screen.dart';
 import 'package:sun_gate_app/features/notifications/presentation/screens/notification_screen.dart';
 import 'package:sun_gate_app/features/onboarding/presentation/screen/onboarding_screen.dart';
 import 'package:sun_gate_app/features/profile/presentation/screens/change_password_screen.dart';
@@ -103,35 +105,27 @@ class AppRouter {
         path: RouteNames.home,
         builder: (context, state) => const HomeScreen(),
       ),
-      GoRoute(
-        path: RouteNames.allCompanies,
-        builder: (context, state) => const AllCompanyScreen(),
-      ),
-      // GoRoute(
-      //   path: RouteNames.companyDetail,
-      //   builder: (context, state) {
-      //     final company = state.extra as CompanyModel;
-      //     return CompanyDetailScreen(company: company);
-      //   },
-      // ),
-      // GoRoute(
-      //   path: RouteNames.productDetail,
-      //   builder: (context, state) {
-      //     final product = state.extra as ProductModel;
-      //     return ProductDetailScreen(product: product);
-      //   },
-      // ),
-      GoRoute(
-        path: RouteNames.categoryProducts,
-        builder: (context, state) {
-          final category = state.extra as CategoryItemModel;
-          return CategoryProductsScreen(category: category);
-        },
-      ),
 
       GoRoute(
         path: RouteNames.market,
         builder: (context, state) => const MarketScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.companyDetail,
+        builder: (context, state) {
+          final company = state.extra as CompanyEntity;
+
+          return CompanyDetailScreen(company: company);
+        },
+      ),
+
+      GoRoute(
+        path: RouteNames.productDetail,
+        builder: (context, state) {
+          final product = state.extra as ProductEntity;
+
+          return ProductDetailScreen(product: product);
+        },
       ),
       GoRoute(
         path: RouteNames.main,
@@ -157,6 +151,10 @@ class AppRouter {
           return NumberOfPanelsScreen(flowData: data);
         },
       ),
+      GoRoute(
+  path: RouteNames.allCompanies,
+  builder: (context, state) => const AllCompanyScreen(),
+),
       GoRoute(
         path: RouteNames.batteryCapacity,
         builder: (context, state) {
