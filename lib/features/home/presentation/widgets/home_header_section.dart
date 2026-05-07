@@ -12,6 +12,7 @@ import 'package:sun_gate_app/features/home/presentation/widgets/home_banner_card
 import 'package:sun_gate_app/features/home/presentation/widgets/home_weather_section.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/section_title_row.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/weather_background.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_controller.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/widget/market_place_company_card.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 
@@ -22,10 +23,12 @@ class HomeHeaderSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileControllerProvider);
     final homeState = ref.watch(homeControllerProvider);
+    final marketState = ref.watch(marketPlaceControllerProvider);
     final weatherState = ref.watch(weatherProvider);
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
-    final previewCompanies = homeState.companies.take(2).toList();
+    final previewCompanies = marketState.companies.take(4).toList();
 
     final userName = _resolveUserName(
       profileState.profile?.firstName.isNotEmpty == true
@@ -43,11 +46,9 @@ class HomeHeaderSection extends ConsumerWidget {
 
     return Column(
       children: [
-        // ================= HEADER =================
         weatherState.when(
           data: (data) {
             final headerImage = _getHeaderImage(data.mainCondition);
-
             final topOverlay = _getOverlayColor(data.mainCondition);
 
             return Container(
@@ -59,13 +60,11 @@ class HomeHeaderSection extends ConsumerWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-
               child: Stack(
                 children: [
                   Positioned.fill(
                     child: WeatherBackground(condition: data.condition),
                   ),
-
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
@@ -81,7 +80,6 @@ class HomeHeaderSection extends ConsumerWidget {
                       ),
                     ),
                   ),
-
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -92,20 +90,14 @@ class HomeHeaderSection extends ConsumerWidget {
                         ),
                         child: HomeAppBarSection(userName: userName),
                       ),
-
                       const SizedBox(height: 20),
-
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
-                        child: HomeWeatherSection(
-                          temp: data.temp,
-                          humidity: data.humidity,
-                          wind: data.wind,
-                          condition: data.condition,
-                          cityName: data.cityName,
-                          hourly: data.hourly,
-                        ),
+                      HomeWeatherSection(
+                        temp: data.temp,
+                        humidity: data.humidity,
+                        wind: data.wind,
+                        condition: data.condition,
+                        cityName: data.cityName,
+                        hourly: data.hourly,
                       ),
                     ],
                   ),
@@ -120,18 +112,18 @@ class HomeHeaderSection extends ConsumerWidget {
           error: (_, _) => const SizedBox(),
         ),
 
-        // ================= BODY =================
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
             color: theme.cardColor,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(30),
+            ),
           ),
           child: Column(
             children: [
               const SizedBox(height: 20),
 
-              // Banner
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: HomeBannerCard(
@@ -141,15 +133,16 @@ class HomeHeaderSection extends ConsumerWidget {
 
               const SizedBox(height: 20),
 
-              // Categories
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: SectionTitleRow(
-                  title: AppLocalizations.of(context)!.category,
+                  title: loc.category,
                   actionText: '',
                   onTap: () {},
                 ),
               ),
+
+              const SizedBox(height: 10),
 
               SizedBox(
                 height: 110,
@@ -175,135 +168,59 @@ class HomeHeaderSection extends ConsumerWidget {
               ),
 
               const SizedBox(height: 20),
-              // ================= PRODUCTS =================
-              const SizedBox(height: 20),
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: SectionTitleRow(
-                  title: "Products",
-                  actionText: "",
-                  onTap: () {},
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              Builder(
-                builder: (context) {
-                  final products = homeState.products;
-
-                  if (homeState.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (products.isEmpty) {
-                    return const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Text("No products yet"),
-                    );
-                  }
-
-                  return ListView.builder(
-                    itemCount: products.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemBuilder: (context, index) {
-                      final product = products[index];
-
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: theme.cardColor,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Row(
-                          children: [
-                            // صورة
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                product.imageUrl,
-                                width: 70,
-                                height: 70,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-
-                            const SizedBox(width: 12),
-
-                            // معلومات
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    product.title,
-                                    style: theme.textTheme.titleSmall?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    product.description,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    "\$${product.price}",
-                                    style: TextStyle(
-                                      color: theme.colorScheme.primary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-              // Companies
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SectionTitleRow(
-                  title: AppLocalizations.of(context)!.popularCompanies,
-                  actionText: AppLocalizations.of(context)!.seeAll,
+                  title: loc.popularCompanies,
+                  actionText: loc.seeAll,
                   onTap: () => context.push(RouteNames.allCompanies),
                 ),
               ),
 
               const SizedBox(height: 10),
 
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: GridView.builder(
-                  itemCount: previewCompanies.length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 14,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 0.80,
+              if (marketState.isLoading)
+                const Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (previewCompanies.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text('No companies yet'),
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: GridView.builder(
+                    itemCount: previewCompanies.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 14,
+                          mainAxisSpacing: 16,
+                          childAspectRatio: 0.80,
+                        ),
+                    itemBuilder: (context, index) {
+                      final company = previewCompanies[index];
+
+                      return MarketplaceCompanyCard(
+                        company: company,
+                        onTap: () {
+                          context.push(
+                            RouteNames.companyDetail,
+                            extra: company,
+                          );
+                        },
+                      );
+                    },
                   ),
-                  itemBuilder: (context, index) {
-                    final company = previewCompanies[index];
-                    return MarketplaceCompanyCard(
-                      company: company,
-                      onTap: () {
-                        context.push(RouteNames.companyDetail, extra: company);
-                      },
-                    );
-                  },
                 ),
-              ),
+
+              const SizedBox(height: 24),
             ],
           ),
         ),
