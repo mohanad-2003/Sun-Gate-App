@@ -32,24 +32,26 @@ class HomeAppBarSection extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundColor: Colors.white24,
-                backgroundImage: (imageUrl != null && imageUrl.isNotEmpty)
-                    ? NetworkImage(imageUrl)
-                    : (profileState.googlePhoto != null &&
-                          profileState.googlePhoto!.isNotEmpty)
-                    ? NetworkImage(profileState.googlePhoto!)
-                    : null,
-                child:
-                    (imageUrl == null || imageUrl.isEmpty) &&
-                        (profileState.googlePhoto == null ||
-                            profileState.googlePhoto!.isEmpty)
-                    ? const Icon(Icons.person, color: Colors.white, size: 28)
-                    : null,
+              GestureDetector(
+                onTap: () => context.push(RouteNames.profile),
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.white24,
+                  backgroundImage: (imageUrl != null && imageUrl.isNotEmpty)
+                      ? NetworkImage(imageUrl)
+                      : (profileState.googlePhoto != null &&
+                            profileState.googlePhoto!.isNotEmpty)
+                      ? NetworkImage(profileState.googlePhoto!)
+                      : null,
+                  child:
+                      (imageUrl == null || imageUrl.isEmpty) &&
+                          (profileState.googlePhoto == null ||
+                              profileState.googlePhoto!.isEmpty)
+                      ? const Icon(Icons.person, color: Colors.white, size: 28)
+                      : null,
+                ),
               ),
-
-              // 🔔 Notifications
+              //  Notifications
               Stack(
                 clipBehavior: Clip.none,
                 children: [

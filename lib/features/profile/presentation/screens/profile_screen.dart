@@ -102,6 +102,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         : loc.english;
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () {
+            context.pop();
+          },
+        ),
+        title: Text(loc.profile),
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: profileState.isLoading && profile == null
             ? const Center(child: CircularProgressIndicator())

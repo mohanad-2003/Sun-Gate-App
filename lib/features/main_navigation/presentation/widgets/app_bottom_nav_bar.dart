@@ -48,9 +48,9 @@ class AppBottomNavBar extends StatelessWidget {
           label: loc.suppliser,
         ),
         NavigationDestination(
-          icon: Icon(Icons.person_outline),
-          selectedIcon: Icon(Icons.person),
-          label: loc.profile,
+          icon: Icon(Icons.shopping_cart_outlined),
+          selectedIcon: Icon(Icons.shopping_cart_outlined),
+          label: loc.market,
         ),
       ],
     );

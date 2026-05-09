@@ -116,9 +116,7 @@ class HomeHeaderSection extends ConsumerWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             color: theme.cardColor,
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(30),
-            ),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
           ),
           child: Column(
             children: [
