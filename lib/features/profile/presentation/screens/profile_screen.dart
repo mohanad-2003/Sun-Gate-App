@@ -133,7 +133,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ProfileHeaderCard(
                           name: profile.displasyName,
                           email: profile.email,
-                          imageUrl: profile.imageUrl ?? profile.profileImage,
+                          imageUrl: profile.imageUrl?.isNotEmpty == true
+                              ? profile.imageUrl
+                              : profile.profileImage?.isNotEmpty == true
+                              ? profile.profileImage
+                              : profileState.googlePhoto,
                           onEditTap: () => context.push(RouteNames.userInfo),
                         )
                       else
