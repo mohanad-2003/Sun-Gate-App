@@ -19,7 +19,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
   late final TextEditingController lastNameController;
   late final TextEditingController emailController;
   late final TextEditingController locationController;
-
+  late final TextEditingController birthDateController;
   bool _didPopulateInitialData = false;
   final _picker = ImagePicker();
 
@@ -64,6 +64,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
     if ((profile?.location == null || profile!.location!.isEmpty)) {
       _loadCurrentLocation();
     }
+    birthDateController = TextEditingController(text: profile?.birthDate ?? '');
   }
 
   @override
@@ -72,6 +73,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
     lastNameController.dispose();
     emailController.dispose();
     locationController.dispose();
+    birthDateController.dispose();
     super.dispose();
   }
 
@@ -213,16 +215,40 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
               const SizedBox(height: 8),
               TextField(controller: emailController, enabled: false),
               const SizedBox(height: 16),
-
-              ProfileSectionLabel(title: loc.gender),
+              ProfileSectionLabel(title: loc.birthDate),
               const SizedBox(height: 8),
-              ProfileGenderSelector(
-                selectedGender: selectedGender,
-                onChanged: (value) {
-                  setState(() {
-                    selectedGender = value;
-                  });
+
+              TextField(
+                controller: birthDateController,
+                readOnly: true,
+                onTap: () async {
+                  final DateTime? date = await showDatePicker(
+                    context: context,
+                    firstDate: DateTime(1950),
+                    lastDate: DateTime.now(),
+                    initialDate:
+                        DateTime.tryParse(birthDateController.text) ??
+                        DateTime(2000),
+                  );
+
+                  if (date != null) {
+                    final month = date.month.toString().padLeft(2, '0');
+                    final day = date.day.toString().padLeft(2, '0');
+
+                    final formattedDate = "${date.year}-$month-$day";
+
+                    setState(() {
+                      birthDateController.text = formattedDate;
+                    });
+                  }
                 },
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.calendar_today_outlined),
+                  suffixIcon: const Icon(Icons.edit_calendar),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
 
