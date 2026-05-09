@@ -47,7 +47,7 @@ class UserProfileModels extends UserProfileEntity {
       authProvider: json['authProvider']?.toString() ?? '',
       googleId: json['googleId']?.toString(),
       profileImage: json['profileImage']?.toString(),
-      imageUrl: json['imageUrl']?.toString(),
+      imageUrl: json['profileImageUrl']?.toString(),
       isEmailVarified:
           (json['isEmailVerified'] as bool?) ??
           (json['isEmailVarified'] as bool?) ??

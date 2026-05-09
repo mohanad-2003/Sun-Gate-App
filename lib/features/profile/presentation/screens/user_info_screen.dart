@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
+import 'package:sun_gate_app/core/services/location_helper_service.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/profile_gender_selector.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/profile_section_label.dart';
@@ -33,6 +34,19 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
   }
 
   String selectedGender = 'male';
+  Future<void> _loadCurrentLocation() async {
+    try {
+      final location = await LocationHelper.getCurrentLocationName();
+
+      if (!mounted) return;
+
+      setState(() {
+        locationController.text = location;
+      });
+    } catch (e) {
+      debugPrint('Location error: $e');
+    }
+  }
 
   @override
   void initState() {
@@ -46,6 +60,10 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
     selectedGender = (profile?.gender?.isNotEmpty ?? false)
         ? profile!.gender!
         : 'male';
+
+    if ((profile?.location == null || profile!.location!.isEmpty)) {
+      _loadCurrentLocation();
+    }
   }
 
   @override
@@ -210,10 +228,94 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
 
               ProfileSectionLabel(title: loc.location),
               const SizedBox(height: 8),
-              TextField(
-                controller: locationController,
-                maxLines: 4,
-                minLines: 4,
+
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: locationController,
+                      maxLines: 2,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        hintText: loc.location,
+                        prefixIcon: const Icon(Icons.location_on_outlined),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+
+                  StatefulBuilder(
+                    builder: (context, setInnerState) {
+                      bool isLoading = false;
+
+                      return StatefulBuilder(
+                        builder: (context, setStateBtn) {
+                          return InkWell(
+                            onTap: isLoading
+                                ? null
+                                : () async {
+                                    setStateBtn(() => isLoading = true);
+
+                                    try {
+                                      final location =
+                                          await LocationHelper.getCurrentLocationName();
+
+                                      if (!mounted) return;
+
+                                      setState(() {
+                                        locationController.text = location;
+                                      });
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('فشل تحديث الموقع'),
+                                        ),
+                                      );
+                                    }
+
+                                    setStateBtn(() => isLoading = false);
+                                  },
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 8,
+                                    color: Colors.black.withOpacity(0.1),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: isLoading
+                                    ? const SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : const Icon(
+                                        Icons.my_location,
+                                        color: Colors.white,
+                                      ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
 
