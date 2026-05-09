@@ -34,7 +34,7 @@ import 'package:sun_gate_app/features/splash/presentation/screens/splash_screen.
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: RouteNames.splash,
+    initialLocation: RouteNames.main,
     routes: [
       GoRoute(
         path: RouteNames.splash,

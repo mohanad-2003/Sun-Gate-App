@@ -49,7 +49,11 @@ class HomeWeatherSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final weatherColor = _getWeatherColor();
-
+    final screenWidth = MediaQuery.of(context).size.width;
+    final hourlyCardHeight = screenWidth < 360 ? 82.0 : 90.0;
+    final hourlyCardWidth = screenWidth < 360 ? 58.0 : 66.0;
+    final smallFont = screenWidth < 360 ? 9.0 : 11.0;
+    final iconSize = screenWidth < 360 ? 14.0 : 16.0;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: ClipRRect(
@@ -141,7 +145,7 @@ class HomeWeatherSection extends StatelessWidget {
 
                 /// HOURLY
                 SizedBox(
-                  height: 75,
+                  height: hourlyCardHeight,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: hourly.length,
@@ -149,42 +153,50 @@ class HomeWeatherSection extends StatelessWidget {
                       final item = hourly[index];
 
                       return Container(
+                        width: hourlyCardWidth,
                         margin: const EdgeInsets.only(right: 10),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth < 360 ? 6 : 8,
+                          vertical: screenWidth < 360 ? 6 : 8,
                         ),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              item.time,
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.7),
-                                fontSize: 11,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                item.time,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.7),
+                                  fontSize: smallFont,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 6),
-                            Icon(
-                              Icons.water_drop,
-                              color: item.precipitation > 50
-                                  ? Colors.blueAccent
-                                  : Colors.white70,
-                              size: 16,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "${item.precipitation}%",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
+                              const SizedBox(height: 6),
+                              Icon(
+                                Icons.water_drop,
+                                color: item.precipitation > 50
+                                    ? Colors.blueAccent
+                                    : Colors.white70,
+                                size: iconSize,
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 4),
+                              Text(
+                                "${item.precipitation}%",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: smallFont,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },

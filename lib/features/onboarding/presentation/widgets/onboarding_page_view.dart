@@ -61,7 +61,12 @@ class _OnboardingPageViewState extends State<OnboardingPageView> {
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
                 width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
+                padding: EdgeInsets.fromLTRB(
+                  20,
+                  28,
+                  20,
+                  24 + MediaQuery.of(context).viewPadding.bottom,
+                ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [

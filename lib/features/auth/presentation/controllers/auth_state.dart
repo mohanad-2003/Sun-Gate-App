@@ -4,7 +4,7 @@ class AuthState {
   final String? errorMessage;
   final String? message;
   final String? resetToken;
-
+  
   const AuthState({
     required this.isLoading,
     required this.isSuccess,
