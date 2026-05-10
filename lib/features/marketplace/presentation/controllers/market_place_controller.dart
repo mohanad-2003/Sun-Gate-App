@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:sun_gate_app/features/marketplace/domain/repositories/market_place_repository.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_state.dart';
@@ -14,7 +15,10 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
   final MarketPlaceRepository repository;
 
   MarketPlaceController({required this.repository})
-    : super(MarketPlaceState.initial());
+    : super(MarketPlaceState.initial()) {
+    getCompanies();
+    getProducts();
+  }
 
   Future<void> getCompanies() async {
     state = state.copyWith(
@@ -63,9 +67,11 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
 
     try {
       final products = await repository.getProducts();
+      debugPrint('✅ PRODUCTS COUNT: ${products.length}'); // ← أضف هاي
 
       state = state.copyWith(isLoading: false, products: products);
     } catch (e) {
+      debugPrint('❌ PRODUCTS ERROR: $e');
       state = state.copyWith(
         isLoading: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
