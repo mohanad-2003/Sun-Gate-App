@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
-import 'package:sun_gate_app/app/router/route_names.dart';
-import 'package:sun_gate_app/features/calculator/domain/entities/calculator_flow_data.dart';
 import 'package:sun_gate_app/features/calculator/domain/usecases/calculate_solar_values_usecase.dart';
 import 'package:sun_gate_app/features/calculator/presentation/utils/calculator_input_parser.dart';
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_input_field.dart';
@@ -10,37 +7,35 @@ import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_primary_button.dart';
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_result_card.dart';
 
-class BatteryCapacityScreen extends StatefulWidget {
-  final CalculatorFlowData flowData;
-  const BatteryCapacityScreen({super.key, required this.flowData});
+class BatteryCapacityAdvancedScreen extends StatefulWidget {
+  const BatteryCapacityAdvancedScreen({super.key});
 
   @override
-  State<BatteryCapacityScreen> createState() => _BatteryCapacityScreenState();
+  State<BatteryCapacityAdvancedScreen> createState() =>
+      _BatteryCapacityAdvancedScreenState();
 }
 
-class _BatteryCapacityScreenState extends State<BatteryCapacityScreen> {
+class _BatteryCapacityAdvancedScreenState
+    extends State<BatteryCapacityAdvancedScreen> {
   final _calculator = const CalculateSolarValuesUseCase();
   final _dailyConsumptionController = TextEditingController();
-  final _systemVoltageController = TextEditingController();
+  final _systemVoltageController = TextEditingController(text: '48');
+  final _daysOfAutonomyController = TextEditingController(text: '2');
+  final _depthOfDischargeController = TextEditingController(text: '50');
   final _inverterEfficiencyController = TextEditingController(text: '90');
   final _minimumTemperatureController = TextEditingController(text: '10');
 
   double _batteryCapacity = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.flowData.dailyConsumption > 0) {
-      _dailyConsumptionController.text = widget.flowData.dailyConsumption
-          .toStringAsFixed(2);
-    }
-  }
-
-  double _calculateBatteryCapacity({bool showError = true}) {
+  double _calculate({bool showError = true}) {
     final loc = AppLocalizations.of(context)!;
-    final result = _calculator.basicBatteryCapacityAh(
+    final result = _calculator.advancedBatteryCapacityAh(
       dailyConsumptionWh: readCalculatorDouble(_dailyConsumptionController),
       systemVoltage: readCalculatorDouble(_systemVoltageController),
+      daysOfAutonomy: readCalculatorDouble(_daysOfAutonomyController),
+      depthOfDischargePercent: readCalculatorDouble(
+        _depthOfDischargeController,
+      ),
       inverterEfficiencyPercent: readCalculatorDouble(
         _inverterEfficiencyController,
       ),
@@ -68,6 +63,8 @@ class _BatteryCapacityScreenState extends State<BatteryCapacityScreen> {
   void dispose() {
     _dailyConsumptionController.dispose();
     _systemVoltageController.dispose();
+    _daysOfAutonomyController.dispose();
+    _depthOfDischargeController.dispose();
     _inverterEfficiencyController.dispose();
     _minimumTemperatureController.dispose();
     super.dispose();
@@ -78,7 +75,7 @@ class _BatteryCapacityScreenState extends State<BatteryCapacityScreen> {
     final loc = AppLocalizations.of(context)!;
 
     return CalculatorPageScaffold(
-      title: loc.batteryCapacityTitle,
+      title: loc.batteryCapacityAdvancedTitle,
       children: [
         CalculatorInputField(
           labelText: loc.totalDailyConsumption,
@@ -94,6 +91,21 @@ class _BatteryCapacityScreenState extends State<BatteryCapacityScreen> {
           controller: _systemVoltageController,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           suffixText: loc.volt,
+        ),
+        const SizedBox(height: 14),
+        CalculatorInputField(
+          labelText: loc.daysOfAutonomy,
+          hintText: loc.daysOfAutonomyHint,
+          controller: _daysOfAutonomyController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        ),
+        const SizedBox(height: 14),
+        CalculatorInputField(
+          labelText: loc.depthOfDischarge,
+          hintText: loc.depthOfDischargeHint,
+          controller: _depthOfDischargeController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          suffixText: '%',
         ),
         const SizedBox(height: 14),
         CalculatorInputField(
@@ -118,36 +130,14 @@ class _BatteryCapacityScreenState extends State<BatteryCapacityScreen> {
         CalculatorPrimaryButton(
           text: loc.calculate,
           icon: Icons.calculate_outlined,
-          onPressed: _calculateBatteryCapacity,
+          onPressed: _calculate,
         ),
         const SizedBox(height: 18),
         CalculatorResultCard(
           title: loc.requiredBatteryCapacity,
           value: formatCalculatorNumber(_batteryCapacity),
           unit: loc.ampereHour,
-          icon: Icons.battery_charging_full_rounded,
-        ),
-        const SizedBox(height: 14),
-        CalculatorPrimaryButton(
-          text: loc.nextTiltOfPanels,
-          icon: Icons.arrow_forward_rounded,
-          onPressed: () {
-            final capacity = _calculateBatteryCapacity(showError: false);
-            if (capacity <= 0) {
-              _showInputError(loc);
-              return;
-            }
-
-            context.push(
-              RouteNames.tiltOfPanels,
-              extra: widget.flowData.copyWith(
-                dailyConsumption: readCalculatorDouble(
-                  _dailyConsumptionController,
-                ),
-                batteryCapacity: capacity,
-              ),
-            );
-          },
+          icon: Icons.battery_saver_outlined,
         ),
       ],
     );

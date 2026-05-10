@@ -828,4 +828,427 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get enterLocation => 'أدخل موقعك';
+
+  @override
+  String get solarCalculatorTitle => 'حاسبة الطاقة الشمسية';
+
+  @override
+  String get solarCalculatorSubtitle =>
+      'احسب حجم النظام والتخزين والأسلاك والعائد من مكان واحد.';
+
+  @override
+  String get calculatorInvalidInputs => 'يرجى إدخال قيم موجبة وصحيحة.';
+
+  @override
+  String get calculate => 'احسب';
+
+  @override
+  String get remove => 'إزالة';
+
+  @override
+  String get deviceConsumptionTitle => 'استهلاك الأجهزة';
+
+  @override
+  String get deviceConsumptionMenuSubtitle =>
+      'احسب الاستهلاك اليومي من قدرة الأجهزة وساعات التشغيل.';
+
+  @override
+  String get numberOfPanelsTitle => 'عدد الألواح';
+
+  @override
+  String get numberOfPanelsMenuSubtitle => 'قدّر عدد الألواح الشمسية المطلوبة.';
+
+  @override
+  String get batteryCapacityTitle => 'سعة البطارية';
+
+  @override
+  String get batteryCapacityMenuSubtitle =>
+      'احسب سعة البطاريات المناسبة للاستهلاك اليومي.';
+
+  @override
+  String get batteryCapacityAdvancedTitle => 'سعة البطارية - متقدم';
+
+  @override
+  String get batteryCapacityAdvancedMenuSubtitle =>
+      'أدخل أيام الاستقلال وعمق التفريغ والكفاءة والحرارة.';
+
+  @override
+  String get inverterCapacityTitle => 'قدرة المحول';
+
+  @override
+  String get inverterCapacityMenuSubtitle =>
+      'احسب قدرة المحول وتصنيف VA وتيار دخل DC.';
+
+  @override
+  String get wireCrossSectionTitle => 'مقطع السلك';
+
+  @override
+  String get wireCrossSectionMenuSubtitle =>
+      'اختر مساحة السلك حسب الحمل والجهد والمسافة.';
+
+  @override
+  String get chargeControllerTitle => 'منظم الشحن الاحترافي';
+
+  @override
+  String get chargeControllerMenuSubtitle =>
+      'احسب تيار منظم الشحن لسلاسل الألواح.';
+
+  @override
+  String get tiltOfPanelsTitle => 'ميل الألواح';
+
+  @override
+  String get tiltOfPanelsMenuSubtitle =>
+      'اعرف زاوية الميل المناسبة للألواح الشمسية.';
+
+  @override
+  String get systemEfficiencyTitle => 'كفاءة النظام';
+
+  @override
+  String get systemEfficiencyMenuSubtitle =>
+      'قارن الإنتاج النظري مع الإنتاج الفعلي.';
+
+  @override
+  String get returnOnInvestmentTitle => 'العائد على الاستثمار';
+
+  @override
+  String get returnOnInvestmentMenuSubtitle =>
+      'احسب فترة استرداد التكلفة من السعر والإنتاج.';
+
+  @override
+  String get device => 'الجهاز';
+
+  @override
+  String get deviceHint => 'اسم الجهاز';
+
+  @override
+  String get power => 'القدرة';
+
+  @override
+  String get powerWattsHint => 'القدرة بالواط';
+
+  @override
+  String get hours => 'الساعات';
+
+  @override
+  String get hoursHint => 'ساعات التشغيل يوميًا';
+
+  @override
+  String get addNewDevice => 'إضافة جهاز جديد';
+
+  @override
+  String get totalDailyConsumption => 'إجمالي الاستهلاك اليومي';
+
+  @override
+  String get nextNumberOfPanels => 'التالي: عدد الألواح';
+
+  @override
+  String get systemTypeOffGrid => 'نوع النظام: منفصل عن الشبكة';
+
+  @override
+  String get systemTypeOnGrid => 'نوع النظام: متصل بالشبكة';
+
+  @override
+  String get dailyConsumptionWhHint => 'إجمالي الاستهلاك اليومي';
+
+  @override
+  String get singlePanelPower => 'قدرة اللوح الشمسي الواحد';
+
+  @override
+  String get panelPowerWattsHint => 'قدرة اللوح';
+
+  @override
+  String get peakSunHours => 'ساعات الذروة الشمسية';
+
+  @override
+  String get peakSunHoursHint => 'ساعات الشمس الذروية';
+
+  @override
+  String get systemEfficiency => 'كفاءة النظام';
+
+  @override
+  String get numberOfPanelsRequired => 'عدد الألواح المطلوبة';
+
+  @override
+  String get nextBatteryCapacity => 'التالي: سعة البطارية';
+
+  @override
+  String get systemVoltage => 'جهد النظام';
+
+  @override
+  String get systemVoltageHint => 'جهد النظام';
+
+  @override
+  String get inverterEfficiency => 'كفاءة المحول';
+
+  @override
+  String get inverterEfficiencyHint => 'كفاءة المحول';
+
+  @override
+  String get minimumExpectedTemperature => 'أقل درجة حرارة متوقعة';
+
+  @override
+  String get minimumTemperatureHint => 'أقل درجة حرارة';
+
+  @override
+  String get requiredBatteryCapacity => 'سعة البطارية المطلوبة';
+
+  @override
+  String get nextTiltOfPanels => 'التالي: ميل الألواح';
+
+  @override
+  String get daysOfAutonomy => 'أيام الاستقلال';
+
+  @override
+  String get daysOfAutonomyHint => 'عدد أيام الاستقلال';
+
+  @override
+  String get depthOfDischarge => 'عمق التفريغ (DOD)';
+
+  @override
+  String get depthOfDischargeHint => 'عمق التفريغ';
+
+  @override
+  String get latitude => 'خط العرض';
+
+  @override
+  String get latitudeHint => 'مثال: 31.6';
+
+  @override
+  String get selectDate => 'اختر التاريخ';
+
+  @override
+  String get chooseDate => 'اختيار التاريخ';
+
+  @override
+  String get selectedDateTilt => 'زاوية ميل التاريخ المحدد';
+
+  @override
+  String get optimalTiltAngle => 'زاوية الميل المثلى خلال السنة';
+
+  @override
+  String get annualTilt => 'الميل السنوي';
+
+  @override
+  String get summerTilt => 'ميل الصيف';
+
+  @override
+  String get winterTilt => 'ميل الشتاء';
+
+  @override
+  String get nextSystemEfficiency => 'التالي: كفاءة النظام';
+
+  @override
+  String get theoreticalProduction => 'الإنتاج النظري';
+
+  @override
+  String get theoreticalProductionHint => 'الإنتاج النظري';
+
+  @override
+  String get actualProduction => 'الإنتاج الفعلي';
+
+  @override
+  String get actualProductionHint => 'الإنتاج الفعلي';
+
+  @override
+  String get nextReturnOnInvestment => 'التالي: العائد على الاستثمار';
+
+  @override
+  String get totalSystemCost => 'تكلفة النظام الكلية';
+
+  @override
+  String get totalSystemCostHint => 'تكلفة النظام الكلية';
+
+  @override
+  String get expectedDailyOutput => 'الإنتاج اليومي المتوقع';
+
+  @override
+  String get expectedDailyOutputHint => 'الإنتاج اليومي المتوقع';
+
+  @override
+  String get pricePerKilowattHour => 'سعر الكيلوواط ساعة';
+
+  @override
+  String get pricePerKilowattHourHint => 'سعر الكيلوواط ساعة';
+
+  @override
+  String get estimatedPaybackPeriod => 'فترة الاسترداد المتوقعة';
+
+  @override
+  String get viewFinalSummary => 'عرض الملخص النهائي';
+
+  @override
+  String get totalContinuousPowerDevices => 'القدرة المستمرة الإجمالية للأجهزة';
+
+  @override
+  String get totalContinuousPowerHint => 'واط';
+
+  @override
+  String get maximumInstantaneousStart => 'أقصى قدرة بدء لحظية متوقعة';
+
+  @override
+  String get maximumInstantaneousStartHint => 'واط';
+
+  @override
+  String get powerFactor => 'معامل القدرة';
+
+  @override
+  String get powerFactorHint => 'مثال: 0.8';
+
+  @override
+  String get dcInputVoltage => 'جهد النظام (دخل DC)';
+
+  @override
+  String get dcInputVoltageHint => 'مثال: 12';
+
+  @override
+  String get inverterSafetyFactor => 'معامل أمان المحول';
+
+  @override
+  String get requiredContinuousPower => 'القدرة المستمرة المطلوبة';
+
+  @override
+  String get dcCurrent => 'تيار DC';
+
+  @override
+  String get totalLoadPower => 'إجمالي قدرة الحمل';
+
+  @override
+  String get totalLoadPowerHint => 'إجمالي قدرة الحمل';
+
+  @override
+  String get distanceFromSourceLoad => 'المسافة بين المصدر والحمل';
+
+  @override
+  String get distanceFromSourceLoadHint => 'المسافة';
+
+  @override
+  String get requiredCableSection => 'مقطع السلك المطلوب';
+
+  @override
+  String get recommendedBreaker => 'القاطع المقترح';
+
+  @override
+  String get current => 'التيار';
+
+  @override
+  String get chargeControllerType => 'نوع منظم الشحن';
+
+  @override
+  String get batterySystemVoltage => 'جهد نظام البطاريات';
+
+  @override
+  String get batterySystemVoltageHint => 'جهد البطارية';
+
+  @override
+  String get shortCircuitCurrentPerPanel => 'تيار القصر لكل لوح';
+
+  @override
+  String get shortCircuitCurrentHint => 'تيار القصر';
+
+  @override
+  String get panelsInParallel => 'الألواح على التوازي';
+
+  @override
+  String get panelsInParallelHint => 'عدد الألواح على التوازي';
+
+  @override
+  String get requiredControllerCurrent => 'تيار المنظم المطلوب';
+
+  @override
+  String get supportedArrayPower => 'قدرة المصفوفة المدعومة';
+
+  @override
+  String get calculationSummaryTitle => 'ملخص الحسابات';
+
+  @override
+  String get systemOverview => 'نظرة عامة على النظام';
+
+  @override
+  String get systemOverviewSubtitle =>
+      'ملخص مختصر لأهم القيم المحسوبة للنظام الشمسي.';
+
+  @override
+  String get quickRecommendation => 'توصية سريعة';
+
+  @override
+  String get summaryRecommendationPrefix => 'يحتاج النظام التقديري إلى حوالي';
+
+  @override
+  String get summaryEfficiencyPrefix => 'الكفاءة التقديرية هي';
+
+  @override
+  String get summaryRoiPrefix => 'فترة الاسترداد المتوقعة هي';
+
+  @override
+  String get efficiencyGauge => 'مؤشر الكفاءة';
+
+  @override
+  String get excellent => 'ممتاز';
+
+  @override
+  String get good => 'جيد';
+
+  @override
+  String get average => 'متوسط';
+
+  @override
+  String get needsImprovement => 'يحتاج إلى تحسين';
+
+  @override
+  String get systemComparisonChart => 'مخطط مقارنة النظام';
+
+  @override
+  String get systemComparisonChartSubtitle =>
+      'مقارنة مرئية بين أهم القيم المحسوبة.';
+
+  @override
+  String get use => 'الاستهلاك';
+
+  @override
+  String get panels => 'الألواح';
+
+  @override
+  String get battery => 'البطارية';
+
+  @override
+  String get tilt => 'الميل';
+
+  @override
+  String get wh => 'واط-ساعة';
+
+  @override
+  String get wattHour => 'واط-ساعة';
+
+  @override
+  String get watt => 'واط';
+
+  @override
+  String get volt => 'فولت';
+
+  @override
+  String get voltAmpere => 'فولت أمبير';
+
+  @override
+  String get ampere => 'أمبير';
+
+  @override
+  String get ampereHour => 'أمبير-ساعة';
+
+  @override
+  String get meter => 'م';
+
+  @override
+  String get squareMillimeter => 'مم²';
+
+  @override
+  String get celsius => '°م';
+
+  @override
+  String get degree => '°';
+
+  @override
+  String get panel => 'لوح';
+
+  @override
+  String get years => 'سنوات';
 }

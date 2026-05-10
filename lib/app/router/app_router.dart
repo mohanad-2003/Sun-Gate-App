@@ -8,13 +8,17 @@ import 'package:sun_gate_app/features/auth/presentation/screen/otp_screen.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/sign_up_screen.dart';
 import 'package:sun_gate_app/features/calculator/data/models/calculate_flow_data.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/battery_capacity_screen.dart';
+import 'package:sun_gate_app/features/calculator/presentation/screens/battery_capacity_advanced_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/calculator_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/calculator_summary_screen.dart';
+import 'package:sun_gate_app/features/calculator/presentation/screens/charge_controller_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/device_consumpation_screen.dart';
+import 'package:sun_gate_app/features/calculator/presentation/screens/inverter_power_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/number_of_panels_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/return_on_investment_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/system_efficiency_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/title_of_panels_screen.dart';
+import 'package:sun_gate_app/features/calculator/presentation/screens/wire_cross_section_screen.dart';
 import 'package:sun_gate_app/features/home/presentation/screens/home_screen.dart';
 import 'package:sun_gate_app/features/main_navigation/presentation/screens/main_navigation_screen.dart';
 import 'package:sun_gate_app/features/marketplace/domain/entities/company_entity.dart';
@@ -26,6 +30,7 @@ import 'package:sun_gate_app/features/marketplace/presentation/screen/product_de
 import 'package:sun_gate_app/features/notifications/presentation/screens/notification_screen.dart';
 import 'package:sun_gate_app/features/onboarding/presentation/screen/onboarding_screen.dart';
 import 'package:sun_gate_app/features/profile/presentation/screens/change_password_screen.dart';
+import 'package:sun_gate_app/features/profile/presentation/screens/complete_profile_screen.dart';
 import 'package:sun_gate_app/features/profile/presentation/screens/help_support_screen.dart';
 import 'package:sun_gate_app/features/profile/presentation/screens/legal_policies_screen.dart';
 import 'package:sun_gate_app/features/profile/presentation/screens/profile_screen.dart';
@@ -34,7 +39,7 @@ import 'package:sun_gate_app/features/splash/presentation/screens/splash_screen.
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: RouteNames.main,
+    initialLocation: RouteNames.splash,
     routes: [
       GoRoute(
         path: RouteNames.splash,
@@ -152,9 +157,9 @@ class AppRouter {
         },
       ),
       GoRoute(
-  path: RouteNames.allCompanies,
-  builder: (context, state) => const AllCompanyScreen(),
-),
+        path: RouteNames.allCompanies,
+        builder: (context, state) => const AllCompanyScreen(),
+      ),
       GoRoute(
         path: RouteNames.batteryCapacity,
         builder: (context, state) {
@@ -180,6 +185,22 @@ class AppRouter {
         },
       ),
       GoRoute(
+        path: RouteNames.inverterPower,
+        builder: (context, state) => const InverterPowerScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.wireCrossSection,
+        builder: (context, state) => const WireCrossSectionScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.batteryCapacityAdvanced,
+        builder: (context, state) => const BatteryCapacityAdvancedScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.chargeController,
+        builder: (context, state) => const ChargeControllerScreen(),
+      ),
+      GoRoute(
         path: RouteNames.returnOnInvestment,
         builder: (context, state) {
           final data =
@@ -198,6 +219,10 @@ class AppRouter {
       GoRoute(
         path: RouteNames.notifications,
         builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.completeProfile,
+        builder: (context, state) => const CompleteProfileScreen(),
       ),
     ],
   );

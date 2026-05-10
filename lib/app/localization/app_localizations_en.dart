@@ -833,4 +833,429 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterLocation => 'Enter your location';
+
+  @override
+  String get solarCalculatorTitle => 'Solar Calculator';
+
+  @override
+  String get solarCalculatorSubtitle =>
+      'Estimate system size, storage, wiring, and investment values from one place.';
+
+  @override
+  String get calculatorInvalidInputs => 'Please enter valid positive values.';
+
+  @override
+  String get calculate => 'Calculate';
+
+  @override
+  String get remove => 'Remove';
+
+  @override
+  String get deviceConsumptionTitle => 'Device consumption';
+
+  @override
+  String get deviceConsumptionMenuSubtitle =>
+      'Calculate daily energy usage from device power and operating hours.';
+
+  @override
+  String get numberOfPanelsTitle => 'Number of panels';
+
+  @override
+  String get numberOfPanelsMenuSubtitle =>
+      'Estimate the required solar panel count.';
+
+  @override
+  String get batteryCapacityTitle => 'Battery capacity';
+
+  @override
+  String get batteryCapacityMenuSubtitle =>
+      'Size the battery bank for daily storage.';
+
+  @override
+  String get batteryCapacityAdvancedTitle => 'Battery capacity - Advanced';
+
+  @override
+  String get batteryCapacityAdvancedMenuSubtitle =>
+      'Include autonomy days, discharge depth, efficiency, and temperature.';
+
+  @override
+  String get inverterCapacityTitle => 'Inverter Capacity';
+
+  @override
+  String get inverterCapacityMenuSubtitle =>
+      'Estimate inverter power, VA rating, and DC input current.';
+
+  @override
+  String get wireCrossSectionTitle => 'Wire cross-section';
+
+  @override
+  String get wireCrossSectionMenuSubtitle =>
+      'Choose cable size from load, voltage, and distance.';
+
+  @override
+  String get chargeControllerTitle => 'Professional Charge Controller';
+
+  @override
+  String get chargeControllerMenuSubtitle =>
+      'Estimate controller current for panel strings.';
+
+  @override
+  String get tiltOfPanelsTitle => 'Tilt of the panels';
+
+  @override
+  String get tiltOfPanelsMenuSubtitle =>
+      'Find the recommended solar panel tilt angle.';
+
+  @override
+  String get systemEfficiencyTitle => 'System efficiency';
+
+  @override
+  String get systemEfficiencyMenuSubtitle =>
+      'Compare theoretical and actual production.';
+
+  @override
+  String get returnOnInvestmentTitle => 'Return on investment';
+
+  @override
+  String get returnOnInvestmentMenuSubtitle =>
+      'Estimate payback period from cost, output, and energy price.';
+
+  @override
+  String get device => 'Device';
+
+  @override
+  String get deviceHint => 'Device name';
+
+  @override
+  String get power => 'Power';
+
+  @override
+  String get powerWattsHint => 'Power in watts';
+
+  @override
+  String get hours => 'Hours';
+
+  @override
+  String get hoursHint => 'Hours per day';
+
+  @override
+  String get addNewDevice => 'Add a new device';
+
+  @override
+  String get totalDailyConsumption => 'Total daily consumption';
+
+  @override
+  String get nextNumberOfPanels => 'Next: Number of panels';
+
+  @override
+  String get systemTypeOffGrid => 'System type: Isolated (Off-Grid)';
+
+  @override
+  String get systemTypeOnGrid => 'System type: Grid connected';
+
+  @override
+  String get dailyConsumptionWhHint => 'Total daily consumption';
+
+  @override
+  String get singlePanelPower => 'Power of a single solar panel';
+
+  @override
+  String get panelPowerWattsHint => 'Panel power';
+
+  @override
+  String get peakSunHours => 'Peak hours of the sun';
+
+  @override
+  String get peakSunHoursHint => 'Peak sun hours';
+
+  @override
+  String get systemEfficiency => 'System efficiency';
+
+  @override
+  String get numberOfPanelsRequired => 'Number of panels required';
+
+  @override
+  String get nextBatteryCapacity => 'Next: Battery capacity';
+
+  @override
+  String get systemVoltage => 'System voltage';
+
+  @override
+  String get systemVoltageHint => 'System voltage';
+
+  @override
+  String get inverterEfficiency => 'Inverter efficiency';
+
+  @override
+  String get inverterEfficiencyHint => 'Inverter efficiency';
+
+  @override
+  String get minimumExpectedTemperature => 'Minimum expected temperature';
+
+  @override
+  String get minimumTemperatureHint => 'Minimum temperature';
+
+  @override
+  String get requiredBatteryCapacity => 'Required battery capacity';
+
+  @override
+  String get nextTiltOfPanels => 'Next: Tilt of panels';
+
+  @override
+  String get daysOfAutonomy => 'Days of autonomy';
+
+  @override
+  String get daysOfAutonomyHint => 'Days of autonomy';
+
+  @override
+  String get depthOfDischarge => 'Depth of discharge (DOD)';
+
+  @override
+  String get depthOfDischargeHint => 'Depth of discharge';
+
+  @override
+  String get latitude => 'Latitude';
+
+  @override
+  String get latitudeHint => 'Example: 31.6';
+
+  @override
+  String get selectDate => 'Select date';
+
+  @override
+  String get chooseDate => 'Choose date';
+
+  @override
+  String get selectedDateTilt => 'Selected date tilt';
+
+  @override
+  String get optimalTiltAngle => 'Optimal tilt angle throughout the year';
+
+  @override
+  String get annualTilt => 'Annual tilt';
+
+  @override
+  String get summerTilt => 'Summer tilt';
+
+  @override
+  String get winterTilt => 'Winter tilt';
+
+  @override
+  String get nextSystemEfficiency => 'Next: System efficiency';
+
+  @override
+  String get theoreticalProduction => 'Theoretical production';
+
+  @override
+  String get theoreticalProductionHint => 'Theoretical production';
+
+  @override
+  String get actualProduction => 'Actual production';
+
+  @override
+  String get actualProductionHint => 'Actual production';
+
+  @override
+  String get nextReturnOnInvestment => 'Next: Return on investment';
+
+  @override
+  String get totalSystemCost => 'Total system cost';
+
+  @override
+  String get totalSystemCostHint => 'Total system cost';
+
+  @override
+  String get expectedDailyOutput => 'Expected daily output';
+
+  @override
+  String get expectedDailyOutputHint => 'Expected daily output';
+
+  @override
+  String get pricePerKilowattHour => 'Price per kilowatt-hour';
+
+  @override
+  String get pricePerKilowattHourHint => 'Price per kilowatt-hour';
+
+  @override
+  String get estimatedPaybackPeriod => 'Estimated payback period';
+
+  @override
+  String get viewFinalSummary => 'View final summary';
+
+  @override
+  String get totalContinuousPowerDevices => 'Total continuous power of devices';
+
+  @override
+  String get totalContinuousPowerHint => 'Watts';
+
+  @override
+  String get maximumInstantaneousStart =>
+      'Maximum expected instantaneous start';
+
+  @override
+  String get maximumInstantaneousStartHint => 'Watts';
+
+  @override
+  String get powerFactor => 'Power factor';
+
+  @override
+  String get powerFactorHint => 'Example: 0.8';
+
+  @override
+  String get dcInputVoltage => 'System voltage (DC input voltage)';
+
+  @override
+  String get dcInputVoltageHint => 'Example: 12';
+
+  @override
+  String get inverterSafetyFactor => 'Inverter safety factor';
+
+  @override
+  String get requiredContinuousPower => 'Required continuous power';
+
+  @override
+  String get dcCurrent => 'DC current';
+
+  @override
+  String get totalLoadPower => 'Total load power';
+
+  @override
+  String get totalLoadPowerHint => 'Total load power';
+
+  @override
+  String get distanceFromSourceLoad => 'Distance from source/load';
+
+  @override
+  String get distanceFromSourceLoadHint => 'Distance';
+
+  @override
+  String get requiredCableSection => 'Required cable section';
+
+  @override
+  String get recommendedBreaker => 'Recommended breaker';
+
+  @override
+  String get current => 'Current';
+
+  @override
+  String get chargeControllerType => 'Charge controller type';
+
+  @override
+  String get batterySystemVoltage => 'Battery system voltage';
+
+  @override
+  String get batterySystemVoltageHint => 'Battery voltage';
+
+  @override
+  String get shortCircuitCurrentPerPanel => 'Short-circuit current per panel';
+
+  @override
+  String get shortCircuitCurrentHint => 'Short-circuit current';
+
+  @override
+  String get panelsInParallel => 'Panels in parallel';
+
+  @override
+  String get panelsInParallelHint => 'Number of panels in parallel';
+
+  @override
+  String get requiredControllerCurrent => 'Required controller current';
+
+  @override
+  String get supportedArrayPower => 'Supported array power';
+
+  @override
+  String get calculationSummaryTitle => 'Calculation Summary';
+
+  @override
+  String get systemOverview => 'System overview';
+
+  @override
+  String get systemOverviewSubtitle =>
+      'A compact summary of the main calculated solar system values.';
+
+  @override
+  String get quickRecommendation => 'Quick recommendation';
+
+  @override
+  String get summaryRecommendationPrefix => 'The estimated system needs around';
+
+  @override
+  String get summaryEfficiencyPrefix => 'Estimated efficiency is';
+
+  @override
+  String get summaryRoiPrefix => 'Expected payback period is';
+
+  @override
+  String get efficiencyGauge => 'Efficiency gauge';
+
+  @override
+  String get excellent => 'Excellent';
+
+  @override
+  String get good => 'Good';
+
+  @override
+  String get average => 'Average';
+
+  @override
+  String get needsImprovement => 'Needs improvement';
+
+  @override
+  String get systemComparisonChart => 'System comparison chart';
+
+  @override
+  String get systemComparisonChartSubtitle =>
+      'A visual comparison between the main calculated values.';
+
+  @override
+  String get use => 'Use';
+
+  @override
+  String get panels => 'Panels';
+
+  @override
+  String get battery => 'Battery';
+
+  @override
+  String get tilt => 'Tilt';
+
+  @override
+  String get wh => 'Wh';
+
+  @override
+  String get wattHour => 'watt-hour';
+
+  @override
+  String get watt => 'W';
+
+  @override
+  String get volt => 'V';
+
+  @override
+  String get voltAmpere => 'VA';
+
+  @override
+  String get ampere => 'A';
+
+  @override
+  String get ampereHour => 'Ah';
+
+  @override
+  String get meter => 'm';
+
+  @override
+  String get squareMillimeter => 'mm²';
+
+  @override
+  String get celsius => '°C';
+
+  @override
+  String get degree => '°';
+
+  @override
+  String get panel => 'panel';
+
+  @override
+  String get years => 'years';
 }

@@ -11,8 +11,8 @@ class WeatherRemoteDataSource {
     final response = await dio.get(
       'https://api.openweathermap.org/data/2.5/forecast',
       queryParameters: {
-        'lat': 31.5017,
-        'lon': 34.4668,
+        'lat': lat,
+        'lon': lon,
         'appid': '0070208a29b941b5f2e54c6f61c61e0d',
         'units': 'metric',
         'lang': lang,

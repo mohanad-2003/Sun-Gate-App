@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/core/services/location_helper_service.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
-import 'package:sun_gate_app/features/profile/presentation/widgets/profile_gender_selector.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/profile_section_label.dart';
 
 class UserInfoScreen extends ConsumerStatefulWidget {
@@ -20,6 +19,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
   late final TextEditingController emailController;
   late final TextEditingController locationController;
   late final TextEditingController birthDateController;
+
   bool _didPopulateInitialData = false;
   final _picker = ImagePicker();
 
@@ -232,13 +232,18 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                   );
 
                   if (date != null) {
+                    // ❌ حذفنا formatting من UI
+                    // ✔ صار في UseCase داخل Controller
+                    ref
+                        .read(profileControllerProvider.notifier)
+                        .updateBirthDate(date);
+
+                    // تحديث UI مباشرة
                     final month = date.month.toString().padLeft(2, '0');
                     final day = date.day.toString().padLeft(2, '0');
 
-                    final formattedDate = "${date.year}-$month-$day";
-
                     setState(() {
-                      birthDateController.text = formattedDate;
+                      birthDateController.text = "${date.year}-$month-$day";
                     });
                   }
                 },
@@ -250,8 +255,8 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
 
+              const SizedBox(height: 16),
               ProfileSectionLabel(title: loc.location),
               const SizedBox(height: 8),
 
@@ -274,75 +279,30 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
 
                   const SizedBox(width: 10),
 
-                  StatefulBuilder(
-                    builder: (context, setInnerState) {
-                      bool isLoading = false;
-
-                      return StatefulBuilder(
-                        builder: (context, setStateBtn) {
-                          return InkWell(
-                            onTap: isLoading
-                                ? null
-                                : () async {
-                                    setStateBtn(() => isLoading = true);
-
-                                    try {
-                                      final location =
-                                          await LocationHelper.getCurrentLocationName();
-
-                                      if (!mounted) return;
-
-                                      setState(() {
-                                        locationController.text = location;
-                                      });
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        const SnackBar(
-                                          content: Text('فشل تحديث الموقع'),
-                                        ),
-                                      );
-                                    }
-
-                                    setStateBtn(() => isLoading = false);
-                                  },
-                            child: Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primary,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                    blurRadius: 8,
-                                    color: Colors.black.withOpacity(0.1),
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: isLoading
-                                    ? const SizedBox(
-                                        width: 18,
-                                        height: 18,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : const Icon(
-                                        Icons.my_location,
-                                        color: Colors.white,
-                                      ),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                  SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        ref
+                            .read(profileControllerProvider.notifier)
+                            .updateLocation();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Icon(Icons.my_location, color: Colors.white),
+                    ),
                   ),
                 ],
               ),
+
+              const SizedBox(height: 20),
+
               const SizedBox(height: 20),
 
               if (state.errorMessage != null) ...[

@@ -25,7 +25,7 @@ class SummaryMetricCard extends StatelessWidget {
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: colorScheme.outlineVariant.withOpacity(0.45),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.45),
         ),
       ),
       child: Row(
@@ -34,14 +34,10 @@ class SummaryMetricCard extends StatelessWidget {
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: colorScheme.primary.withOpacity(0.12),
+              color: colorScheme.primary.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              icon,
-              size: 20,
-              color: colorScheme.primary,
-            ),
+            child: Icon(icon, size: 20, color: colorScheme.primary),
           ),
           const SizedBox(width: 12),
           Expanded(
