@@ -32,6 +32,5 @@ class RouteNames {
   static const completeProfile = '/complete-profile';
   static const inverterPower = '/inverter-power';
   static const wireCrossSection = '/wire-cross-section';
-  static const batteryCapacityAdvanced = '/battery-capacity-advanced';
   static const chargeController = '/charge-controller';
 }

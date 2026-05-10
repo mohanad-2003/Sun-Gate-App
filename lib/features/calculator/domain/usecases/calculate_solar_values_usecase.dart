@@ -18,6 +18,10 @@ class CalculateSolarValuesUseCase {
     required double peakSunHours,
     required double systemEfficiencyPercent,
     required bool isOffGrid,
+    double safetyMarginPercent = 0,
+    double panelDeratingPercent = 100,
+    double batteryChargeLossPercent = 0,
+    double seasonProductionFactorPercent = 100,
   }) {
     if (!_allPositive([
       dailyConsumptionWh,
@@ -29,10 +33,35 @@ class CalculateSolarValuesUseCase {
     }
 
     final efficiency = (systemEfficiencyPercent / 100).clamp(0.01, 1.0);
+    final safePanelDeratingPercent = panelDeratingPercent <= 0
+        ? 100.0
+        : panelDeratingPercent;
+    final safeSeasonProductionFactorPercent = seasonProductionFactorPercent <= 0
+        ? 100.0
+        : seasonProductionFactorPercent;
+    final panelDerating = (safePanelDeratingPercent / 100)
+        .clamp(0.01, 1.0)
+        .toDouble();
+    final seasonFactor = (safeSeasonProductionFactorPercent / 100)
+        .clamp(0.01, 2.0)
+        .toDouble();
+    final usableChargeFactor =
+        (1 - (batteryChargeLossPercent.clamp(0, 95).toDouble() / 100))
+            .clamp(0.01, 1.0)
+            .toDouble();
+    final safetyMargin =
+        1 + (safetyMarginPercent.clamp(0, 100).toDouble() / 100);
     final offGridReserve = isOffGrid ? 1.15 : 1.0;
-    final productionPerPanel = panelPowerWatts * peakSunHours * efficiency;
-    return (dailyConsumptionWh * offGridReserve / productionPerPanel)
-        .ceilToDouble();
+    final adjustedDailyConsumption =
+        (dailyConsumptionWh * offGridReserve * safetyMargin) /
+        usableChargeFactor;
+    final productionPerPanel =
+        panelPowerWatts *
+        peakSunHours *
+        efficiency *
+        panelDerating *
+        seasonFactor;
+    return (adjustedDailyConsumption / productionPerPanel).ceilToDouble();
   }
 
   double basicBatteryCapacityAh({

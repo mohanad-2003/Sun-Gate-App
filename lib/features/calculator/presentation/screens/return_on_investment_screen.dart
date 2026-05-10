@@ -108,7 +108,7 @@ class _ReturnOnInvestmentScreenState extends State<ReturnOnInvestmentScreen> {
           title: loc.estimatedPaybackPeriod,
           value: formatCalculatorNumber(_roiYears),
           unit: loc.years,
-          icon: Icons.savings_outlined,
+          icon: Icons.trending_up_rounded,
         ),
         const SizedBox(height: 14),
         CalculatorPrimaryButton(

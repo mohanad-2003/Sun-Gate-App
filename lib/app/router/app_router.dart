@@ -7,7 +7,6 @@ import 'package:sun_gate_app/features/auth/presentation/screen/new_password_scre
 import 'package:sun_gate_app/features/auth/presentation/screen/otp_screen.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/sign_up_screen.dart';
 import 'package:sun_gate_app/features/calculator/data/models/calculate_flow_data.dart';
-import 'package:sun_gate_app/features/calculator/presentation/screens/battery_capacity_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/battery_capacity_advanced_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/calculator_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/calculator_summary_screen.dart';
@@ -165,7 +164,7 @@ class AppRouter {
         builder: (context, state) {
           final data =
               state.extra as CalculatorFlowData? ?? const CalculatorFlowData();
-          return BatteryCapacityScreen(flowData: data);
+          return BatteryCapacityAdvancedScreen(flowData: data);
         },
       ),
       GoRoute(
@@ -191,10 +190,6 @@ class AppRouter {
       GoRoute(
         path: RouteNames.wireCrossSection,
         builder: (context, state) => const WireCrossSectionScreen(),
-      ),
-      GoRoute(
-        path: RouteNames.batteryCapacityAdvanced,
-        builder: (context, state) => const BatteryCapacityAdvancedScreen(),
       ),
       GoRoute(
         path: RouteNames.chargeController,

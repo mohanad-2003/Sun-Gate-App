@@ -972,6 +972,87 @@ class AppLocalizationsAr extends AppLocalizations {
   String get nextBatteryCapacity => 'التالي: سعة البطارية';
 
   @override
+  String get safetyMarginReserveFactor => 'هامش الأمان / معامل الاحتياطي';
+
+  @override
+  String get safetyMarginReserveFactorHint => 'نسبة احتياط إضافية';
+
+  @override
+  String get panelDeratingFactor => 'معامل تخفيض أداء اللوح';
+
+  @override
+  String get panelDeratingFactorHint => 'تأثير الحرارة والغبار والظل والاتجاه';
+
+  @override
+  String get batteryChargeLosses => 'خسائر البطارية / الشحن';
+
+  @override
+  String get batteryChargeLossesHint => 'نسبة خسائر الشحن والتخزين';
+
+  @override
+  String get availableRoofArea => 'مساحة السطح المتاحة';
+
+  @override
+  String get availableRoofAreaHint => 'مساحة التركيب المتاحة';
+
+  @override
+  String get panelArea => 'مساحة اللوح';
+
+  @override
+  String get panelAreaHint => 'مساحة اللوح الواحد';
+
+  @override
+  String get panelVoltage => 'جهد اللوح';
+
+  @override
+  String get panelVoltageHint => 'جهد اللوح الواحد';
+
+  @override
+  String get panelCurrent => 'تيار اللوح';
+
+  @override
+  String get panelCurrentHint => 'تيار اللوح الواحد';
+
+  @override
+  String get cityOrSiteName => 'اسم المدينة أو الموقع';
+
+  @override
+  String get monthSeason => 'الشهر / الموسم';
+
+  @override
+  String get annualAverage => 'المعدل السنوي';
+
+  @override
+  String get summerHighSun => 'الصيف / شمس عالية';
+
+  @override
+  String get springAutumn => 'الربيع أو الخريف';
+
+  @override
+  String get winterLowSun => 'الشتاء / شمس منخفضة';
+
+  @override
+  String get effectiveSunHours => 'ساعات الشمس الفعلية';
+
+  @override
+  String get roofArea => 'مساحة السطح';
+
+  @override
+  String get requiredLabel => 'مطلوبة';
+
+  @override
+  String get fitsAvailableRoofArea => 'تناسب مساحة السطح المتاحة';
+
+  @override
+  String get exceedsAvailableRoofArea => 'تتجاوز مساحة السطح المتاحة';
+
+  @override
+  String get panelVoltageCurrentCheck => 'فحص جهد اللوح × التيار';
+
+  @override
+  String get locationNote => 'ملاحظة الموقع';
+
+  @override
   String get systemVoltage => 'جهد النظام';
 
   @override

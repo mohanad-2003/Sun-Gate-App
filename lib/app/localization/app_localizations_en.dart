@@ -978,6 +978,87 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nextBatteryCapacity => 'Next: Battery capacity';
 
   @override
+  String get safetyMarginReserveFactor => 'Safety margin / Reserve factor';
+
+  @override
+  String get safetyMarginReserveFactorHint => 'Extra reserve percentage';
+
+  @override
+  String get panelDeratingFactor => 'Panel derating factor';
+
+  @override
+  String get panelDeratingFactorHint => 'Heat, dust, shade, orientation factor';
+
+  @override
+  String get batteryChargeLosses => 'Battery / charge losses';
+
+  @override
+  String get batteryChargeLossesHint => 'Charging and storage loss percentage';
+
+  @override
+  String get availableRoofArea => 'Available roof area';
+
+  @override
+  String get availableRoofAreaHint => 'Available installation area';
+
+  @override
+  String get panelArea => 'Panel area';
+
+  @override
+  String get panelAreaHint => 'Area of one panel';
+
+  @override
+  String get panelVoltage => 'Panel voltage';
+
+  @override
+  String get panelVoltageHint => 'Voltage of one panel';
+
+  @override
+  String get panelCurrent => 'Panel current';
+
+  @override
+  String get panelCurrentHint => 'Current of one panel';
+
+  @override
+  String get cityOrSiteName => 'City or site name';
+
+  @override
+  String get monthSeason => 'Month / season';
+
+  @override
+  String get annualAverage => 'Annual average';
+
+  @override
+  String get summerHighSun => 'Summer / high sun';
+
+  @override
+  String get springAutumn => 'Spring or autumn';
+
+  @override
+  String get winterLowSun => 'Winter / low sun';
+
+  @override
+  String get effectiveSunHours => 'Effective sun hours';
+
+  @override
+  String get roofArea => 'Roof area';
+
+  @override
+  String get requiredLabel => 'required';
+
+  @override
+  String get fitsAvailableRoofArea => 'fits the available roof area';
+
+  @override
+  String get exceedsAvailableRoofArea => 'exceeds the available roof area';
+
+  @override
+  String get panelVoltageCurrentCheck => 'Panel V x A check';
+
+  @override
+  String get locationNote => 'Location note';
+
+  @override
   String get systemVoltage => 'System voltage';
 
   @override
