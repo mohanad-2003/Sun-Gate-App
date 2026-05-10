@@ -100,7 +100,7 @@ class CalculatorSummaryScreen extends StatelessWidget {
               title: loc.estimatedPaybackPeriod,
               value: formatCalculatorNumber(flowData.roiYears),
               unit: loc.years,
-              icon: Icons.savings_outlined,
+              icon: Icons.trending_up_rounded,
             ),
           ],
         ),

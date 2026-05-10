@@ -46,12 +46,6 @@ class CalculatorScreen extends StatelessWidget {
         route: RouteNames.wireCrossSection,
       ),
       _CalculatorMenuItem(
-        title: loc.batteryCapacityAdvancedTitle,
-        subtitle: loc.batteryCapacityAdvancedMenuSubtitle,
-        icon: Icons.battery_saver_outlined,
-        route: RouteNames.batteryCapacityAdvanced,
-      ),
-      _CalculatorMenuItem(
         title: loc.chargeControllerTitle,
         subtitle: loc.chargeControllerMenuSubtitle,
         icon: Icons.settings_input_component_outlined,
@@ -72,7 +66,7 @@ class CalculatorScreen extends StatelessWidget {
       _CalculatorMenuItem(
         title: loc.returnOnInvestmentTitle,
         subtitle: loc.returnOnInvestmentMenuSubtitle,
-        icon: Icons.savings_outlined,
+        icon: Icons.trending_up_rounded,
         route: RouteNames.returnOnInvestment,
       ),
     ];

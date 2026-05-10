@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
+import 'package:sun_gate_app/app/router/route_names.dart';
+import 'package:sun_gate_app/features/calculator/domain/entities/calculator_flow_data.dart';
 import 'package:sun_gate_app/features/calculator/domain/usecases/calculate_solar_values_usecase.dart';
 import 'package:sun_gate_app/features/calculator/presentation/utils/calculator_input_parser.dart';
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_input_field.dart';
@@ -8,7 +11,9 @@ import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_result_card.dart';
 
 class BatteryCapacityAdvancedScreen extends StatefulWidget {
-  const BatteryCapacityAdvancedScreen({super.key});
+  final CalculatorFlowData flowData;
+
+  const BatteryCapacityAdvancedScreen({super.key, required this.flowData});
 
   @override
   State<BatteryCapacityAdvancedScreen> createState() =>
@@ -26,6 +31,15 @@ class _BatteryCapacityAdvancedScreenState
   final _minimumTemperatureController = TextEditingController(text: '10');
 
   double _batteryCapacity = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.flowData.dailyConsumption > 0) {
+      _dailyConsumptionController.text = widget.flowData.dailyConsumption
+          .toStringAsFixed(2);
+    }
+  }
 
   double _calculate({bool showError = true}) {
     final loc = AppLocalizations.of(context)!;
@@ -75,7 +89,7 @@ class _BatteryCapacityAdvancedScreenState
     final loc = AppLocalizations.of(context)!;
 
     return CalculatorPageScaffold(
-      title: loc.batteryCapacityAdvancedTitle,
+      title: loc.batteryCapacityTitle,
       children: [
         CalculatorInputField(
           labelText: loc.totalDailyConsumption,
@@ -138,6 +152,28 @@ class _BatteryCapacityAdvancedScreenState
           value: formatCalculatorNumber(_batteryCapacity),
           unit: loc.ampereHour,
           icon: Icons.battery_saver_outlined,
+        ),
+        const SizedBox(height: 14),
+        CalculatorPrimaryButton(
+          text: loc.nextTiltOfPanels,
+          icon: Icons.arrow_forward_rounded,
+          onPressed: () {
+            final capacity = _calculate(showError: false);
+            if (capacity <= 0) {
+              _showInputError(loc);
+              return;
+            }
+
+            context.push(
+              RouteNames.tiltOfPanels,
+              extra: widget.flowData.copyWith(
+                dailyConsumption: readCalculatorDouble(
+                  _dailyConsumptionController,
+                ),
+                batteryCapacity: capacity,
+              ),
+            );
+          },
         ),
       ],
     );
