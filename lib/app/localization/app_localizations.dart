@@ -1922,6 +1922,168 @@ abstract class AppLocalizations {
   /// **'Next: Battery capacity'**
   String get nextBatteryCapacity;
 
+  /// No description provided for @safetyMarginReserveFactor.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety margin / Reserve factor'**
+  String get safetyMarginReserveFactor;
+
+  /// No description provided for @safetyMarginReserveFactorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra reserve percentage'**
+  String get safetyMarginReserveFactorHint;
+
+  /// No description provided for @panelDeratingFactor.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel derating factor'**
+  String get panelDeratingFactor;
+
+  /// No description provided for @panelDeratingFactorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Heat, dust, shade, orientation factor'**
+  String get panelDeratingFactorHint;
+
+  /// No description provided for @batteryChargeLosses.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery / charge losses'**
+  String get batteryChargeLosses;
+
+  /// No description provided for @batteryChargeLossesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Charging and storage loss percentage'**
+  String get batteryChargeLossesHint;
+
+  /// No description provided for @availableRoofArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Available roof area'**
+  String get availableRoofArea;
+
+  /// No description provided for @availableRoofAreaHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Available installation area'**
+  String get availableRoofAreaHint;
+
+  /// No description provided for @panelArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel area'**
+  String get panelArea;
+
+  /// No description provided for @panelAreaHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Area of one panel'**
+  String get panelAreaHint;
+
+  /// No description provided for @panelVoltage.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel voltage'**
+  String get panelVoltage;
+
+  /// No description provided for @panelVoltageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Voltage of one panel'**
+  String get panelVoltageHint;
+
+  /// No description provided for @panelCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel current'**
+  String get panelCurrent;
+
+  /// No description provided for @panelCurrentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Current of one panel'**
+  String get panelCurrentHint;
+
+  /// No description provided for @cityOrSiteName.
+  ///
+  /// In en, this message translates to:
+  /// **'City or site name'**
+  String get cityOrSiteName;
+
+  /// No description provided for @monthSeason.
+  ///
+  /// In en, this message translates to:
+  /// **'Month / season'**
+  String get monthSeason;
+
+  /// No description provided for @annualAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Annual average'**
+  String get annualAverage;
+
+  /// No description provided for @summerHighSun.
+  ///
+  /// In en, this message translates to:
+  /// **'Summer / high sun'**
+  String get summerHighSun;
+
+  /// No description provided for @springAutumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Spring or autumn'**
+  String get springAutumn;
+
+  /// No description provided for @winterLowSun.
+  ///
+  /// In en, this message translates to:
+  /// **'Winter / low sun'**
+  String get winterLowSun;
+
+  /// No description provided for @effectiveSunHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Effective sun hours'**
+  String get effectiveSunHours;
+
+  /// No description provided for @roofArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Roof area'**
+  String get roofArea;
+
+  /// No description provided for @requiredLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'required'**
+  String get requiredLabel;
+
+  /// No description provided for @fitsAvailableRoofArea.
+  ///
+  /// In en, this message translates to:
+  /// **'fits the available roof area'**
+  String get fitsAvailableRoofArea;
+
+  /// No description provided for @exceedsAvailableRoofArea.
+  ///
+  /// In en, this message translates to:
+  /// **'exceeds the available roof area'**
+  String get exceedsAvailableRoofArea;
+
+  /// No description provided for @panelVoltageCurrentCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel V x A check'**
+  String get panelVoltageCurrentCheck;
+
+  /// No description provided for @locationNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Location note'**
+  String get locationNote;
+
   /// No description provided for @systemVoltage.
   ///
   /// In en, this message translates to:

@@ -10,6 +10,13 @@ import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_primary_button.dart';
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_result_card.dart';
 
+const _seasonOptions = <_SeasonOption>[
+  _SeasonOption(_SeasonOptionType.annual, 100),
+  _SeasonOption(_SeasonOptionType.summer, 110),
+  _SeasonOption(_SeasonOptionType.springAutumn, 90),
+  _SeasonOption(_SeasonOptionType.winter, 75),
+];
+
 class NumberOfPanelsScreen extends StatefulWidget {
   final CalculatorFlowData flowData;
 
@@ -24,8 +31,17 @@ class _NumberOfPanelsScreenState extends State<NumberOfPanelsScreen> {
   final _dailyConsumptionController = TextEditingController();
   final _panelPowerController = TextEditingController();
   final _sunHoursController = TextEditingController();
+  final _safetyMarginController = TextEditingController(text: '0');
+  final _panelDeratingController = TextEditingController(text: '100');
+  final _batteryChargeLossController = TextEditingController(text: '0');
+  final _availableRoofAreaController = TextEditingController();
+  final _panelAreaController = TextEditingController();
+  final _panelVoltageController = TextEditingController();
+  final _panelCurrentController = TextEditingController();
+  final _locationController = TextEditingController();
 
   bool _isOffGrid = true;
+  _SeasonOption _selectedSeason = _seasonOptions.first;
   double _systemEfficiency = 85;
   double _numberOfPanels = 0;
 
@@ -46,6 +62,12 @@ class _NumberOfPanelsScreenState extends State<NumberOfPanelsScreen> {
       peakSunHours: readCalculatorDouble(_sunHoursController),
       systemEfficiencyPercent: _systemEfficiency,
       isOffGrid: _isOffGrid,
+      safetyMarginPercent: readCalculatorDouble(_safetyMarginController),
+      panelDeratingPercent: readCalculatorDouble(_panelDeratingController),
+      batteryChargeLossPercent: readCalculatorDouble(
+        _batteryChargeLossController,
+      ),
+      seasonProductionFactorPercent: _selectedSeason.productionFactorPercent,
     );
 
     setState(() {
@@ -70,7 +92,61 @@ class _NumberOfPanelsScreenState extends State<NumberOfPanelsScreen> {
     _dailyConsumptionController.dispose();
     _panelPowerController.dispose();
     _sunHoursController.dispose();
+    _safetyMarginController.dispose();
+    _panelDeratingController.dispose();
+    _batteryChargeLossController.dispose();
+    _availableRoofAreaController.dispose();
+    _panelAreaController.dispose();
+    _panelVoltageController.dispose();
+    _panelCurrentController.dispose();
+    _locationController.dispose();
     super.dispose();
+  }
+
+  String? _buildResultDetails() {
+    if (_numberOfPanels <= 0) return null;
+
+    final loc = AppLocalizations.of(context)!;
+    final details = <String>[];
+    final peakSunHours = readCalculatorDouble(_sunHoursController);
+    final effectiveSunHours =
+        peakSunHours * (_selectedSeason.productionFactorPercent / 100);
+    if (peakSunHours > 0) {
+      details.add(
+        '${loc.effectiveSunHours}: ${formatCalculatorNumber(effectiveSunHours)} h',
+      );
+    }
+
+    final availableRoofArea = readCalculatorDouble(
+      _availableRoofAreaController,
+    );
+    final panelArea = readCalculatorDouble(_panelAreaController);
+    if (availableRoofArea > 0 && panelArea > 0) {
+      final requiredArea = _numberOfPanels * panelArea;
+      final roofStatus = requiredArea <= availableRoofArea
+          ? loc.fitsAvailableRoofArea
+          : loc.exceedsAvailableRoofArea;
+      details.add(
+        '${loc.roofArea}: ${formatCalculatorNumber(requiredArea)} m2 ${loc.requiredLabel}, $roofStatus',
+      );
+    }
+
+    final panelVoltage = readCalculatorDouble(_panelVoltageController);
+    final panelCurrent = readCalculatorDouble(_panelCurrentController);
+    if (panelVoltage > 0 && panelCurrent > 0) {
+      final checkedPanelPower = panelVoltage * panelCurrent;
+      details.add(
+        '${loc.panelVoltageCurrentCheck}: ${formatCalculatorNumber(checkedPanelPower)} W',
+      );
+    }
+
+    final location = _locationController.text.trim();
+    if (location.isNotEmpty) {
+      details.add('${loc.locationNote}: $location');
+    }
+
+    if (details.isEmpty) return null;
+    return details.join('\n');
   }
 
   @override
@@ -136,6 +212,92 @@ class _NumberOfPanelsScreenState extends State<NumberOfPanelsScreen> {
           controller: _sunHoursController,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
         ),
+        const SizedBox(height: 14),
+        CalculatorInputField(
+          labelText: loc.safetyMarginReserveFactor,
+          hintText: loc.safetyMarginReserveFactorHint,
+          controller: _safetyMarginController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          suffixText: '%',
+        ),
+        const SizedBox(height: 14),
+        CalculatorInputField(
+          labelText: loc.panelDeratingFactor,
+          hintText: loc.panelDeratingFactorHint,
+          controller: _panelDeratingController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          suffixText: '%',
+        ),
+        const SizedBox(height: 14),
+        CalculatorInputField(
+          labelText: loc.batteryChargeLosses,
+          hintText: loc.batteryChargeLossesHint,
+          controller: _batteryChargeLossController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          suffixText: '%',
+        ),
+        const SizedBox(height: 14),
+        CalculatorInputField(
+          labelText: loc.availableRoofArea,
+          hintText: loc.availableRoofAreaHint,
+          controller: _availableRoofAreaController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          suffixText: 'm2',
+        ),
+        const SizedBox(height: 14),
+        CalculatorInputField(
+          labelText: loc.panelArea,
+          hintText: loc.panelAreaHint,
+          controller: _panelAreaController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          suffixText: 'm2',
+        ),
+        const SizedBox(height: 14),
+        CalculatorInputField(
+          labelText: loc.panelVoltage,
+          hintText: loc.panelVoltageHint,
+          controller: _panelVoltageController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          suffixText: loc.volt,
+        ),
+        const SizedBox(height: 14),
+        CalculatorInputField(
+          labelText: loc.panelCurrent,
+          hintText: loc.panelCurrentHint,
+          controller: _panelCurrentController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          suffixText: loc.ampere,
+        ),
+        const SizedBox(height: 14),
+        CalculatorInputField(
+          labelText: loc.location,
+          hintText: loc.cityOrSiteName,
+          controller: _locationController,
+        ),
+        const SizedBox(height: 14),
+        DropdownButtonFormField<_SeasonOption>(
+          value: _selectedSeason,
+          decoration: InputDecoration(
+            labelText: loc.monthSeason,
+            border: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(14)),
+            ),
+          ),
+          items: _seasonOptions
+              .map(
+                (season) => DropdownMenuItem(
+                  value: season,
+                  child: Text(_seasonLabel(loc, season.type)),
+                ),
+              )
+              .toList(),
+          onChanged: (season) {
+            if (season == null) return;
+            setState(() {
+              _selectedSeason = season;
+            });
+          },
+        ),
         const SizedBox(height: 18),
         Text(
           loc.systemEfficiency,
@@ -181,6 +343,7 @@ class _NumberOfPanelsScreenState extends State<NumberOfPanelsScreen> {
           value: formatCalculatorNumber(_numberOfPanels, fractionDigits: 0),
           unit: loc.panel,
           icon: Icons.grid_view_rounded,
+          subtitle: _buildResultDetails(),
         ),
         const SizedBox(height: 14),
         CalculatorPrimaryButton(
@@ -207,4 +370,22 @@ class _NumberOfPanelsScreenState extends State<NumberOfPanelsScreen> {
       ],
     );
   }
+}
+
+class _SeasonOption {
+  final _SeasonOptionType type;
+  final double productionFactorPercent;
+
+  const _SeasonOption(this.type, this.productionFactorPercent);
+}
+
+enum _SeasonOptionType { annual, summer, springAutumn, winter }
+
+String _seasonLabel(AppLocalizations loc, _SeasonOptionType type) {
+  return switch (type) {
+    _SeasonOptionType.annual => loc.annualAverage,
+    _SeasonOptionType.summer => loc.summerHighSun,
+    _SeasonOptionType.springAutumn => loc.springAutumn,
+    _SeasonOptionType.winter => loc.winterLowSun,
+  };
 }
