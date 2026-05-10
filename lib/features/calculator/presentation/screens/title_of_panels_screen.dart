@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
-import 'package:sun_gate_app/features/calculator/data/models/calculate_flow_data.dart';
-import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_app_bar.dart';
+import 'package:sun_gate_app/features/calculator/domain/entities/calculator_flow_data.dart';
+import 'package:sun_gate_app/features/calculator/domain/usecases/calculate_solar_values_usecase.dart';
+import 'package:sun_gate_app/features/calculator/presentation/utils/calculator_input_parser.dart';
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_input_field.dart';
+import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_page_scaffold.dart';
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_primary_button.dart';
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_result_card.dart';
 
@@ -16,48 +19,67 @@ class TiltOfPanelsScreen extends StatefulWidget {
 }
 
 class _TiltOfPanelsScreenState extends State<TiltOfPanelsScreen> {
-  final TextEditingController _latitudeController = TextEditingController();
+  final _calculator = const CalculateSolarValuesUseCase();
+  final _latitudeController = TextEditingController();
+  final _dateController = TextEditingController();
 
-  String _selectedSeason = 'Annual';
-  double _tiltAngle = 0;
+  DateTime _selectedDate = DateTime.now();
+  TiltAnglesResult _tiltAngles = const TiltAnglesResult.empty();
 
-  final List<String> _seasons = const ['Annual', 'Summer', 'Winter'];
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _dateController.text = MaterialLocalizations.of(
+      context,
+    ).formatCompactDate(_selectedDate);
+  }
 
-  void _calculateTilt() {
-    final latitude = double.tryParse(_latitudeController.text.trim()) ?? 0;
+  Future<void> _pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
 
-    if (latitude <= 0) {
-      setState(() {
-        _tiltAngle = 0;
-      });
-      return;
-    }
-
-    double result;
-
-    switch (_selectedSeason) {
-      case 'Summer':
-        result = latitude - 15;
-        break;
-      case 'Winter':
-        result = latitude + 15;
-        break;
-      case 'Annual':
-      default:
-        result = latitude;
-        break;
-    }
-
-    if (result < 0) result = 0;
+    if (picked == null) return;
 
     setState(() {
-      _tiltAngle = result;
+      _selectedDate = picked;
+      _dateController.text = MaterialLocalizations.of(
+        context,
+      ).formatCompactDate(picked);
     });
+  }
+
+  TiltAnglesResult _calculateTilt({bool showError = true}) {
+    final loc = AppLocalizations.of(context)!;
+    final result = _calculator.tiltAngles(
+      latitude: readCalculatorDouble(_latitudeController),
+      selectedDate: _selectedDate,
+    );
+
+    setState(() {
+      _tiltAngles = result;
+    });
+
+    if (showError && result.selected <= 0) {
+      _showInputError(loc);
+    }
+
+    return result;
+  }
+
+  void _showInputError(AppLocalizations loc) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(loc.calculatorInvalidInputs)));
   }
 
   @override
   void dispose() {
     _latitudeController.dispose();
+    _dateController.dispose();
     super.dispose();
   }
 
@@ -65,123 +87,146 @@ class _TiltOfPanelsScreenState extends State<TiltOfPanelsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final horizontalPadding = screenWidth < 360 ? 12.0 : 16.0;
+    final loc = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CalculatorAppBar(title: 'Return on investment'),
-      body: SafeArea(
-        top: false,
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(
-            horizontalPadding,
-            12,
-            horizontalPadding,
-            20,
+    return CalculatorPageScaffold(
+      title: loc.tiltOfPanelsTitle,
+      children: [
+        CalculatorInputField(
+          labelText: loc.latitude,
+          hintText: loc.latitudeHint,
+          controller: _latitudeController,
+          keyboardType: const TextInputType.numberWithOptions(
+            decimal: true,
+            signed: true,
           ),
-          children: [
-            Text(
-              'Enter the site latitude and choose the season to estimate the recommended panel tilt angle.',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-                height: 1.6,
-              ),
-            ),
-            const SizedBox(height: 18),
-
-            CalculatorInputField(
-              hintText: 'Latitude (e.g. 32.22)',
-              controller: _latitudeController,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              decoration: BoxDecoration(
-                color: colorScheme.surface,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: colorScheme.outlineVariant.withOpacity(0.65),
-                ),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: _selectedSeason,
-                  isExpanded: true,
-                  borderRadius: BorderRadius.circular(14),
-                  items: _seasons.map((season) {
-                    return DropdownMenuItem<String>(
-                      value: season,
-                      child: Text(season),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value == null) return;
-                    setState(() {
-                      _selectedSeason = value;
-                    });
-                  },
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 18),
-
-            CalculatorPrimaryButton(
-              text: 'Calculate',
-              onPressed: _calculateTilt,
-            ),
-
-            const SizedBox(height: 18),
-
-            CalculatorResultCard(
-              title: 'Recommended tilt angle',
-              value: _tiltAngle.toStringAsFixed(1),
-              unit: '°',
-            ),
-
-            const SizedBox(height: 14),
-
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: colorScheme.surface,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: colorScheme.outlineVariant.withOpacity(0.55),
-                ),
-              ),
-              child: Text(
-                'Formula used:\n'
-                'Annual tilt = Latitude\n'
-                'Summer tilt = Latitude - 15\n'
-                'Winter tilt = Latitude + 15',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  height: 1.55,
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            CalculatorPrimaryButton(
-              text: 'Next: System efficiency',
-              onPressed: () {
-                final updatedData = widget.flowData.copyWith(
-                  tiltAngle: _tiltAngle,
-                );
-
-                context.push(RouteNames.systemEfficiency, extra: updatedData);
-              },
-            ),
-          ],
         ),
-      ),
+        const SizedBox(height: 14),
+        CalculatorInputField(
+          labelText: loc.selectDate,
+          hintText: loc.chooseDate,
+          controller: _dateController,
+          readOnly: true,
+          onTap: _pickDate,
+          suffixIcon: IconButton(
+            tooltip: loc.chooseDate,
+            onPressed: _pickDate,
+            icon: const Icon(Icons.calendar_month_outlined),
+          ),
+        ),
+        const SizedBox(height: 18),
+        CalculatorPrimaryButton(
+          text: loc.calculate,
+          icon: Icons.calculate_outlined,
+          onPressed: _calculateTilt,
+        ),
+        const SizedBox(height: 18),
+        CalculatorResultCard(
+          title: loc.selectedDateTilt,
+          value: formatCalculatorNumber(
+            _tiltAngles.selected,
+            fractionDigits: 1,
+          ),
+          unit: loc.degree,
+          icon: Icons.wb_sunny_outlined,
+        ),
+        const SizedBox(height: 14),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: colorScheme.outlineVariant.withValues(alpha: 0.55),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                loc.optimalTiltAngle,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: colorScheme.primary,
+                ),
+              ),
+              const SizedBox(height: 12),
+              _TiltResultRow(
+                label: loc.annualTilt,
+                value: _tiltAngles.annual,
+                unit: loc.degree,
+              ),
+              const SizedBox(height: 8),
+              _TiltResultRow(
+                label: loc.summerTilt,
+                value: _tiltAngles.summer,
+                unit: loc.degree,
+              ),
+              const SizedBox(height: 8),
+              _TiltResultRow(
+                label: loc.winterTilt,
+                value: _tiltAngles.winter,
+                unit: loc.degree,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        CalculatorPrimaryButton(
+          text: loc.nextSystemEfficiency,
+          icon: Icons.arrow_forward_rounded,
+          onPressed: () {
+            final result = _calculateTilt(showError: false);
+            if (result.selected <= 0) {
+              _showInputError(loc);
+              return;
+            }
+
+            context.push(
+              RouteNames.systemEfficiency,
+              extra: widget.flowData.copyWith(tiltAngle: result.selected),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _TiltResultRow extends StatelessWidget {
+  final String label;
+  final double value;
+  final String unit;
+
+  const _TiltResultRow({
+    required this.label,
+    required this.value,
+    required this.unit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+        Text(
+          '${formatCalculatorNumber(value, fractionDigits: 1)} $unit',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
     );
   }
 }

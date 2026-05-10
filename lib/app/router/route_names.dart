@@ -29,4 +29,9 @@ class RouteNames {
   static const systemEfficiency = '/system-efficiency';
   static const returnOnInvestment = '/return-on-investment';
   static const calculatorSummary = '/calculator-summary';
+  static const completeProfile = '/complete-profile';
+  static const inverterPower = '/inverter-power';
+  static const wireCrossSection = '/wire-cross-section';
+  static const batteryCapacityAdvanced = '/battery-capacity-advanced';
+  static const chargeController = '/charge-controller';
 }

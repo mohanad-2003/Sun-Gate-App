@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
+import 'package:sun_gate_app/core/widgets/language_switcher_button.dart';
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calcultor_option_card.dart';
 
 class CalculatorScreen extends StatelessWidget {
@@ -10,43 +12,66 @@ class CalculatorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final horizontalPadding = screenWidth < 360 ? 14.0 : 16.0;
+    final loc = AppLocalizations.of(context)!;
 
     final items = <_CalculatorMenuItem>[
-      const _CalculatorMenuItem(
-        title: 'Device consumption',
-        subtitle: 'Calculate daily energy usage based on devices.',
+      _CalculatorMenuItem(
+        title: loc.deviceConsumptionTitle,
+        subtitle: loc.deviceConsumptionMenuSubtitle,
         icon: Icons.devices_outlined,
         route: RouteNames.deviceConsumption,
       ),
-      const _CalculatorMenuItem(
-        title: 'Number of panels',
-        subtitle: 'Estimate required solar panels.',
+      _CalculatorMenuItem(
+        title: loc.numberOfPanelsTitle,
+        subtitle: loc.numberOfPanelsMenuSubtitle,
         icon: Icons.grid_view_rounded,
         route: RouteNames.numberOfPanels,
       ),
-      const _CalculatorMenuItem(
-        title: 'Battery capacity',
-        subtitle: 'Determine required battery storage.',
+      _CalculatorMenuItem(
+        title: loc.batteryCapacityTitle,
+        subtitle: loc.batteryCapacityMenuSubtitle,
         icon: Icons.battery_charging_full_rounded,
         route: RouteNames.batteryCapacity,
       ),
-      const _CalculatorMenuItem(
-        title: 'Tilt of panels',
-        subtitle: 'Find optimal panel angle.',
+      _CalculatorMenuItem(
+        title: loc.inverterCapacityTitle,
+        subtitle: loc.inverterCapacityMenuSubtitle,
+        icon: Icons.offline_bolt_outlined,
+        route: RouteNames.inverterPower,
+      ),
+      _CalculatorMenuItem(
+        title: loc.wireCrossSectionTitle,
+        subtitle: loc.wireCrossSectionMenuSubtitle,
+        icon: Icons.cable_rounded,
+        route: RouteNames.wireCrossSection,
+      ),
+      _CalculatorMenuItem(
+        title: loc.batteryCapacityAdvancedTitle,
+        subtitle: loc.batteryCapacityAdvancedMenuSubtitle,
+        icon: Icons.battery_saver_outlined,
+        route: RouteNames.batteryCapacityAdvanced,
+      ),
+      _CalculatorMenuItem(
+        title: loc.chargeControllerTitle,
+        subtitle: loc.chargeControllerMenuSubtitle,
+        icon: Icons.settings_input_component_outlined,
+        route: RouteNames.chargeController,
+      ),
+      _CalculatorMenuItem(
+        title: loc.tiltOfPanelsTitle,
+        subtitle: loc.tiltOfPanelsMenuSubtitle,
         icon: Icons.wb_sunny_outlined,
         route: RouteNames.tiltOfPanels,
       ),
-      const _CalculatorMenuItem(
-        title: 'System efficiency',
-        subtitle: 'Compare expected vs actual output.',
+      _CalculatorMenuItem(
+        title: loc.systemEfficiencyTitle,
+        subtitle: loc.systemEfficiencyMenuSubtitle,
         icon: Icons.percent_rounded,
         route: RouteNames.systemEfficiency,
       ),
-      const _CalculatorMenuItem(
-        title: 'ROI',
-        subtitle: 'Calculate investment return period.',
+      _CalculatorMenuItem(
+        title: loc.returnOnInvestmentTitle,
+        subtitle: loc.returnOnInvestmentMenuSubtitle,
         icon: Icons.savings_outlined,
         route: RouteNames.returnOnInvestment,
       ),
@@ -55,63 +80,105 @@ class CalculatorScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
-        child: Column(
-          children: [
-            // 🔥 Header
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                horizontalPadding,
-                12,
-                horizontalPadding,
-                8,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Solar Calculator',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Use smart tools to estimate your solar system needs.',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final width = constraints.maxWidth;
+            final horizontalPadding = width < 360 ? 14.0 : 20.0;
+            final useGrid = width >= 700;
 
-            const SizedBox(height: 6),
-
-            // 🔥 القائمة
-            Expanded(
-              child: ListView.separated(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.fromLTRB(
-                  horizontalPadding,
-                  8,
-                  horizontalPadding,
-                  16,
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 980),
+                child: CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    SliverPadding(
+                      padding: EdgeInsets.fromLTRB(
+                        horizontalPadding,
+                        14,
+                        horizontalPadding,
+                        10,
+                      ),
+                      sliver: SliverToBoxAdapter(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    loc.solarCalculatorTitle,
+                                    style: theme.textTheme.titleLarge?.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    loc.solarCalculatorSubtitle,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                      height: 1.45,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            const LanguageSwitcherButton(),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SliverPadding(
+                      padding: EdgeInsets.fromLTRB(
+                        horizontalPadding,
+                        8,
+                        horizontalPadding,
+                        20,
+                      ),
+                      sliver: useGrid
+                          ? SliverGrid(
+                              delegate: SliverChildBuilderDelegate((
+                                context,
+                                index,
+                              ) {
+                                final item = items[index];
+                                return CalculatorOptionCard(
+                                  title: item.title,
+                                  subtitle: item.subtitle,
+                                  icon: item.icon,
+                                  onTap: () => context.push(item.route),
+                                );
+                              }, childCount: items.length),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 14,
+                                    mainAxisSpacing: 14,
+                                    childAspectRatio: 3.2,
+                                  ),
+                            )
+                          : SliverList.separated(
+                              itemCount: items.length,
+                              separatorBuilder: (_, _) =>
+                                  const SizedBox(height: 12),
+                              itemBuilder: (context, index) {
+                                final item = items[index];
+                                return CalculatorOptionCard(
+                                  title: item.title,
+                                  subtitle: item.subtitle,
+                                  icon: item.icon,
+                                  onTap: () => context.push(item.route),
+                                );
+                              },
+                            ),
+                    ),
+                  ],
                 ),
-                itemCount: items.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  final item = items[index];
-
-                  return CalculatorOptionCard(
-                    title: item.title,
-                    subtitle: item.subtitle,
-                    icon: item.icon,
-                    onTap: () => context.push(item.route),
-                  );
-                },
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

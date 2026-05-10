@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 
 class SummaryBarChart extends StatelessWidget {
   final double dailyConsumption;
@@ -18,6 +19,7 @@ class SummaryBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final loc = AppLocalizations.of(context)!;
 
     final values = <double>[
       dailyConsumption <= 0 ? 0 : dailyConsumption,
@@ -35,21 +37,21 @@ class SummaryBarChart extends StatelessWidget {
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(22),
         border: Border.all(
-          color: colorScheme.outlineVariant.withOpacity(0.45),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.45),
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'System comparison chart',
+            loc.systemComparisonChart,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'A visual comparison between the main calculated values.',
+            loc.systemComparisonChartSubtitle,
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
@@ -61,25 +63,25 @@ class SummaryBarChart extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 _ChartBar(
-                  label: 'Use',
+                  label: loc.use,
                   value: values[0] / safeMax,
                   color: colorScheme.primary,
                 ),
                 const SizedBox(width: 12),
                 _ChartBar(
-                  label: 'Panels',
+                  label: loc.panels,
                   value: values[1] / safeMax,
                   color: Colors.orange,
                 ),
                 const SizedBox(width: 12),
                 _ChartBar(
-                  label: 'Battery',
+                  label: loc.battery,
                   value: values[2] / safeMax,
                   color: Colors.green,
                 ),
                 const SizedBox(width: 12),
                 _ChartBar(
-                  label: 'Tilt',
+                  label: loc.tilt,
                   value: values[3] / safeMax,
                   color: Colors.purple,
                 ),
@@ -128,10 +130,7 @@ class _ChartBar extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          Text(
-            label,
-            style: theme.textTheme.bodySmall,
-          ),
+          Text(label, style: theme.textTheme.bodySmall),
         ],
       ),
     );

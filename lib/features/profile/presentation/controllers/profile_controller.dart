@@ -1,9 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:sun_gate_app/core/network/dio_provider.dart';
+import 'package:sun_gate_app/core/services/location_helper_service.dart';
 import 'package:sun_gate_app/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:sun_gate_app/features/profile/data/repositories/profile_repositories_imp.dart';
 import 'package:sun_gate_app/features/profile/domain/repositories/profile_repository.dart';
+import 'package:sun_gate_app/features/profile/domain/usecase/update_birth_date_usecase.dart';
+import 'package:sun_gate_app/features/profile/domain/usecase/update_location_usecase.dart';
 import 'profile_state.dart';
 
 final profileRemoteDataSourceProvider = Provider<ProfileRemoteDataSource>((
@@ -17,16 +20,32 @@ final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
     remoteDataSource: ref.read(profileRemoteDataSourceProvider),
   );
 });
+final updateBirthDateUseCaseProvider = Provider(
+  (ref) => UpdateBirthDateUseCase(ref.read(profileRepositoryProvider)),
+);
 
+final updateLocationUseCaseProvider = Provider(
+  (ref) => UpdateLocationUseCase(ref.read(profileRepositoryProvider)),
+);
 final profileControllerProvider =
     StateNotifierProvider<ProfileController, ProfileState>((ref) {
-      return ProfileController(repository: ref.read(profileRepositoryProvider));
+      return ProfileController(
+        repository: ref.read(profileRepositoryProvider),
+        updateBirthDateUseCase: ref.read(updateBirthDateUseCaseProvider),
+        updateLocationUseCase: ref.read(updateLocationUseCaseProvider),
+      );
     });
 
 class ProfileController extends StateNotifier<ProfileState> {
   final ProfileRepository repository;
+  final UpdateBirthDateUseCase updateBirthDateUseCase;
+  final UpdateLocationUseCase updateLocationUseCase;
 
-  ProfileController({required this.repository}) : super(ProfileState.initial());
+  ProfileController({
+    required this.repository,
+    required this.updateBirthDateUseCase,
+    required this.updateLocationUseCase,
+  }) : super(ProfileState.initial());
 
   Future<void> getMyProfile() async {
     state = state.copyWith(
@@ -54,24 +73,20 @@ class ProfileController extends StateNotifier<ProfileState> {
   Future<void> updateProfile({
     String? firstName,
     String? lastName,
-    String? birthDate,
     String? gender,
     String? location,
+    String? birthDate,
     String? whatsappNumber,
   }) async {
-    state = state.copyWith(
-      isSaving: true,
-      errorMessage: null,
-      successMessage: null,
-    );
+    state = state.copyWith(isSaving: true);
 
     try {
       final profile = await repository.updateProfile(
         firstName: firstName,
         lastName: lastName,
-        birthDate: birthDate,
         gender: gender,
         location: location,
+        birthDate: birthDate,
         whatsappNumber: whatsappNumber,
       );
 
@@ -81,10 +96,7 @@ class ProfileController extends StateNotifier<ProfileState> {
         successMessage: 'Profile updated successfully',
       );
     } catch (e) {
-      state = state.copyWith(
-        isSaving: false,
-        errorMessage: e.toString().replaceFirst('Exception: ', ''),
-      );
+      state = state.copyWith(isSaving: false, errorMessage: e.toString());
     }
   }
 
@@ -142,4 +154,42 @@ class ProfileController extends StateNotifier<ProfileState> {
       );
     }
   }
+
+  Future<void> updateBirthDate(DateTime date) async {
+    state = state.copyWith(isSaving: true);
+
+    try {
+      await updateBirthDateUseCase(date);
+
+      state = state.copyWith(
+        isSaving: false,
+        successMessage: 'Birth date updated',
+      );
+
+      await getMyProfile();
+    } catch (e) {
+      state = state.copyWith(isSaving: false, errorMessage: e.toString());
+    }
+  }
+
+  Future<void> updateLocation() async {
+    state = state.copyWith(isSaving: true);
+
+    try {
+      await updateLocationUseCase();
+
+      state = state.copyWith(
+        isSaving: false,
+        successMessage: 'Location updated',
+      );
+
+      await getMyProfile();
+    } catch (e) {
+      state = state.copyWith(isSaving: false, errorMessage: e.toString());
+    }
+  }
+  Future<String> getLocationForCompleteProfile() async {
+  final location = await LocationHelper.getCurrentLocationName();
+  return location;
+}
 }

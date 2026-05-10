@@ -1657,6 +1657,828 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter your location'**
   String get enterLocation;
+
+  /// No description provided for @solarCalculatorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Solar Calculator'**
+  String get solarCalculatorTitle;
+
+  /// No description provided for @solarCalculatorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate system size, storage, wiring, and investment values from one place.'**
+  String get solarCalculatorSubtitle;
+
+  /// No description provided for @calculatorInvalidInputs.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter valid positive values.'**
+  String get calculatorInvalidInputs;
+
+  /// No description provided for @calculate.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate'**
+  String get calculate;
+
+  /// No description provided for @remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove;
+
+  /// No description provided for @deviceConsumptionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Device consumption'**
+  String get deviceConsumptionTitle;
+
+  /// No description provided for @deviceConsumptionMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate daily energy usage from device power and operating hours.'**
+  String get deviceConsumptionMenuSubtitle;
+
+  /// No description provided for @numberOfPanelsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of panels'**
+  String get numberOfPanelsTitle;
+
+  /// No description provided for @numberOfPanelsMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate the required solar panel count.'**
+  String get numberOfPanelsMenuSubtitle;
+
+  /// No description provided for @batteryCapacityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery capacity'**
+  String get batteryCapacityTitle;
+
+  /// No description provided for @batteryCapacityMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Size the battery bank for daily storage.'**
+  String get batteryCapacityMenuSubtitle;
+
+  /// No description provided for @batteryCapacityAdvancedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery capacity - Advanced'**
+  String get batteryCapacityAdvancedTitle;
+
+  /// No description provided for @batteryCapacityAdvancedMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Include autonomy days, discharge depth, efficiency, and temperature.'**
+  String get batteryCapacityAdvancedMenuSubtitle;
+
+  /// No description provided for @inverterCapacityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inverter Capacity'**
+  String get inverterCapacityTitle;
+
+  /// No description provided for @inverterCapacityMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate inverter power, VA rating, and DC input current.'**
+  String get inverterCapacityMenuSubtitle;
+
+  /// No description provided for @wireCrossSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wire cross-section'**
+  String get wireCrossSectionTitle;
+
+  /// No description provided for @wireCrossSectionMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose cable size from load, voltage, and distance.'**
+  String get wireCrossSectionMenuSubtitle;
+
+  /// No description provided for @chargeControllerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional Charge Controller'**
+  String get chargeControllerTitle;
+
+  /// No description provided for @chargeControllerMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate controller current for panel strings.'**
+  String get chargeControllerMenuSubtitle;
+
+  /// No description provided for @tiltOfPanelsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tilt of the panels'**
+  String get tiltOfPanelsTitle;
+
+  /// No description provided for @tiltOfPanelsMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find the recommended solar panel tilt angle.'**
+  String get tiltOfPanelsMenuSubtitle;
+
+  /// No description provided for @systemEfficiencyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System efficiency'**
+  String get systemEfficiencyTitle;
+
+  /// No description provided for @systemEfficiencyMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare theoretical and actual production.'**
+  String get systemEfficiencyMenuSubtitle;
+
+  /// No description provided for @returnOnInvestmentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Return on investment'**
+  String get returnOnInvestmentTitle;
+
+  /// No description provided for @returnOnInvestmentMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate payback period from cost, output, and energy price.'**
+  String get returnOnInvestmentMenuSubtitle;
+
+  /// No description provided for @device.
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get device;
+
+  /// No description provided for @deviceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Device name'**
+  String get deviceHint;
+
+  /// No description provided for @power.
+  ///
+  /// In en, this message translates to:
+  /// **'Power'**
+  String get power;
+
+  /// No description provided for @powerWattsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Power in watts'**
+  String get powerWattsHint;
+
+  /// No description provided for @hours.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
+  String get hours;
+
+  /// No description provided for @hoursHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours per day'**
+  String get hoursHint;
+
+  /// No description provided for @addNewDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a new device'**
+  String get addNewDevice;
+
+  /// No description provided for @totalDailyConsumption.
+  ///
+  /// In en, this message translates to:
+  /// **'Total daily consumption'**
+  String get totalDailyConsumption;
+
+  /// No description provided for @nextNumberOfPanels.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: Number of panels'**
+  String get nextNumberOfPanels;
+
+  /// No description provided for @systemTypeOffGrid.
+  ///
+  /// In en, this message translates to:
+  /// **'System type: Isolated (Off-Grid)'**
+  String get systemTypeOffGrid;
+
+  /// No description provided for @systemTypeOnGrid.
+  ///
+  /// In en, this message translates to:
+  /// **'System type: Grid connected'**
+  String get systemTypeOnGrid;
+
+  /// No description provided for @dailyConsumptionWhHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Total daily consumption'**
+  String get dailyConsumptionWhHint;
+
+  /// No description provided for @singlePanelPower.
+  ///
+  /// In en, this message translates to:
+  /// **'Power of a single solar panel'**
+  String get singlePanelPower;
+
+  /// No description provided for @panelPowerWattsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel power'**
+  String get panelPowerWattsHint;
+
+  /// No description provided for @peakSunHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak hours of the sun'**
+  String get peakSunHours;
+
+  /// No description provided for @peakSunHoursHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak sun hours'**
+  String get peakSunHoursHint;
+
+  /// No description provided for @systemEfficiency.
+  ///
+  /// In en, this message translates to:
+  /// **'System efficiency'**
+  String get systemEfficiency;
+
+  /// No description provided for @numberOfPanelsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of panels required'**
+  String get numberOfPanelsRequired;
+
+  /// No description provided for @nextBatteryCapacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: Battery capacity'**
+  String get nextBatteryCapacity;
+
+  /// No description provided for @systemVoltage.
+  ///
+  /// In en, this message translates to:
+  /// **'System voltage'**
+  String get systemVoltage;
+
+  /// No description provided for @systemVoltageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'System voltage'**
+  String get systemVoltageHint;
+
+  /// No description provided for @inverterEfficiency.
+  ///
+  /// In en, this message translates to:
+  /// **'Inverter efficiency'**
+  String get inverterEfficiency;
+
+  /// No description provided for @inverterEfficiencyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Inverter efficiency'**
+  String get inverterEfficiencyHint;
+
+  /// No description provided for @minimumExpectedTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum expected temperature'**
+  String get minimumExpectedTemperature;
+
+  /// No description provided for @minimumTemperatureHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum temperature'**
+  String get minimumTemperatureHint;
+
+  /// No description provided for @requiredBatteryCapacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Required battery capacity'**
+  String get requiredBatteryCapacity;
+
+  /// No description provided for @nextTiltOfPanels.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: Tilt of panels'**
+  String get nextTiltOfPanels;
+
+  /// No description provided for @daysOfAutonomy.
+  ///
+  /// In en, this message translates to:
+  /// **'Days of autonomy'**
+  String get daysOfAutonomy;
+
+  /// No description provided for @daysOfAutonomyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Days of autonomy'**
+  String get daysOfAutonomyHint;
+
+  /// No description provided for @depthOfDischarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Depth of discharge (DOD)'**
+  String get depthOfDischarge;
+
+  /// No description provided for @depthOfDischargeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Depth of discharge'**
+  String get depthOfDischargeHint;
+
+  /// No description provided for @latitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Latitude'**
+  String get latitude;
+
+  /// No description provided for @latitudeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: 31.6'**
+  String get latitudeHint;
+
+  /// No description provided for @selectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select date'**
+  String get selectDate;
+
+  /// No description provided for @chooseDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose date'**
+  String get chooseDate;
+
+  /// No description provided for @selectedDateTilt.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected date tilt'**
+  String get selectedDateTilt;
+
+  /// No description provided for @optimalTiltAngle.
+  ///
+  /// In en, this message translates to:
+  /// **'Optimal tilt angle throughout the year'**
+  String get optimalTiltAngle;
+
+  /// No description provided for @annualTilt.
+  ///
+  /// In en, this message translates to:
+  /// **'Annual tilt'**
+  String get annualTilt;
+
+  /// No description provided for @summerTilt.
+  ///
+  /// In en, this message translates to:
+  /// **'Summer tilt'**
+  String get summerTilt;
+
+  /// No description provided for @winterTilt.
+  ///
+  /// In en, this message translates to:
+  /// **'Winter tilt'**
+  String get winterTilt;
+
+  /// No description provided for @nextSystemEfficiency.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: System efficiency'**
+  String get nextSystemEfficiency;
+
+  /// No description provided for @theoreticalProduction.
+  ///
+  /// In en, this message translates to:
+  /// **'Theoretical production'**
+  String get theoreticalProduction;
+
+  /// No description provided for @theoreticalProductionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Theoretical production'**
+  String get theoreticalProductionHint;
+
+  /// No description provided for @actualProduction.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual production'**
+  String get actualProduction;
+
+  /// No description provided for @actualProductionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual production'**
+  String get actualProductionHint;
+
+  /// No description provided for @nextReturnOnInvestment.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: Return on investment'**
+  String get nextReturnOnInvestment;
+
+  /// No description provided for @totalSystemCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Total system cost'**
+  String get totalSystemCost;
+
+  /// No description provided for @totalSystemCostHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Total system cost'**
+  String get totalSystemCostHint;
+
+  /// No description provided for @expectedDailyOutput.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected daily output'**
+  String get expectedDailyOutput;
+
+  /// No description provided for @expectedDailyOutputHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected daily output'**
+  String get expectedDailyOutputHint;
+
+  /// No description provided for @pricePerKilowattHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per kilowatt-hour'**
+  String get pricePerKilowattHour;
+
+  /// No description provided for @pricePerKilowattHourHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per kilowatt-hour'**
+  String get pricePerKilowattHourHint;
+
+  /// No description provided for @estimatedPaybackPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated payback period'**
+  String get estimatedPaybackPeriod;
+
+  /// No description provided for @viewFinalSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'View final summary'**
+  String get viewFinalSummary;
+
+  /// No description provided for @totalContinuousPowerDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Total continuous power of devices'**
+  String get totalContinuousPowerDevices;
+
+  /// No description provided for @totalContinuousPowerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Watts'**
+  String get totalContinuousPowerHint;
+
+  /// No description provided for @maximumInstantaneousStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum expected instantaneous start'**
+  String get maximumInstantaneousStart;
+
+  /// No description provided for @maximumInstantaneousStartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Watts'**
+  String get maximumInstantaneousStartHint;
+
+  /// No description provided for @powerFactor.
+  ///
+  /// In en, this message translates to:
+  /// **'Power factor'**
+  String get powerFactor;
+
+  /// No description provided for @powerFactorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: 0.8'**
+  String get powerFactorHint;
+
+  /// No description provided for @dcInputVoltage.
+  ///
+  /// In en, this message translates to:
+  /// **'System voltage (DC input voltage)'**
+  String get dcInputVoltage;
+
+  /// No description provided for @dcInputVoltageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: 12'**
+  String get dcInputVoltageHint;
+
+  /// No description provided for @inverterSafetyFactor.
+  ///
+  /// In en, this message translates to:
+  /// **'Inverter safety factor'**
+  String get inverterSafetyFactor;
+
+  /// No description provided for @requiredContinuousPower.
+  ///
+  /// In en, this message translates to:
+  /// **'Required continuous power'**
+  String get requiredContinuousPower;
+
+  /// No description provided for @dcCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'DC current'**
+  String get dcCurrent;
+
+  /// No description provided for @totalLoadPower.
+  ///
+  /// In en, this message translates to:
+  /// **'Total load power'**
+  String get totalLoadPower;
+
+  /// No description provided for @totalLoadPowerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Total load power'**
+  String get totalLoadPowerHint;
+
+  /// No description provided for @distanceFromSourceLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance from source/load'**
+  String get distanceFromSourceLoad;
+
+  /// No description provided for @distanceFromSourceLoadHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get distanceFromSourceLoadHint;
+
+  /// No description provided for @requiredCableSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Required cable section'**
+  String get requiredCableSection;
+
+  /// No description provided for @recommendedBreaker.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended breaker'**
+  String get recommendedBreaker;
+
+  /// No description provided for @current.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get current;
+
+  /// No description provided for @chargeControllerType.
+  ///
+  /// In en, this message translates to:
+  /// **'Charge controller type'**
+  String get chargeControllerType;
+
+  /// No description provided for @batterySystemVoltage.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery system voltage'**
+  String get batterySystemVoltage;
+
+  /// No description provided for @batterySystemVoltageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery voltage'**
+  String get batterySystemVoltageHint;
+
+  /// No description provided for @shortCircuitCurrentPerPanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Short-circuit current per panel'**
+  String get shortCircuitCurrentPerPanel;
+
+  /// No description provided for @shortCircuitCurrentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Short-circuit current'**
+  String get shortCircuitCurrentHint;
+
+  /// No description provided for @panelsInParallel.
+  ///
+  /// In en, this message translates to:
+  /// **'Panels in parallel'**
+  String get panelsInParallel;
+
+  /// No description provided for @panelsInParallelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of panels in parallel'**
+  String get panelsInParallelHint;
+
+  /// No description provided for @requiredControllerCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Required controller current'**
+  String get requiredControllerCurrent;
+
+  /// No description provided for @supportedArrayPower.
+  ///
+  /// In en, this message translates to:
+  /// **'Supported array power'**
+  String get supportedArrayPower;
+
+  /// No description provided for @calculationSummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculation Summary'**
+  String get calculationSummaryTitle;
+
+  /// No description provided for @systemOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'System overview'**
+  String get systemOverview;
+
+  /// No description provided for @systemOverviewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A compact summary of the main calculated solar system values.'**
+  String get systemOverviewSubtitle;
+
+  /// No description provided for @quickRecommendation.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick recommendation'**
+  String get quickRecommendation;
+
+  /// No description provided for @summaryRecommendationPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'The estimated system needs around'**
+  String get summaryRecommendationPrefix;
+
+  /// No description provided for @summaryEfficiencyPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated efficiency is'**
+  String get summaryEfficiencyPrefix;
+
+  /// No description provided for @summaryRoiPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected payback period is'**
+  String get summaryRoiPrefix;
+
+  /// No description provided for @efficiencyGauge.
+  ///
+  /// In en, this message translates to:
+  /// **'Efficiency gauge'**
+  String get efficiencyGauge;
+
+  /// No description provided for @excellent.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent'**
+  String get excellent;
+
+  /// No description provided for @good.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get good;
+
+  /// No description provided for @average.
+  ///
+  /// In en, this message translates to:
+  /// **'Average'**
+  String get average;
+
+  /// No description provided for @needsImprovement.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs improvement'**
+  String get needsImprovement;
+
+  /// No description provided for @systemComparisonChart.
+  ///
+  /// In en, this message translates to:
+  /// **'System comparison chart'**
+  String get systemComparisonChart;
+
+  /// No description provided for @systemComparisonChartSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A visual comparison between the main calculated values.'**
+  String get systemComparisonChartSubtitle;
+
+  /// No description provided for @use.
+  ///
+  /// In en, this message translates to:
+  /// **'Use'**
+  String get use;
+
+  /// No description provided for @panels.
+  ///
+  /// In en, this message translates to:
+  /// **'Panels'**
+  String get panels;
+
+  /// No description provided for @battery.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery'**
+  String get battery;
+
+  /// No description provided for @tilt.
+  ///
+  /// In en, this message translates to:
+  /// **'Tilt'**
+  String get tilt;
+
+  /// No description provided for @wh.
+  ///
+  /// In en, this message translates to:
+  /// **'Wh'**
+  String get wh;
+
+  /// No description provided for @wattHour.
+  ///
+  /// In en, this message translates to:
+  /// **'watt-hour'**
+  String get wattHour;
+
+  /// No description provided for @watt.
+  ///
+  /// In en, this message translates to:
+  /// **'W'**
+  String get watt;
+
+  /// No description provided for @volt.
+  ///
+  /// In en, this message translates to:
+  /// **'V'**
+  String get volt;
+
+  /// No description provided for @voltAmpere.
+  ///
+  /// In en, this message translates to:
+  /// **'VA'**
+  String get voltAmpere;
+
+  /// No description provided for @ampere.
+  ///
+  /// In en, this message translates to:
+  /// **'A'**
+  String get ampere;
+
+  /// No description provided for @ampereHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Ah'**
+  String get ampereHour;
+
+  /// No description provided for @meter.
+  ///
+  /// In en, this message translates to:
+  /// **'m'**
+  String get meter;
+
+  /// No description provided for @squareMillimeter.
+  ///
+  /// In en, this message translates to:
+  /// **'mm²'**
+  String get squareMillimeter;
+
+  /// No description provided for @celsius.
+  ///
+  /// In en, this message translates to:
+  /// **'°C'**
+  String get celsius;
+
+  /// No description provided for @degree.
+  ///
+  /// In en, this message translates to:
+  /// **'°'**
+  String get degree;
+
+  /// No description provided for @panel.
+  ///
+  /// In en, this message translates to:
+  /// **'panel'**
+  String get panel;
+
+  /// No description provided for @years.
+  ///
+  /// In en, this message translates to:
+  /// **'years'**
+  String get years;
 }
 
 class _AppLocalizationsDelegate

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:sun_gate_app/features/calculator/domain/entities/calculator_device.dart';
 
 class DeviceInputModel {
   final TextEditingController deviceController;
@@ -13,10 +14,20 @@ class DeviceInputModel {
     required this.hoursController,
   });
 
-  double get powerValue => double.tryParse(powerController.text.trim()) ?? 0;
-  double get hoursValue => double.tryParse(hoursController.text.trim()) ?? 0;
+  double get powerValue =>
+      double.tryParse(powerController.text.trim().replaceAll(',', '.')) ?? 0;
+  double get hoursValue =>
+      double.tryParse(hoursController.text.trim().replaceAll(',', '.')) ?? 0;
 
   double get totalConsumption => powerValue * hoursValue;
+
+  CalculatorDevice toEntity() {
+    return CalculatorDevice(
+      name: deviceController.text.trim(),
+      powerWatts: powerValue,
+      hoursPerDay: hoursValue,
+    );
+  }
 
   void dispose() {
     deviceController.dispose();
@@ -69,8 +80,8 @@ class DeviceListNotifier extends StateNotifier<List<DeviceInputModel>> {
 
 final deviceListProvider =
     StateNotifierProvider<DeviceListNotifier, List<DeviceInputModel>>(
-  (ref) => DeviceListNotifier(),
-);
+      (ref) => DeviceListNotifier(),
+    );
 
 final totalDeviceConsumptionProvider = Provider<double>((ref) {
   final devices = ref.watch(deviceListProvider);

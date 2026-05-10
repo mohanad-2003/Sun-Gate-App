@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
-import 'package:sun_gate_app/features/calculator/data/models/calculate_flow_data.dart';
-import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_app_bar.dart';
+import 'package:sun_gate_app/features/calculator/domain/entities/calculator_flow_data.dart';
+import 'package:sun_gate_app/features/calculator/domain/usecases/calculate_solar_values_usecase.dart';
+import 'package:sun_gate_app/features/calculator/presentation/utils/calculator_input_parser.dart';
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_input_field.dart';
+import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_page_scaffold.dart';
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_primary_button.dart';
 import 'package:sun_gate_app/features/calculator/presentation/widgets/calculator_result_card.dart';
 
@@ -17,12 +20,15 @@ class NumberOfPanelsScreen extends StatefulWidget {
 }
 
 class _NumberOfPanelsScreenState extends State<NumberOfPanelsScreen> {
-  final TextEditingController _dailyConsumptionController =
-      TextEditingController();
-  final TextEditingController _panelPowerController = TextEditingController();
-  final TextEditingController _sunHoursController = TextEditingController();
+  final _calculator = const CalculateSolarValuesUseCase();
+  final _dailyConsumptionController = TextEditingController();
+  final _panelPowerController = TextEditingController();
+  final _sunHoursController = TextEditingController();
 
+  bool _isOffGrid = true;
+  double _systemEfficiency = 85;
   double _numberOfPanels = 0;
+
   @override
   void initState() {
     super.initState();
@@ -32,25 +38,31 @@ class _NumberOfPanelsScreenState extends State<NumberOfPanelsScreen> {
     }
   }
 
-  void _calculatePanels() {
-    final dailyConsumption =
-        double.tryParse(_dailyConsumptionController.text.trim()) ?? 0;
-    final panelPower = double.tryParse(_panelPowerController.text.trim()) ?? 0;
-    final sunHours = double.tryParse(_sunHoursController.text.trim()) ?? 0;
-
-    if (dailyConsumption <= 0 || panelPower <= 0 || sunHours <= 0) {
-      setState(() {
-        _numberOfPanels = 0;
-      });
-      return;
-    }
-
-    final panelProductionPerDay = panelPower * sunHours;
-    final result = dailyConsumption / panelProductionPerDay;
+  double _calculatePanels({bool showError = true}) {
+    final loc = AppLocalizations.of(context)!;
+    final result = _calculator.numberOfPanels(
+      dailyConsumptionWh: readCalculatorDouble(_dailyConsumptionController),
+      panelPowerWatts: readCalculatorDouble(_panelPowerController),
+      peakSunHours: readCalculatorDouble(_sunHoursController),
+      systemEfficiencyPercent: _systemEfficiency,
+      isOffGrid: _isOffGrid,
+    );
 
     setState(() {
       _numberOfPanels = result;
     });
+
+    if (showError && result <= 0) {
+      _showInputError(loc);
+    }
+
+    return result;
+  }
+
+  void _showInputError(AppLocalizations loc) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(loc.calculatorInvalidInputs)));
   }
 
   @override
@@ -65,103 +77,134 @@ class _NumberOfPanelsScreenState extends State<NumberOfPanelsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final horizontalPadding = screenWidth < 360 ? 12.0 : 16.0;
+    final loc = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CalculatorAppBar(title: 'Return on investment'),
-      body: SafeArea(
-        top: false,
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(
-            horizontalPadding,
-            12,
-            horizontalPadding,
-            20,
+    return CalculatorPageScaffold(
+      title: loc.numberOfPanelsTitle,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: colorScheme.primary.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: colorScheme.primary.withValues(alpha: 0.25),
+            ),
           ),
-          children: [
-            Text(
-              'Enter your daily energy consumption, the panel power, and the average sunlight hours to estimate how many panels you need.',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-                height: 1.6,
-              ),
-            ),
-            const SizedBox(height: 18),
-
-            CalculatorInputField(
-              hintText: 'Daily consumption (Wh)',
-              controller: _dailyConsumptionController,
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 12),
-
-            CalculatorInputField(
-              hintText: 'Panel power (W)',
-              controller: _panelPowerController,
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 12),
-
-            CalculatorInputField(
-              hintText: 'Average sun hours per day',
-              controller: _sunHoursController,
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 18),
-
-            CalculatorPrimaryButton(
-              text: 'Calculate',
-              onPressed: _calculatePanels,
-            ),
-            const SizedBox(height: 18),
-
-            CalculatorResultCard(
-              title: 'Required number of panels',
-              value: _numberOfPanels.toStringAsFixed(2),
-              unit: 'panel',
-            ),
-            const SizedBox(height: 14),
-
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: colorScheme.surface,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: colorScheme.outlineVariant.withOpacity(0.55),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _isOffGrid ? loc.systemTypeOffGrid : loc.systemTypeOnGrid,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
-              child: Text(
-                'Formula used:\nNumber of panels = Daily consumption ÷ (Panel power × Sun hours)',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  height: 1.55,
-                ),
+              Switch.adaptive(
+                value: _isOffGrid,
+                onChanged: (value) {
+                  setState(() {
+                    _isOffGrid = value;
+                  });
+                },
               ),
-            ),
-            const SizedBox(height: 12),
-
-            CalculatorPrimaryButton(
-              text: 'Next: Battery capacity',
-              onPressed: () {
-                final updatedData = widget.flowData.copyWith(
-                  dailyConsumption:
-                      double.tryParse(
-                        _dailyConsumptionController.text.trim(),
-                      ) ??
-                      0,
-                  numberOfPanels: _numberOfPanels,
-                );
-
-                context.push(RouteNames.batteryCapacity, extra: updatedData);
-              },
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        CalculatorInputField(
+          labelText: loc.totalDailyConsumption,
+          hintText: loc.dailyConsumptionWhHint,
+          controller: _dailyConsumptionController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          suffixText: loc.wh,
+        ),
+        const SizedBox(height: 14),
+        CalculatorInputField(
+          labelText: loc.singlePanelPower,
+          hintText: loc.panelPowerWattsHint,
+          controller: _panelPowerController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          suffixText: loc.watt,
+        ),
+        const SizedBox(height: 14),
+        CalculatorInputField(
+          labelText: loc.peakSunHours,
+          hintText: loc.peakSunHoursHint,
+          controller: _sunHoursController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        ),
+        const SizedBox(height: 18),
+        Text(
+          loc.systemEfficiency,
+          style: theme.textTheme.labelMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        Slider(
+          value: _systemEfficiency,
+          min: 50,
+          max: 100,
+          divisions: 50,
+          label: '${_systemEfficiency.toStringAsFixed(0)}%',
+          onChanged: (value) {
+            setState(() {
+              _systemEfficiency = value;
+            });
+          },
+        ),
+        Align(
+          alignment: AlignmentDirectional.centerEnd,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: colorScheme.surface,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: colorScheme.outlineVariant.withValues(alpha: 0.7),
+              ),
+            ),
+            child: Text('${_systemEfficiency.toStringAsFixed(0)}%'),
+          ),
+        ),
+        const SizedBox(height: 18),
+        CalculatorPrimaryButton(
+          text: loc.calculate,
+          icon: Icons.calculate_outlined,
+          onPressed: _calculatePanels,
+        ),
+        const SizedBox(height: 18),
+        CalculatorResultCard(
+          title: loc.numberOfPanelsRequired,
+          value: formatCalculatorNumber(_numberOfPanels, fractionDigits: 0),
+          unit: loc.panel,
+          icon: Icons.grid_view_rounded,
+        ),
+        const SizedBox(height: 14),
+        CalculatorPrimaryButton(
+          text: loc.nextBatteryCapacity,
+          icon: Icons.arrow_forward_rounded,
+          onPressed: () {
+            final panels = _calculatePanels(showError: false);
+            if (panels <= 0) {
+              _showInputError(loc);
+              return;
+            }
+
+            context.push(
+              RouteNames.batteryCapacity,
+              extra: widget.flowData.copyWith(
+                dailyConsumption: readCalculatorDouble(
+                  _dailyConsumptionController,
+                ),
+                numberOfPanels: panels,
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }
