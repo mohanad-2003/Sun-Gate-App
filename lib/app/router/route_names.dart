@@ -4,6 +4,8 @@ class RouteNames {
   static const String welcome = '/welcome';
   static const String login = '/login';
   static const String signUp = '/sign-up';
+  static const String accountType = '/account-type';
+  static const String companySignUp = '/company-sign-up';
   static const String forgotPassword = '/forgot-password';
   static const String newPassword = '/new-password';
   static const String otp = '/otp';

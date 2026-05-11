@@ -768,6 +768,66 @@ class AppLocalizationsEn extends AppLocalizations {
   String get productP12How3 => 'Perfect for outdoor use.';
 
   @override
+  String get selectAccountTypeTitle => 'Create account as';
+
+  @override
+  String get selectAccountTypeSubtitle =>
+      'Choose the account type that fits your needs.';
+
+  @override
+  String get userAccount => 'User Account';
+
+  @override
+  String get userAccountSubtitle => 'Register as a normal Sun Gate user.';
+
+  @override
+  String get companyAccount => 'Company Account';
+
+  @override
+  String get companyAccountSubtitle =>
+      'Register your company and upload verification details.';
+
+  @override
+  String get companySignUpTitle => 'Create Company Account';
+
+  @override
+  String get companySignUpSubtitle => 'Complete the company registration form.';
+
+  @override
+  String get companyName => 'Company Name';
+
+  @override
+  String get enterCompanyName => 'Enter company name';
+
+  @override
+  String get establishmentDate => 'Establishment Date';
+
+  @override
+  String get enterEstablishmentDate => 'Enter establishment date';
+
+  @override
+  String get documentUploadLabel => 'Upload verification document';
+
+  @override
+  String get logoUploadLabel => 'Upload company logo';
+
+  @override
+  String get chooseFile => 'Choose file';
+
+  @override
+  String get signUpAsUser => 'Sign up as a user instead';
+
+  @override
+  String get pleaseEnterCompanyName => 'Please enter the company name';
+
+  @override
+  String get enableGpsMessage => 'Please enable GPS to get your location.';
+
+  @override
+  String get locationPermissionMessage =>
+      'Please grant location permission to use this feature.';
+
+  @override
   String companyDetailTitle(Object name) {
     return '$name Detail';
   }

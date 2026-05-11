@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sun_gate_app/app/constants/api_constants.dart';
+import 'package:sun_gate_app/features/auth/data/dto/company_send_otp_request_dto.dart';
+import 'package:sun_gate_app/features/auth/data/dto/company_verify_otp_request_dto.dart';
 import 'package:sun_gate_app/features/auth/data/dto/forgot_password_request_dto.dart';
 import 'package:sun_gate_app/features/auth/data/dto/google_login_request_dto.dart';
 import 'package:sun_gate_app/features/auth/data/dto/login_request_dto.dart';
@@ -29,6 +31,15 @@ abstract class AuthRemoteDataSource {
     required String password,
   });
   Future<BasicMessageResponseModel> resendVerification(String email);
+
+  Future<BasicMessageResponseModel> companySendOtp(
+    CompanySendOtpRequestDto request,
+  );
+  Future<BasicMessageResponseModel> companyVerifyOtp(
+    CompanyVerifyOtpRequestDto request,
+  );
+  Future<AuthResponseModel> companyRegister(FormData formData);
+  Future<AuthResponseModel> companyLogin(LoginRequestDto request);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -120,7 +131,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
               : 'Internal server error',
         );
       }
-      print(request.toJson());
       throw Exception('Something went wrong');
     }
   }
@@ -388,6 +398,127 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
 
       throw Exception('Resend verification failed');
+    }
+  }
+
+  @override
+  Future<BasicMessageResponseModel> companySendOtp(
+    CompanySendOtpRequestDto request,
+  ) async {
+    try {
+      final response = await dio.post(
+        ApiConstants.companySendOtp,
+        data: request.toJson(),
+      );
+
+      return BasicMessageResponseModel.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final message = data is Map<String, dynamic>
+          ? data['message']?.toString()
+          : null;
+
+      if (message != null && message.isNotEmpty) {
+        throw Exception(message);
+      }
+
+      throw Exception('Company send OTP failed');
+    }
+  }
+
+  @override
+  Future<BasicMessageResponseModel> companyVerifyOtp(
+    CompanyVerifyOtpRequestDto request,
+  ) async {
+    try {
+      final response = await dio.post(
+        ApiConstants.companyVerifyOtp,
+        data: request.toJson(),
+      );
+
+      return BasicMessageResponseModel.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final message = data is Map<String, dynamic>
+          ? data['message']?.toString()
+          : null;
+
+      if (message != null && message.isNotEmpty) {
+        throw Exception(message);
+      }
+
+      throw Exception('Company verify OTP failed');
+    }
+  }
+
+  @override
+  Future<AuthResponseModel> companyRegister(FormData formData) async {
+    try {
+      final response = await dio.post(
+        ApiConstants.companyRegister,
+        data: formData,
+      );
+
+      return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final message = data is Map<String, dynamic>
+          ? data['message']?.toString()
+          : null;
+
+      if (message != null && message.isNotEmpty) {
+        throw Exception(message);
+      }
+
+      throw Exception('Company registration failed');
+    }
+  }
+
+  @override
+  Future<AuthResponseModel> companyLogin(LoginRequestDto request) async {
+    try {
+      final response = await dio.post(
+        ApiConstants.companyLogin,
+        data: request.toJson(),
+      );
+
+      return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      debugPrint('COMPANY LOGIN STATUS: ${e.response?.statusCode}'); // ← أضف
+      debugPrint('COMPANY LOGIN DATA: $data'); // ← أضف
+      if (e.response?.statusCode == 403) {
+        final serverMessage = data is Map<String, dynamic>
+            ? data['message']?.toString()
+            : null;
+
+        if (serverMessage != null &&
+            serverMessage.toLowerCase().contains('not active')) {
+          throw Exception(
+            'Your company request is still pending admin approval. '
+            'You can sign in after the company account is activated.',
+          );
+        }
+
+        throw Exception(
+          serverMessage ??
+              'Email not verified or company account is not active yet.',
+        );
+      }
+
+      final message = data is Map<String, dynamic>
+          ? data['message']?.toString()
+          : null;
+
+      if (message != null && message.isNotEmpty) {
+        throw Exception(message);
+      }
+
+      throw Exception('Company login failed');
     }
   }
 }

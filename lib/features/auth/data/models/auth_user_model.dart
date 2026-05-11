@@ -29,13 +29,17 @@ class AuthUserModel extends AuthUser {
   factory AuthUserModel.fromJson(Map<String, dynamic> json) {
     final firstName = json['firstName']?.toString();
     final lastName = json['lastName']?.toString();
+    final companyName = json['companyName']?.toString();
+    final ownerName = json['ownerName']?.toString();
 
     return AuthUserModel(
-      id: json['_id']?.toString() ?? '',
+      id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
       email: json['email']?.toString() ?? '',
-      fullName: json['fullName'] != null
-          ? json['fullName'].toString()
-          : '${firstName ?? ''} ${lastName ?? ''}'.trim(),
+      fullName:
+          json['fullName']?.toString() ??
+          companyName ??
+          ownerName ??
+          '${firstName ?? ''} ${lastName ?? ''}'.trim(),
       firstName: firstName,
       lastName: lastName,
       birthday: json['birthDate']?.toString(),

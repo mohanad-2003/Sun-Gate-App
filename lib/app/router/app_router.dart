@@ -2,6 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/forgot_password_screen.dart';
+import 'package:sun_gate_app/features/auth/presentation/screen/account_type_selection_screen.dart';
+import 'package:sun_gate_app/features/auth/presentation/screen/company_sign_up_screen.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/login_screen.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/new_password_screen.dart';
 import 'package:sun_gate_app/features/auth/presentation/screen/otp_screen.dart';
@@ -58,6 +60,14 @@ class AppRouter {
         builder: (context, state) => const SignUpScreen(),
       ),
       GoRoute(
+        path: RouteNames.accountType,
+        builder: (context, state) => const AccountTypeSelectionScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.companySignUp,
+        builder: (context, state) => const CompanySignUpScreen(),
+      ),
+      GoRoute(
         path: RouteNames.forgotPassword,
         builder: (context, state) => const ForgotPasswordScreen(),
       ),
@@ -70,6 +80,8 @@ class AppRouter {
             email: args['email'] as String? ?? '',
             flowType:
                 args['flowType'] as OtpFlowType? ?? OtpFlowType.verifyEmail,
+            companyRegistrationData:
+                args['companyRegistrationData'] as Map<String, dynamic>?,
           );
         },
       ),
@@ -82,6 +94,8 @@ class AppRouter {
             token: args['token'] ?? '',
             flowType:
                 args['flowType'] as OtpFlowType? ?? OtpFlowType.verifyEmail,
+            companyRegistrationData:
+                args['companyRegistrationData'] as Map<String, dynamic>?,
           );
         },
       ),

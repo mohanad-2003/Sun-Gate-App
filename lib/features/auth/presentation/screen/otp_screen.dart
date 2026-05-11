@@ -13,8 +13,14 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_bo
 class OtpScreen extends ConsumerStatefulWidget {
   final String email;
   final OtpFlowType flowType;
+  final Map<String, dynamic>? companyRegistrationData;
 
-  const OtpScreen({super.key, required this.email, required this.flowType});
+  const OtpScreen({
+    super.key,
+    required this.email,
+    required this.flowType,
+    this.companyRegistrationData,
+  });
 
   @override
   ConsumerState<OtpScreen> createState() => _OtpScreenState();
@@ -87,6 +93,11 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
     ref.listen(authControllerProvider, (previous, next) {
+      if (next.errorMessage != null) {
+        _isVerifyingOtp = false;
+        return;
+      }
+
       if (!_isVerifyingOtp) return;
       if (!next.isSuccess) return;
 
@@ -105,7 +116,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
             'flowType': widget.flowType,
           },
         );
-      } else {
+      } else if (widget.flowType == OtpFlowType.resetPassword) {
         if (next.resetToken?.isNotEmpty ?? false) {
           context.push(
             RouteNames.newPassword,
@@ -116,6 +127,28 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
             },
           );
         }
+      } else if (widget.flowType == OtpFlowType.companyRegistration) {
+        final data = widget.companyRegistrationData;
+        final registrationToken = next.resetToken;
+
+        if (data == null ||
+            registrationToken == null ||
+            registrationToken.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Company registration data missing')),
+          );
+          return;
+        }
+
+        context.push(
+          RouteNames.newPassword,
+          extra: {
+            'email': widget.email,
+            'token': registrationToken,
+            'flowType': widget.flowType,
+            'companyRegistrationData': data,
+          },
+        );
       }
     });
 
@@ -124,7 +157,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
         textDirection: TextDirection.ltr,
         child: Column(
           children: [
-            AuthBackButton(onTap: () => context.go(RouteNames.signUp)),
+            AuthBackButton(onTap: () => context.pop()),
 
             const SizedBox(height: 48),
 
@@ -206,10 +239,15 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                             await ref
                                 .read(authControllerProvider.notifier)
                                 .resendVerification(email: widget.email);
-                          } else {
+                          } else if (widget.flowType ==
+                              OtpFlowType.resetPassword) {
                             await ref
                                 .read(authControllerProvider.notifier)
                                 .forgotPassword(email: widget.email);
+                          } else {
+                            await ref
+                                .read(authControllerProvider.notifier)
+                                .companySendOtp(email: widget.email);
                           }
 
                           for (final controller in _controllers) {
@@ -264,10 +302,17 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                         await ref
                             .read(authControllerProvider.notifier)
                             .verifyEmail(email: widget.email, code: _otpCode);
-                      } else {
+                      } else if (widget.flowType == OtpFlowType.resetPassword) {
                         await ref
                             .read(authControllerProvider.notifier)
                             .verifyOtp(email: widget.email, code: _otpCode);
+                      } else {
+                        await ref
+                            .read(authControllerProvider.notifier)
+                            .companyVerifyOtp(
+                              email: widget.email,
+                              otp: _otpCode,
+                            );
                       }
                     }
                   : null,
