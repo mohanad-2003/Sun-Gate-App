@@ -764,6 +764,64 @@ class AppLocalizationsAr extends AppLocalizations {
   String get productP12How3 => 'مثالي للرحلات.';
 
   @override
+  String get selectAccountTypeTitle => 'أنشئ الحساب كـ';
+
+  @override
+  String get selectAccountTypeSubtitle => 'اختر نوع الحساب الذي يناسبك.';
+
+  @override
+  String get userAccount => 'مستخدم عادي';
+
+  @override
+  String get userAccountSubtitle => 'سجل كمستخدم عادي في Sun Gate.';
+
+  @override
+  String get companyAccount => 'شركة';
+
+  @override
+  String get companyAccountSubtitle => 'سجل شركتك وارفق مستندات التحقق.';
+
+  @override
+  String get companySignUpTitle => 'تسجيل شركة';
+
+  @override
+  String get companySignUpSubtitle => 'أكمل نموذج تسجيل الشركة.';
+
+  @override
+  String get companyName => 'اسم الشركة';
+
+  @override
+  String get enterCompanyName => 'أدخل اسم الشركة';
+
+  @override
+  String get establishmentDate => 'تاريخ التأسيس';
+
+  @override
+  String get enterEstablishmentDate => 'أدخل تاريخ التأسيس';
+
+  @override
+  String get documentUploadLabel => 'تحميل مستند التحقق';
+
+  @override
+  String get logoUploadLabel => 'تحميل شعار الشركة';
+
+  @override
+  String get chooseFile => 'اختر ملف';
+
+  @override
+  String get signUpAsUser => 'سجل كمستخدم عادي بدلاً من ذلك';
+
+  @override
+  String get pleaseEnterCompanyName => 'الرجاء إدخال اسم الشركة';
+
+  @override
+  String get enableGpsMessage => 'الرجاء تفعيل GPS للحصول على موقعك.';
+
+  @override
+  String get locationPermissionMessage =>
+      'الرجاء منح إذن الموقع لاستخدام هذه الميزة.';
+
+  @override
   String companyDetailTitle(Object name) {
     return 'تفاصيل $name';
   }

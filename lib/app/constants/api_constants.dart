@@ -7,6 +7,12 @@ class ApiConstants {
   static final String googleLogin = '/api/auth/google-login';
   static final String forgotPassword = '/api/auth/forgot-password';
   static final String resetPassword = '/api/auth/reset-password';
+  static const String companyLogin = '/api/auth/company/login';
+  static const String companyRegister = '/api/auth/company/register';
+  static const String companySendOtp = '/api/auth/company/send-otp';
+  static const String companyVerifyOtp = '/api/auth/company/verify-otp';
+  static const String companyRegistrationInfo =
+      '/api/auth/company/registration-info';
   static final String getMyProfile = '/api/users/me';
   static final String resendCode = '/api/auth/resend-verification';
   static const String updateMyProfile = '/api/users/me';

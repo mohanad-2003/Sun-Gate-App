@@ -1,5 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:sun_gate_app/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:sun_gate_app/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:sun_gate_app/features/auth/data/dto/company_send_otp_request_dto.dart';
+import 'package:sun_gate_app/features/auth/data/dto/company_verify_otp_request_dto.dart';
 import 'package:sun_gate_app/features/auth/data/dto/forgot_password_request_dto.dart';
 import 'package:sun_gate_app/features/auth/data/dto/google_login_request_dto.dart';
 import 'package:sun_gate_app/features/auth/data/dto/login_request_dto.dart';
@@ -27,14 +30,8 @@ class AuthRepositoryImpl implements AuthRepository {
       LoginRequestDto(email: email, password: password),
     );
 
-    print("LOGIN ACCESS TOKEN: ${result.accessToken}");
-    print("LOGIN REFRESH TOKEN: ${result.refreshToken}");
-
     if (result.accessToken != null && result.accessToken!.isNotEmpty) {
       await localDataSource.saveAccessToken(result.accessToken!);
-
-      final savedToken = await localDataSource.getAccessToken();
-      print("SAVED ACCESS TOKEN: $savedToken");
     }
 
     if (result.refreshToken != null && result.refreshToken!.isNotEmpty) {
@@ -159,5 +156,81 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<String> resendVerification({required String email}) async {
     final result = await remoteDataSource.resendVerification(email);
     return result.message;
+  }
+
+  @override
+  Future<String> companySendOtp({required String email}) async {
+    final result = await remoteDataSource.companySendOtp(
+      CompanySendOtpRequestDto(email: email.trim()),
+    );
+
+    return result.message;
+  }
+
+  @override
+  Future<String> companyVerifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    final result = await remoteDataSource.companyVerifyOtp(
+      CompanyVerifyOtpRequestDto(email: email.trim(), otp: otp.trim()),
+    );
+
+    final token = result.registrationToken;
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Registration token was not returned');
+    }
+
+    return token;
+  }
+
+  @override
+  Future<AuthResult> companyRegister({
+    required String documentPath,
+    required String logoPath,
+    required String registrationToken,
+    required String companyName,
+    required String ownerName,
+    required String email,
+    required String location,
+    required String establishmentDate,
+    required bool acceptPrivacyPolicy,
+    required String password,
+  }) async {
+    final formData = FormData.fromMap({
+      'document': await MultipartFile.fromFile(documentPath),
+      'logo': await MultipartFile.fromFile(logoPath),
+      'registrationToken': registrationToken,
+      'companyName': companyName.trim(),
+      'ownerName': ownerName.trim(),
+      'email': email.trim(),
+      'location': location.trim(),
+      'establishmentDate': establishmentDate.trim(),
+      'acceptPrivacyPolicy': acceptPrivacyPolicy,
+      'password': password,
+    });
+
+    return remoteDataSource.companyRegister(formData);
+  }
+
+  @override
+  Future<AuthResult> companyLogin({
+    required String email,
+    required String password,
+  }) async {
+    final result = await remoteDataSource.companyLogin(
+      LoginRequestDto(email: email.trim(), password: password),
+    );
+
+    if (result.accessToken != null && result.accessToken!.isNotEmpty) {
+      await localDataSource.saveAccessToken(result.accessToken!);
+    }
+
+    if (result.refreshToken != null && result.refreshToken!.isNotEmpty) {
+      await localDataSource.saveRefreshToken(result.refreshToken!);
+    }
+
+    return result;
   }
 }

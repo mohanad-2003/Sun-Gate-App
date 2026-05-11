@@ -26,6 +26,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  bool _isCompanyLogin = false;
 
   @override
   void dispose() {
@@ -39,6 +40,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final state = ref.watch(authControllerProvider);
     final isVisible = ref.watch(loginPasswordVisiableProvider);
     final loc = AppLocalizations.of(context)!;
+    final isPendingCompanyReview =
+        _isCompanyLogin && _isPendingCompanyReviewMessage(state.errorMessage);
 
     ref.listen(authControllerProvider, (previous, next) async {
       if (next.isSuccess && mounted) {
@@ -70,11 +73,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             const SizedBox(height: 24),
             AuthHeader(
-              title: loc.loginWelcomeTitle,
-              subtitle: loc.loginWelcomeSubtitle,
+              title: _isCompanyLogin
+                  ? 'Company portal login'
+                  : loc.loginWelcomeTitle,
+              subtitle: _isCompanyLogin
+                  ? 'Sign in with your approved company account.'
+                  : loc.loginWelcomeSubtitle,
             ),
             const SizedBox(height: 38),
-
+            SegmentedButton<bool>(
+              segments: const [
+                ButtonSegment(value: false, label: Text('User')),
+                ButtonSegment(value: true, label: Text('Company')),
+              ],
+              selected: {_isCompanyLogin},
+              onSelectionChanged: (value) {
+                setState(() {
+                  _isCompanyLogin = value.first;
+                });
+              },
+            ),
+            const SizedBox(height: 18),
             AuthTextField(
               controller: emailController,
               label: loc.emailAddress,
@@ -82,7 +101,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
-
             AuthTextField(
               controller: passwordController,
               label: loc.password,
@@ -100,30 +118,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ),
             ),
-
             if (state.errorMessage != null) ...[
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
-                ),
-                child: Text(
-                  state.errorMessage!,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
+              isPendingCompanyReview
+                  ? const _CompanyPendingReviewCard()
+                  : _LoginErrorCard(message: state.errorMessage!),
             ],
-
             const SizedBox(height: 10),
-
             Align(
               alignment: AlignmentDirectional.centerStart,
               child: TextButton(
@@ -132,65 +132,173 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
             ),
             const SizedBox(height: 4),
-
             AuthPrimaryButton(
               text: loc.login,
               isLoading: state.isLoading,
               onPressed: () {
-                ref
-                    .read(authControllerProvider.notifier)
-                    .login(
-                      email: emailController.text,
-                      password: passwordController.text,
+                final controller = ref.read(authControllerProvider.notifier);
+
+                if (_isCompanyLogin) {
+                  controller.companyLogin(
+                    email: emailController.text,
+                    password: passwordController.text,
+                  );
+                } else {
+                  controller.login(
+                    email: emailController.text,
+                    password: passwordController.text,
+                  );
+                }
+              },
+            ),
+            if (!_isCompanyLogin) ...[
+              const SizedBox(height: 22),
+              const AuthDivider(),
+              const SizedBox(height: 22),
+              AuthOutlineGoogleButton(
+                onPressed: () async {
+                  final googleService = ref.read(googleAuthServiceProvider);
+                  final account = await googleService.signIn();
+
+                  if (account == null) {
+                    if (!context.mounted) return;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(loc.googleSignInFailed)),
                     );
-              },
-            ),
+                    return;
+                  }
 
-            const SizedBox(height: 22),
-            const AuthDivider(),
-            const SizedBox(height: 22),
+                  final auth = account.authentication;
+                  final idToken = auth.idToken;
+                  final photo = account.photoUrl;
 
-            AuthOutlineGoogleButton(
-              onPressed: () async {
-                final googleService = ref.read(googleAuthServiceProvider);
+                  if (idToken == null) {
+                    if (!context.mounted) return;
 
-                final account = await googleService.signIn();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(loc.googleSignInFailed)),
+                    );
+                    return;
+                  }
 
-                if (account == null) {
-                  if (!context.mounted) return;
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(loc.googleSignInFailed)),
-                  );
-                  return;
-                }
-
-                final auth = await account.authentication;
-                final idToken = auth.idToken;
-                final photo = account.photoUrl;
-
-                if (idToken == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(loc.googleSignInFailed)),
-                  );
-                  return;
-                }
-
-                await ref
-                    .read(authControllerProvider.notifier)
-                    .googleLogin(idToken: idToken, ref: ref, photoUrl: photo);
-              },
-            ),
-
+                  await ref
+                      .read(authControllerProvider.notifier)
+                      .googleLogin(idToken: idToken, ref: ref, photoUrl: photo);
+                },
+              ),
+            ],
             const SizedBox(height: 28),
-
             AuthBottomLink(
               text: loc.dontHaveAccount,
               actionText: loc.signUp,
-              onTap: () => context.push(RouteNames.signUp),
+              onTap: () => context.push(RouteNames.accountType),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  bool _isPendingCompanyReviewMessage(String? message) {
+    if (message == null || message.isEmpty) return false;
+
+    final normalized = message.toLowerCase();
+
+    return normalized.contains('pending admin') ||
+        normalized.contains('pending review') ||
+        normalized.contains('not active') ||
+        normalized.contains('account is not active') ||
+        normalized.contains('not active yet');
+  }
+}
+
+class _LoginErrorCard extends StatelessWidget {
+  final String message;
+
+  const _LoginErrorCard({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.red.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
+      ),
+      child: Text(
+        message,
+        style: const TextStyle(
+          color: Colors.red,
+          fontSize: 13,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+}
+
+class _CompanyPendingReviewCard extends StatelessWidget {
+  const _CompanyPendingReviewCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF274777).withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: const Color(0xFF274777).withValues(alpha: 0.2),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: const BoxDecoration(
+              color: Color(0xFF274777),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.hourglass_top_rounded,
+              color: Colors.white,
+              size: 18,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '\u0637\u0644\u0628\u0643 \u0642\u064A\u062F \u0627\u0644\u0645\u0631\u0627\u062C\u0639\u0629',
+                  style: TextStyle(
+                    color: Color(0xFF274777),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(height: 5),
+                Text(
+                  '\u062A\u0645 \u0625\u0646\u0634\u0627\u0621 \u0637\u0644\u0628 \u0627\u0644\u0634\u0631\u0643\u0629 \u0628\u0646\u062C\u0627\u062D. \u064A\u0645\u0643\u0646\u0643 \u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644 \u0628\u0639\u062F \u0645\u0648\u0627\u0641\u0642\u0629 \u0627\u0644\u0627\u062F\u0645\u0646 \u0648\u062A\u0641\u0639\u064A\u0644 \u0627\u0644\u062D\u0633\u0627\u0628.',
+                  style: TextStyle(
+                    color: Color(0xFF4B5563),
+                    fontSize: 12.5,
+                    height: 1.45,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

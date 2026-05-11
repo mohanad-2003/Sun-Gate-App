@@ -10,16 +10,14 @@ import 'package:sun_gate_app/features/marketplace/presentation/controllers/marke
 
 /// Dio
 final dioProvider = Provider<Dio>((ref) {
-  return Dio(
-    BaseOptions(baseUrl: ApiConstants.baseUrl)
-  );
+  return Dio(BaseOptions(baseUrl: ApiConstants.baseUrl));
 });
 
 /// Remote Data Source
 final marketPlaceRemoteDataSourceProvider =
     Provider<MarketPlaceRemoteDataSource>((ref) {
-  return MarketPlaceRemoteDataSource(ref.read(dioProvider));
-});
+      return MarketPlaceRemoteDataSource(ref.read(dioProvider));
+    });
 
 /// Repository
 final marketPlaceRepositoryProvider = Provider<MarketPlaceRepository>((ref) {
@@ -31,7 +29,7 @@ final marketPlaceRepositoryProvider = Provider<MarketPlaceRepository>((ref) {
 /// Controller
 final marketPlaceControllerProvider =
     StateNotifierProvider<MarketPlaceController, MarketPlaceState>((ref) {
-  return MarketPlaceController(
-    repository: ref.read(marketPlaceRepositoryProvider),
-  );
-});
+      return MarketPlaceController(
+        repository: ref.read(marketPlaceRepositoryProvider),
+      );
+    });

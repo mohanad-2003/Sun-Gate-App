@@ -8,8 +8,8 @@ abstract class AuthRepository {
     required String lastName,
     required String email,
     required String birthDate,
-    required String? location,
-    required String? gender,
+    String? location,
+    String? gender,
   });
 
   Future<String> forgotPassword({required String email});
@@ -17,6 +17,7 @@ abstract class AuthRepository {
   Future<String> resendVerification({required String email});
 
   Future<String> verifyEmail({required String email, required String code});
+
   Future<String> verifyOtp({required String email, required String code});
 
   Future<String> assignPassword({
@@ -32,4 +33,26 @@ abstract class AuthRepository {
   Future<AuthResult> googleLogin({required String idToken});
 
   Future<void> logout();
+
+  Future<String> companySendOtp({required String email});
+
+  Future<String> companyVerifyOtp({required String email, required String otp});
+
+  Future<AuthResult> companyRegister({
+    required String documentPath,
+    required String logoPath,
+    required String registrationToken,
+    required String companyName,
+    required String ownerName,
+    required String email,
+    required String location,
+    required String establishmentDate,
+    required bool acceptPrivacyPolicy,
+    required String password,
+  });
+
+  Future<AuthResult> companyLogin({
+    required String email,
+    required String password,
+  });
 }

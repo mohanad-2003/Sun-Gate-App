@@ -52,6 +52,28 @@ class AuthFormController extends StateNotifier<AuthState> {
     }
   }
 
+  Future<void> companyLogin({
+    required String email,
+    required String password,
+  }) async {
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      isSuccess: false,
+    );
+
+    try {
+      await repository.companyLogin(email: email, password: password);
+      state = state.copyWith(isLoading: false, isSuccess: true);
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        isSuccess: false,
+      );
+    }
+  }
+
   Future<void> register({
     required String firstName,
     required String lastName,
@@ -315,6 +337,113 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: true,
         errorMessage: null,
         message: message,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: false,
+        errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        message: null,
+      );
+    }
+  }
+
+  Future<void> companySendOtp({required String email}) async {
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      isSuccess: false,
+      message: null,
+    );
+
+    try {
+      final message = await repository.companySendOtp(email: email);
+
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: true,
+        errorMessage: null,
+        message: message,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: false,
+        errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        message: null,
+      );
+    }
+  }
+
+  Future<void> companyVerifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    state = state.copyWith(
+      isLoading: true,
+      isSuccess: false,
+      errorMessage: null,
+      message: null,
+      resetToken: null,
+    );
+
+    try {
+      final token = await repository.companyVerifyOtp(email: email, otp: otp);
+
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: true,
+        errorMessage: null,
+        resetToken: token,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: false,
+        errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        resetToken: null,
+      );
+    }
+  }
+
+  Future<void> companyRegister({
+    required String documentPath,
+    required String logoPath,
+    required String registrationToken,
+    required String companyName,
+    required String ownerName,
+    required String email,
+    required String location,
+    required String establishmentDate,
+    required bool acceptPrivacyPolicy,
+    required String password,
+  }) async {
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      isSuccess: false,
+      message: null,
+    );
+
+    try {
+      final result = await repository.companyRegister(
+        documentPath: documentPath,
+        logoPath: logoPath,
+        registrationToken: registrationToken,
+        companyName: companyName,
+        ownerName: ownerName,
+        email: email,
+        location: location,
+        establishmentDate: establishmentDate,
+        acceptPrivacyPolicy: acceptPrivacyPolicy,
+        password: password,
+      );
+
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: true,
+        errorMessage: null,
+        message: result.message,
       );
     } catch (e) {
       state = state.copyWith(

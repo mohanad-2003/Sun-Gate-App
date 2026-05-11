@@ -1538,6 +1538,120 @@ abstract class AppLocalizations {
   /// **'Perfect for outdoor use.'**
   String get productP12How3;
 
+  /// No description provided for @selectAccountTypeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account as'**
+  String get selectAccountTypeTitle;
+
+  /// No description provided for @selectAccountTypeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the account type that fits your needs.'**
+  String get selectAccountTypeSubtitle;
+
+  /// No description provided for @userAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'User Account'**
+  String get userAccount;
+
+  /// No description provided for @userAccountSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Register as a normal Sun Gate user.'**
+  String get userAccountSubtitle;
+
+  /// No description provided for @companyAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Account'**
+  String get companyAccount;
+
+  /// No description provided for @companyAccountSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Register your company and upload verification details.'**
+  String get companyAccountSubtitle;
+
+  /// No description provided for @companySignUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Company Account'**
+  String get companySignUpTitle;
+
+  /// No description provided for @companySignUpSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete the company registration form.'**
+  String get companySignUpSubtitle;
+
+  /// No description provided for @companyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Name'**
+  String get companyName;
+
+  /// No description provided for @enterCompanyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter company name'**
+  String get enterCompanyName;
+
+  /// No description provided for @establishmentDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Establishment Date'**
+  String get establishmentDate;
+
+  /// No description provided for @enterEstablishmentDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter establishment date'**
+  String get enterEstablishmentDate;
+
+  /// No description provided for @documentUploadLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload verification document'**
+  String get documentUploadLabel;
+
+  /// No description provided for @logoUploadLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload company logo'**
+  String get logoUploadLabel;
+
+  /// No description provided for @chooseFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose file'**
+  String get chooseFile;
+
+  /// No description provided for @signUpAsUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up as a user instead'**
+  String get signUpAsUser;
+
+  /// No description provided for @pleaseEnterCompanyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the company name'**
+  String get pleaseEnterCompanyName;
+
+  /// No description provided for @enableGpsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enable GPS to get your location.'**
+  String get enableGpsMessage;
+
+  /// No description provided for @locationPermissionMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please grant location permission to use this feature.'**
+  String get locationPermissionMessage;
+
   /// No description provided for @companyDetailTitle.
   ///
   /// In en, this message translates to:
