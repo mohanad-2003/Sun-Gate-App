@@ -23,6 +23,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ref.read(notificationControllerProvider.notifier).loadUnreadCount();
 
       ref.read(marketPlaceControllerProvider.notifier).getCompanies();
+      ref.read(marketPlaceControllerProvider.notifier).getMyCompany();
 
       final locale = Localizations.localeOf(context).languageCode;
 

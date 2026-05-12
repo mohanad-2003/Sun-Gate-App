@@ -22,26 +22,30 @@ class UserProfileModels extends UserProfileEntity {
 
   factory UserProfileModels.fromJson(Map<String, dynamic> json) {
     final fullNameValue = json['fullName']?.toString().trim() ?? '';
+    final companyNameValue = json['companyName']?.toString().trim() ?? '';
+    final ownerNameValue = json['ownerName']?.toString().trim() ?? '';
+    final normalizedFullName = fullNameValue.isNotEmpty
+        ? fullNameValue
+        : companyNameValue.isNotEmpty
+        ? companyNameValue
+        : ownerNameValue;
 
-    final nameParts = fullNameValue.split(' ');
+    final nameParts = normalizedFullName.split(' ');
 
-    final firstNameValue = fullNameValue.isNotEmpty
+    final firstNameValue = normalizedFullName.isNotEmpty
         ? nameParts.first
-        : json['firstName']?.toString() ?? '';
+        : json['firstName']?.toString() ?? companyNameValue;
 
-    final lastNameValue = fullNameValue.isNotEmpty && nameParts.length > 1
+    final lastNameValue = normalizedFullName.isNotEmpty && nameParts.length > 1
         ? nameParts.sublist(1).join(' ')
         : json['lastName']?.toString() ?? '';
-    // final calculatedFullName = fullNameValue.isNotEmpty
-    //     ? fullNameValue
-    //     : '$fullNameValue'.trim();
 
     return UserProfileModels(
       id: json['_id']?.toString() ?? '',
       firstName: firstNameValue,
       lastName: lastNameValue,
-      fullName: fullNameValue.isNotEmpty
-          ? fullNameValue
+      fullName: normalizedFullName.isNotEmpty
+          ? normalizedFullName
           : '$firstNameValue $lastNameValue'.trim(),
       email: json['email']?.toString() ?? '',
       authProvider: json['authProvider']?.toString() ?? '',

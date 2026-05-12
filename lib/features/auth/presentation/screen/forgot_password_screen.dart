@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
+import 'package:sun_gate_app/features/auth/presentation/controllers/auth_state.dart';
 import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auht_text_field.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_back_button.dart';
@@ -34,7 +35,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     final loc = AppLocalizations.of(context)!;
 
     ref.listen(authControllerProvider, (previous, next) {
-      if (next.isSuccess) {
+      if (next.action == AuthAction.forgotPassword && next.isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(

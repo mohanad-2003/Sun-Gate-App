@@ -34,6 +34,8 @@ class HomeHeaderSection extends ConsumerWidget {
       profileState.profile?.firstName.isNotEmpty == true
           ? profileState.profile!.firstName
           : profileState.profile?.fullName,
+      companyName: marketState.myCompany?.companyName,
+      ownerName: marketState.myCompany?.ownerName,
     );
 
     SystemChrome.setSystemUIOverlayStyle(
@@ -252,8 +254,18 @@ class HomeHeaderSection extends ConsumerWidget {
     }
   }
 
-  String _resolveUserName(String? name) {
-    if (name == null || name.trim().isEmpty) return 'User';
-    return name.trim();
+  String _resolveUserName(
+    String? name, {
+    String? companyName,
+    String? ownerName,
+  }) {
+    if (name != null && name.trim().isNotEmpty) return name.trim();
+    if (companyName != null && companyName.trim().isNotEmpty) {
+      return companyName.trim();
+    }
+    if (ownerName != null && ownerName.trim().isNotEmpty) {
+      return ownerName.trim();
+    }
+    return 'User';
   }
 }

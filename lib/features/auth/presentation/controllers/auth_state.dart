@@ -1,16 +1,36 @@
+enum AuthAction {
+  none,
+  login,
+  companyLogin,
+  register,
+  forgotPassword,
+  resetPassword,
+  verifyEmail,
+  verifyOtp,
+  googleLogin,
+  assignPassword,
+  resendVerification,
+  companySendOtp,
+  companyVerifyOtp,
+  companyRegister,
+  logout,
+}
+
 class AuthState {
   final bool isLoading;
   final bool isSuccess;
   final String? errorMessage;
   final String? message;
   final String? resetToken;
-  
+  final AuthAction action;
+
   const AuthState({
     required this.isLoading,
     required this.isSuccess,
     this.errorMessage,
     this.message,
     this.resetToken,
+    required this.action,
   });
 
   factory AuthState.initial() {
@@ -20,6 +40,7 @@ class AuthState {
       errorMessage: null,
       message: null,
       resetToken: null,
+      action: AuthAction.none,
     );
   }
 
@@ -29,6 +50,7 @@ class AuthState {
     String? errorMessage,
     String? message,
     String? resetToken,
+    AuthAction? action,
   }) {
     return AuthState(
       isLoading: isLoading ?? this.isLoading,
@@ -36,6 +58,7 @@ class AuthState {
       errorMessage: errorMessage,
       message: message,
       resetToken: resetToken,
+      action: action ?? this.action,
     );
   }
 }

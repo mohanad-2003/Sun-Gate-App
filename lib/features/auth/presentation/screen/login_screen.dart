@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
+import 'package:sun_gate_app/features/auth/presentation/controllers/auth_state.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/password_visiablity_controller.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auht_text_field.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_back_button.dart';
@@ -14,6 +15,7 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_outline_goo
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_body.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/langauge_switcher.dart';
+import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -44,7 +46,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
 
     ref.listen(authControllerProvider, (previous, next) async {
-      if (next.isSuccess && mounted) {
+      if (next.action == AuthAction.login && next.isSuccess && mounted) {
+        await ref.read(profileControllerProvider.notifier).getMyProfile();
+        if (!mounted) return;
+        context.go(RouteNames.main);
+        return;
+      }
+
+      if (next.action == AuthAction.companyLogin && next.isSuccess && mounted) {
+        await ref.read(profileControllerProvider.notifier).getMyProfile();
+        if (!mounted) return;
+        context.go(RouteNames.main);
+        return;
+      }
+
+      if (next.action == AuthAction.googleLogin && next.isSuccess && mounted) {
         context.go(RouteNames.main);
       }
     });

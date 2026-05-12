@@ -6,6 +6,7 @@ import 'package:sun_gate_app/app/localization/local_provider.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/core/theme/theme_mode_provider.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/logout_conformation_dialog.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/profile_header_card.dart';
@@ -25,6 +26,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     super.initState();
     Future.microtask(() {
       ref.read(profileControllerProvider.notifier).getMyProfile();
+      ref.read(marketPlaceControllerProvider.notifier).getMyCompany();
     });
   }
 
@@ -92,6 +94,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileControllerProvider);
     final profile = profileState.profile;
+    final marketState = ref.watch(marketPlaceControllerProvider);
+    final myCompany = marketState.myCompany;
     final currentThemeMode = ref.watch(appThemeModeProvider);
     final isDarkMode = currentThemeMode == ThemeMode.dark;
     final loc = AppLocalizations.of(context)!;
@@ -136,9 +140,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           imageUrl: profile.imageUrl?.isNotEmpty == true
                               ? profile.imageUrl
                               : profile.profileImage?.isNotEmpty == true
-                              ? profile.profileImage
-                              : profileState.googlePhoto,
+                                    ? profile.profileImage
+                                    : profileState.googlePhoto,
                           onEditTap: () => context.push(RouteNames.userInfo),
+                        )
+                      else if (myCompany != null)
+                        ProfileHeaderCard(
+                          name: myCompany.companyName.isNotEmpty
+                              ? myCompany.companyName
+                              : myCompany.ownerName,
+                          email: myCompany.email.isNotEmpty
+                              ? myCompany.email
+                              : loc.userEmail,
+                          imageUrl: myCompany.logo,
+                          onEditTap: null,
                         )
                       else
                         ProfileHeaderCard(
@@ -217,7 +232,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
                       const SizedBox(height: 24),
 
-                      if (profileState.errorMessage != null &&
+                      if (myCompany == null &&
+                          profileState.errorMessage != null &&
                           profileState.errorMessage!.isNotEmpty)
                         Container(
                           width: double.infinity,

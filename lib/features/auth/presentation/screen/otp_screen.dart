@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
+import 'package:sun_gate_app/features/auth/presentation/controllers/auth_state.dart';
 import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_back_button.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_header.dart';
@@ -93,6 +94,14 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
     ref.listen(authControllerProvider, (previous, next) {
+      final expectedAction = switch (widget.flowType) {
+        OtpFlowType.verifyEmail => AuthAction.verifyEmail,
+        OtpFlowType.resetPassword => AuthAction.verifyOtp,
+        OtpFlowType.companyRegistration => AuthAction.companyVerifyOtp,
+      };
+
+      if (next.action != expectedAction) return;
+
       if (next.errorMessage != null) {
         _isVerifyingOtp = false;
         return;

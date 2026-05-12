@@ -36,7 +36,9 @@ class UserProfileEntity {
   });
   String get displasyName {
     if (fullName.trim().isNotEmpty) return fullName;
-    return '$firstName, $lastName'.trim();
+    final combined = '$firstName $lastName'.trim();
+    if (combined.isNotEmpty) return combined;
+    return email;
   }
   
   UserProfileEntity copyWith({
