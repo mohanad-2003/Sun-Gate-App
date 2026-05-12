@@ -46,24 +46,39 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
     super.dispose();
   }
 
-  Future<void> _pickDocument() async {
-    final image = await _imagePicker.pickImage(source: ImageSource.gallery);
-    if (image == null) return;
+  bool _isPickingDocument = false;
+  bool _isPickingLogo = false;
 
-    setState(() {
-      documentPath = image.path;
-      documentName = image.name;
-    });
+  Future<void> _pickDocument() async {
+    if (_isPickingDocument) return; // ← امنع الضغط المزدوج
+    _isPickingDocument = true;
+
+    try {
+      final image = await _imagePicker.pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+      setState(() {
+        documentPath = image.path;
+        documentName = image.name;
+      });
+    } finally {
+      _isPickingDocument = false;
+    }
   }
 
   Future<void> _pickLogo() async {
-    final image = await _imagePicker.pickImage(source: ImageSource.gallery);
-    if (image == null) return;
+    if (_isPickingLogo) return; // ← امنع الضغط المزدوج
+    _isPickingLogo = true;
 
-    setState(() {
-      logoPath = image.path;
-      logoName = image.name;
-    });
+    try {
+      final image = await _imagePicker.pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+      setState(() {
+        logoPath = image.path;
+        logoName = image.name;
+      });
+    } finally {
+      _isPickingLogo = false;
+    }
   }
 
   Future<void> _pickLocation() async {
@@ -154,7 +169,7 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
           AuthBackButton(onTap: () => context.go(RouteNames.accountType)),
           const SizedBox(height: 4),
           Text(
-            'Sign up',
+            loc.companySignUpTitle,
             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
           ),
           const SizedBox(height: 28),
@@ -162,7 +177,7 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
             child: Column(
               children: [
                 Text(
-                  'Complete Your account',
+                  loc.companySignUpSubtitle,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -171,7 +186,7 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Horem ipsum dolor sit amet',
+                  loc.companySignUpSubtitle,
                   style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   textAlign: TextAlign.center,
                 ),
@@ -182,14 +197,14 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
           AuthTextField(
             controller: companyNameController,
             label: loc.companyName,
-            hintText: 'Enter Company Name',
+            hintText: loc.enterCompanyName,
             onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 14),
           AuthTextField(
             controller: ownerNameController,
-            label: 'Owner name',
-            hintText: 'Enter owner name',
+            label: loc.firstName,
+            hintText: loc.enterFirstName,
             onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 14),
@@ -205,8 +220,8 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
             controller: locationController,
             readOnly: true,
             decoration: InputDecoration(
-              labelText: 'Current Location',
-              hintText: 'Enter Current Location',
+              labelText: loc.location,
+              hintText: loc.enterLocation,
               suffixIcon: const Icon(Icons.location_on_outlined),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
@@ -222,7 +237,7 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
           AuthTextField(
             controller: establishmentDateController,
             label: loc.establishmentDate,
-            hintText: 'Choose date',
+            hintText: loc.chooseDate,
             readOnly: true,
             onTap: _pickDate,
             suffixIcon: IconButton(
@@ -232,16 +247,16 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
           ),
           const SizedBox(height: 14),
           _UploadField(
-            label: 'Document',
+            label: loc.documentUploadLabel,
             value: documentName,
-            emptyText: 'Drag & Drop or choose document',
+            emptyText: loc.chooseFile,
             onTap: _pickDocument,
           ),
           const SizedBox(height: 12),
           _UploadField(
-            label: 'Company logo',
+            label: loc.logoUploadLabel,
             value: logoName,
-            emptyText: 'Choose company logo',
+            emptyText: loc.chooseFile,
             onTap: _pickLogo,
           ),
           const SizedBox(height: 12),
@@ -276,7 +291,7 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
           ],
           const SizedBox(height: 16),
           AuthPrimaryButton(
-            text: 'Continue',
+            text: loc.continues,
             isLoading: state.isLoading,
             onPressed:
                 acceptPolicy &&
@@ -302,9 +317,7 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
                     }
                     if (ownerNameController.text.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please enter the owner name'),
-                        ),
+                        SnackBar(content: Text(loc.pleaseEnterFirstName)),
                       );
                       return;
                     }

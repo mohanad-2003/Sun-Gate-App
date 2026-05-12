@@ -76,7 +76,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AuthBackButton(onTap: () => context.go('/login')),
+                  AuthBackButton(onTap: () => context.go('/account-type')),
                   const LanguageSwitcherButton(),
                 ],
               ),
