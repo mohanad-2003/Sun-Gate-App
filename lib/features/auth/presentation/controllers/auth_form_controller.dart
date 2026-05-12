@@ -546,4 +546,28 @@ class AuthFormController extends StateNotifier<AuthState> {
       );
     }
   }
+
+  Future<void> deleteAccount() async {
+    state = state.copyWith(
+      isLoading: true,
+      isSuccess: false,
+      errorMessage: null,
+      action: AuthAction.deleteAccount,
+    );
+    try {
+      await repository.deleteAccount();
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: true,
+        action: AuthAction.deleteAccount,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: false,
+        errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        action: AuthAction.deleteAccount,
+      );
+    }
+  }
 }

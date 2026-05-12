@@ -452,5 +452,12 @@
   "celsius": "°C",
   "degree": "°",
   "panel": "panel",
-  "years": "years"
+  "years": "years",
+  "deleteAccount": "Delete Account",
+  "deleteAccountPermanently": "Delete Account Permanently",
+  "deleteAccountWarning": "This action cannot be undone. Your account and all your data will be permanently deleted.",
+  "deleteAccountPostsWarning": "Delete Account Post Warning",
+  "dangerZone": "Danger Zone",
+  "dangerZoneDescription": "Danger Zone Description",
+  "confirmDelete": "Confirm Delete"
 }

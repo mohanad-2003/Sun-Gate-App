@@ -232,13 +232,10 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                   );
 
                   if (date != null) {
-                    // ❌ حذفنا formatting من UI
-                    // ✔ صار في UseCase داخل Controller
                     ref
                         .read(profileControllerProvider.notifier)
                         .updateBirthDate(date);
 
-                    // تحديث UI مباشرة
                     final month = date.month.toString().padLeft(2, '0');
                     final day = date.day.toString().padLeft(2, '0');
 
@@ -248,7 +245,6 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                   }
                 },
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.calendar_today_outlined),
                   suffixIcon: const Icon(Icons.edit_calendar),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -265,7 +261,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                   Expanded(
                     child: TextField(
                       controller: locationController,
-                      maxLines: 2,
+                      maxLines: 1,
                       readOnly: true,
                       decoration: InputDecoration(
                         hintText: loc.location,

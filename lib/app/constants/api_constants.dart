@@ -40,4 +40,5 @@ class ApiConstants {
   static String updateReservations(String reservationId) =>
       '/api/reservations/$reservationId';
   static const String products = '/api/products';
+  static const String deleteAccount = '/api/users/me';
 }

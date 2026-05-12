@@ -6,6 +6,7 @@ import 'package:sun_gate_app/app/localization/local_provider.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/core/theme/theme_mode_provider.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
+import 'package:sun_gate_app/features/auth/presentation/controllers/auth_state.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/logout_conformation_dialog.dart';
@@ -64,9 +65,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       : null,
                   onTap: () async {
                     await ref.read(appLocaleProvider.notifier).setEnglish();
-                    if (context.mounted) {
-                      Navigator.pop(context);
-                    }
+                    if (context.mounted) Navigator.pop(context);
                   },
                 ),
                 ListTile(
@@ -77,9 +76,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       : null,
                   onTap: () async {
                     await ref.read(appLocaleProvider.notifier).setArabic();
-                    if (context.mounted) {
-                      Navigator.pop(context);
-                    }
+                    if (context.mounted) Navigator.pop(context);
                   },
                 ),
               ],
@@ -87,6 +84,130 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         );
       },
+    );
+  }
+
+  void _showDeleteAccountDialog(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations appLocal,
+  ) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.6),
+      builder: (_) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: Colors.red.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.delete_forever_rounded,
+                  color: Colors.red,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                appLocal.deleteAccountPermanently,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                appLocal.deleteAccountWarning,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey.shade600,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: Colors.orange.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline_rounded,
+                      size: 16,
+                      color: Colors.orange.shade700,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        appLocal.deleteAccountPostsWarning,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.orange.shade700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(appLocal.cancel),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        await ref
+                            .read(authControllerProvider.notifier)
+                            .deleteAccount();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        appLocal.confirmDelete,
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -105,15 +226,44 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ? loc.arabic
         : loc.english;
 
+    // مراقبة حالة حذف الحساب
+    ref.listen(authControllerProvider, (prev, next) {
+      if (next.isSuccess && next.action == AuthAction.deleteAccount) {
+        context.go(RouteNames.login);
+      }
+      if (next.errorMessage != null &&
+          next.action == AuthAction.deleteAccount &&
+          !(prev?.errorMessage == next.errorMessage)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white, size: 18),
+                const SizedBox(width: 8),
+                Expanded(child: Text(next.errorMessage!)),
+              ],
+            ),
+            backgroundColor: Colors.red.shade700,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        );
+      }
+    });
+
+    final authState = ref.watch(authControllerProvider);
+    final isDeleting =
+        authState.isLoading && authState.action == AuthAction.deleteAccount;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () {
-            context.pop();
-          },
+          onPressed: () => context.pop(),
         ),
         title: Text(loc.profile),
         centerTitle: true,
@@ -140,8 +290,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           imageUrl: profile.imageUrl?.isNotEmpty == true
                               ? profile.imageUrl
                               : profile.profileImage?.isNotEmpty == true
-                                    ? profile.profileImage
-                                    : profileState.googlePhoto,
+                              ? profile.profileImage
+                              : profileState.googlePhoto,
                           onEditTap: () => context.push(RouteNames.userInfo),
                         )
                       else if (myCompany != null)
@@ -254,6 +404,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
                       const SizedBox(height: 40),
 
+                      // ── زر تسجيل الخروج ──
                       SizedBox(
                         width: double.infinity,
                         child: OutlinedButton(
@@ -263,11 +414,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               builder: (_) => LogoutConfirmationDialog(
                                 onConfirm: () async {
                                   Navigator.of(context).pop();
-
                                   await ref
                                       .read(authControllerProvider.notifier)
                                       .logout();
-
                                   if (context.mounted) {
                                     context.go(RouteNames.login);
                                   }
@@ -278,6 +427,123 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           child: Text(loc.logOut),
                         ),
                       ),
+
+                      const SizedBox(height: 12),
+
+                      // ── فاصل ──
+                      Divider(
+                        color: Colors.red.withValues(alpha: 0.15),
+                        thickness: 1,
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      // ── قسم الخطر ──
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withValues(alpha: 0.04),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.red.withValues(alpha: 0.15),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.warning_amber_rounded,
+                                  color: Colors.red.shade400,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  loc.dangerZone,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.red.shade400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              loc.dangerZoneDescription,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade500,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: double.infinity,
+                              child: isDeleting
+                                  ? OutlinedButton(
+                                      onPressed: null,
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.red,
+                                        side: const BorderSide(
+                                          color: Colors.red,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 12,
+                                        ),
+                                      ),
+                                      child: const SizedBox(
+                                        height: 18,
+                                        width: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    )
+                                  : OutlinedButton.icon(
+                                      onPressed: () => _showDeleteAccountDialog(
+                                        context,
+                                        ref,
+                                        loc,
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.red,
+                                        side: const BorderSide(
+                                          color: Colors.red,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 12,
+                                        ),
+                                      ),
+                                      icon: const Icon(
+                                        Icons.delete_outline_rounded,
+                                        size: 18,
+                                      ),
+                                      label: Text(
+                                        loc.deleteAccount,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),

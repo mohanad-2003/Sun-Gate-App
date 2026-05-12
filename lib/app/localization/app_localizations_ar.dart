@@ -1390,4 +1390,27 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get years => 'سنوات';
+
+  @override
+  String get deleteAccount => 'حذف الحساب';
+
+  @override
+  String get deleteAccountPermanently => 'حذف الحساب نهائيا';
+
+  @override
+  String get deleteAccountWarning =>
+      'هذا الإجراء لا يمكن التراجع عنه. سيتم حذف حسابك وجميع بياناتك بشكل دائم.';
+
+  @override
+  String get deleteAccountPostsWarning => 'تأكد من حذف منتجاتك ومنشوراتك أولاً';
+
+  @override
+  String get dangerZone => 'منطقة الخطر';
+
+  @override
+  String get dangerZoneDescription =>
+      'حذف الحساب إجراء دائم ولا يمكن التراجع عنه.';
+
+  @override
+  String get confirmDelete => 'نعم,احذف';
 }

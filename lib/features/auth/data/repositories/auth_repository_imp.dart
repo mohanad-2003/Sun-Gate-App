@@ -233,4 +233,10 @@ class AuthRepositoryImpl implements AuthRepository {
 
     return result;
   }
+
+  @override
+  Future<void> deleteAccount() async {
+    await remoteDataSource.deleteAccount();
+    await localDataSource.clearSession();
+  }
 }

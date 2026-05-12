@@ -447,5 +447,12 @@
   "celsius": "°م",
   "degree": "°",
   "panel": "لوح",
-  "years": "سنوات"
+  "years": "سنوات",
+  "deleteAccount": "حذف الحساب",
+  "deleteAccountPermanently": "حذف الحساب نهائيا",
+  "deleteAccountWarning": "هذا الإجراء لا يمكن التراجع عنه. سيتم حذف حسابك وجميع بياناتك بشكل دائم.",
+  "deleteAccountPostsWarning": "تأكد من حذف منتجاتك ومنشوراتك أولاً",
+  "dangerZone": "منطقة الخطر",
+  "dangerZoneDescription": "حذف الحساب إجراء دائم ولا يمكن التراجع عنه.",
+  "confirmDelete": "نعم,احذف"
 }

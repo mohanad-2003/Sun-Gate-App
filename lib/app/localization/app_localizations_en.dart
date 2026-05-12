@@ -1399,4 +1399,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get years => 'years';
+
+  @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get deleteAccountPermanently => 'Delete Account Permanently';
+
+  @override
+  String get deleteAccountWarning =>
+      'This action cannot be undone. Your account and all your data will be permanently deleted.';
+
+  @override
+  String get deleteAccountPostsWarning => 'Delete Account Post Warning';
+
+  @override
+  String get dangerZone => 'Danger Zone';
+
+  @override
+  String get dangerZoneDescription => 'Danger Zone Description';
+
+  @override
+  String get confirmDelete => 'Confirm Delete';
 }

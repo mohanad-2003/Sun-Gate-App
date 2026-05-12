@@ -40,6 +40,7 @@ abstract class AuthRemoteDataSource {
   );
   Future<AuthResponseModel> companyRegister(FormData formData);
   Future<AuthResponseModel> companyLogin(LoginRequestDto request);
+  Future<void> deleteAccount();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -550,6 +551,38 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
 
       throw Exception('Company login failed');
+    }
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    try {
+      await dio.delete(ApiConstants.deleteAccount);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final message = data is Map<String, dynamic>
+          ? data['message']?.toString()
+          : null;
+
+      if (e.response?.statusCode == 401) {
+        throw Exception('Authentication required');
+      }
+
+      if (e.response?.statusCode == 403) {
+        throw Exception(
+          message ?? 'Remove your posts before deleting your account',
+        );
+      }
+
+      if (e.response?.statusCode == 404) {
+        throw Exception('User not found');
+      }
+
+      if (message != null && message.isNotEmpty) {
+        throw Exception(message);
+      }
+
+      throw Exception('Delete account failed');
     }
   }
 }
