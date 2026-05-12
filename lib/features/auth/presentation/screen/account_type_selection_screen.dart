@@ -19,23 +19,23 @@ class AccountTypeSelectionScreen extends ConsumerWidget {
         children: [
           Align(
             alignment: AlignmentDirectional.centerStart,
-            child: AuthBackButton(onTap: () => context.go(RouteNames.onboarding)),
+            child: AuthBackButton(onTap: () => context.go(RouteNames.login)),
           ),
           const SizedBox(height: 70),
-          const Text(
-            'Create a new account',
+          Text(
+            loc.selectAccountTypeTitle,
             textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Sun Gate Welcome you',
+          Text(
+            loc.selectAccountTypeSubtitle,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: Colors.black54),
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
           ),
           const SizedBox(height: 48),
           _AccountTypeButton(
-            title: 'As User',
+            title: loc.userAccount,
             isPrimary: true,
             onTap: () => context.push(RouteNames.signUp),
           ),
@@ -55,7 +55,7 @@ class AccountTypeSelectionScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 24),
           _AccountTypeButton(
-            title: 'As Company',
+            title: loc.companyAccount,
             isPrimary: false,
             onTap: () => context.push(RouteNames.companySignUp),
           ),

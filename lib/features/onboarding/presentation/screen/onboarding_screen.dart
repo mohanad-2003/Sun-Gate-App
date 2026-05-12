@@ -65,7 +65,7 @@ class OnboardingScreen extends ConsumerWidget {
     }
 
     void getStarted() {
-      context.go(RouteNames.accountType);
+      context.go(RouteNames.login);
     }
 
     return AppScaffold(

@@ -26,7 +26,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  bool _isCompanyLogin = false;
 
   @override
   void dispose() {
@@ -40,8 +39,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final state = ref.watch(authControllerProvider);
     final isVisible = ref.watch(loginPasswordVisiableProvider);
     final loc = AppLocalizations.of(context)!;
-    final isPendingCompanyReview =
-        _isCompanyLogin && _isPendingCompanyReviewMessage(state.errorMessage);
+    final isPendingCompanyReview = _isPendingCompanyReviewMessage(
+      state.errorMessage,
+    );
 
     ref.listen(authControllerProvider, (previous, next) async {
       if (next.isSuccess && mounted) {
@@ -73,27 +73,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             const SizedBox(height: 24),
             AuthHeader(
-              title: _isCompanyLogin
-                  ? 'Company portal login'
-                  : loc.loginWelcomeTitle,
-              subtitle: _isCompanyLogin
-                  ? 'Sign in with your approved company account.'
-                  : loc.loginWelcomeSubtitle,
+              title: loc.loginWelcomeTitle,
+              subtitle: loc.loginWelcomeSubtitle,
             ),
             const SizedBox(height: 38),
-            SegmentedButton<bool>(
-              segments: const [
-                ButtonSegment(value: false, label: Text('User')),
-                ButtonSegment(value: true, label: Text('Company')),
-              ],
-              selected: {_isCompanyLogin},
-              onSelectionChanged: (value) {
-                setState(() {
-                  _isCompanyLogin = value.first;
-                });
-              },
-            ),
-            const SizedBox(height: 18),
             AuthTextField(
               controller: emailController,
               label: loc.emailAddress,
@@ -137,57 +120,47 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               isLoading: state.isLoading,
               onPressed: () {
                 final controller = ref.read(authControllerProvider.notifier);
-
-                if (_isCompanyLogin) {
-                  controller.companyLogin(
-                    email: emailController.text,
-                    password: passwordController.text,
-                  );
-                } else {
-                  controller.login(
-                    email: emailController.text,
-                    password: passwordController.text,
-                  );
-                }
+                controller.login(
+                  email: emailController.text,
+                  password: passwordController.text,
+                );
               },
             ),
-            if (!_isCompanyLogin) ...[
-              const SizedBox(height: 22),
-              const AuthDivider(),
-              const SizedBox(height: 22),
-              AuthOutlineGoogleButton(
-                onPressed: () async {
-                  final googleService = ref.read(googleAuthServiceProvider);
-                  final account = await googleService.signIn();
+            const SizedBox(height: 22),
+            const AuthDivider(),
+            const SizedBox(height: 22),
+            AuthOutlineGoogleButton(
+              onPressed: () async {
+                final googleService = ref.read(googleAuthServiceProvider);
+                final account = await googleService.signIn();
 
-                  if (account == null) {
-                    if (!context.mounted) return;
+                if (account == null) {
+                  if (!context.mounted) return;
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(loc.googleSignInFailed)),
-                    );
-                    return;
-                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(loc.googleSignInFailed)),
+                  );
+                  return;
+                }
 
-                  final auth = account.authentication;
-                  final idToken = auth.idToken;
-                  final photo = account.photoUrl;
+                final auth = account.authentication;
+                final idToken = auth.idToken;
+                final photo = account.photoUrl;
 
-                  if (idToken == null) {
-                    if (!context.mounted) return;
+                if (idToken == null) {
+                  if (!context.mounted) return;
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(loc.googleSignInFailed)),
-                    );
-                    return;
-                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(loc.googleSignInFailed)),
+                  );
+                  return;
+                }
 
-                  await ref
-                      .read(authControllerProvider.notifier)
-                      .googleLogin(idToken: idToken, ref: ref, photoUrl: photo);
-                },
-              ),
-            ],
+                await ref
+                    .read(authControllerProvider.notifier)
+                    .googleLogin(idToken: idToken, ref: ref, photoUrl: photo);
+              },
+            ),
             const SizedBox(height: 28),
             AuthBottomLink(
               text: loc.dontHaveAccount,
