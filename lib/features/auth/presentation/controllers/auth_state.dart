@@ -14,6 +14,7 @@ enum AuthAction {
   companyVerifyOtp,
   companyRegister,
   logout,
+  deleteAccount
 }
 
 class AuthState {

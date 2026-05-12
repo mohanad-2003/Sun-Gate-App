@@ -318,10 +318,16 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                 email: widget.email,
                 password: password,
               );
+              if (!mounted) return;
+
               await ref.read(profileControllerProvider.notifier).getMyProfile();
+              if (!mounted) return;
+
               await ref
                   .read(marketPlaceControllerProvider.notifier)
                   .getProducts();
+              if (!mounted) return;
+
               final loginState = ref.read(authControllerProvider);
 
               if (loginState.isSuccess && context.mounted) {
