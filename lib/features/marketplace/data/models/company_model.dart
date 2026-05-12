@@ -3,7 +3,9 @@ import 'package:sun_gate_app/features/marketplace/domain/entities/company_entity
 class CompanyModel extends CompanyEntity {
   const CompanyModel({
     required super.id,
+    required super.companyName,
     required super.ownerName,
+    required super.email,
     required super.address,
     required super.phone,
     super.logo,
@@ -14,7 +16,9 @@ class CompanyModel extends CompanyEntity {
   factory CompanyModel.fromJson(Map<String, dynamic> json) {
     return CompanyModel(
       id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
+      companyName: json['companyName']?.toString() ?? '',
       ownerName: json['ownerName']?.toString() ?? '',
+      email: json['email']?.toString() ?? '',
       address: json['address']?.toString() ?? '',
       phone: json['phone']?.toString() ?? '',
       logo: json['logo']?.toString(),

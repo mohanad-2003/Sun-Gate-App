@@ -38,17 +38,26 @@ class AuthFormController extends StateNotifier<AuthState> {
       isLoading: true,
       errorMessage: null,
       isSuccess: false,
+      action: AuthAction.login,
     );
 
     try {
       await repository.login(email: email, password: password);
-      state = state.copyWith(isLoading: false, isSuccess: true);
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: true,
+        action: AuthAction.login,
+      );
     } catch (e) {
       final errorMessage = e.toString().replaceFirst('Exception: ', '');
       if (_shouldTryCompanyLogin(errorMessage)) {
         try {
           await repository.companyLogin(email: email, password: password);
-          state = state.copyWith(isLoading: false, isSuccess: true);
+          state = state.copyWith(
+            isLoading: false,
+            isSuccess: true,
+            action: AuthAction.companyLogin,
+          );
           return;
         } catch (companyError) {
           state = state.copyWith(
@@ -58,6 +67,7 @@ class AuthFormController extends StateNotifier<AuthState> {
               '',
             ),
             isSuccess: false,
+            action: AuthAction.companyLogin,
           );
           return;
         }
@@ -67,6 +77,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isLoading: false,
         errorMessage: errorMessage,
         isSuccess: false,
+        action: AuthAction.login,
       );
     }
   }
@@ -88,16 +99,22 @@ class AuthFormController extends StateNotifier<AuthState> {
       isLoading: true,
       errorMessage: null,
       isSuccess: false,
+      action: AuthAction.companyLogin,
     );
 
     try {
       await repository.companyLogin(email: email, password: password);
-      state = state.copyWith(isLoading: false, isSuccess: true);
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: true,
+        action: AuthAction.companyLogin,
+      );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
         isSuccess: false,
+        action: AuthAction.companyLogin,
       );
     }
   }
@@ -115,6 +132,7 @@ class AuthFormController extends StateNotifier<AuthState> {
       errorMessage: null,
       isSuccess: false,
       message: null,
+      action: AuthAction.register,
     );
 
     try {
@@ -132,6 +150,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: true,
         errorMessage: null,
         message: result.message,
+        action: AuthAction.register,
       );
     } catch (e) {
       state = state.copyWith(
@@ -139,6 +158,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
         message: null,
+        action: AuthAction.register,
       );
     }
   }
@@ -149,6 +169,7 @@ class AuthFormController extends StateNotifier<AuthState> {
       errorMessage: null,
       isSuccess: false,
       message: null,
+      action: AuthAction.forgotPassword,
     );
 
     try {
@@ -159,6 +180,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: true,
         errorMessage: null,
         message: message,
+        action: AuthAction.forgotPassword,
       );
     } catch (e) {
       state = state.copyWith(
@@ -166,6 +188,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
         message: null,
+        action: AuthAction.forgotPassword,
       );
     }
   }
@@ -179,6 +202,7 @@ class AuthFormController extends StateNotifier<AuthState> {
       errorMessage: null,
       isSuccess: false,
       message: null,
+      action: AuthAction.resetPassword,
     );
 
     try {
@@ -192,6 +216,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: true,
         errorMessage: null,
         message: message,
+        action: AuthAction.resetPassword,
       );
     } catch (e) {
       state = state.copyWith(
@@ -199,6 +224,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
         message: null,
+        action: AuthAction.resetPassword,
       );
     }
   }
@@ -212,6 +238,7 @@ class AuthFormController extends StateNotifier<AuthState> {
       errorMessage: null,
       isSuccess: false,
       message: null,
+      action: AuthAction.verifyEmail,
     );
 
     try {
@@ -222,6 +249,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: true,
         errorMessage: null,
         message: message,
+        action: AuthAction.verifyEmail,
       );
     } catch (e) {
       state = state.copyWith(
@@ -229,6 +257,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
         message: null,
+        action: AuthAction.verifyEmail,
       );
     }
   }
@@ -240,6 +269,7 @@ class AuthFormController extends StateNotifier<AuthState> {
       errorMessage: null,
       message: null,
       resetToken: null,
+      action: AuthAction.verifyOtp,
     );
 
     try {
@@ -250,6 +280,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: true,
         errorMessage: null,
         resetToken: token,
+        action: AuthAction.verifyOtp,
       );
     } catch (e) {
       state = state.copyWith(
@@ -257,6 +288,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
         resetToken: null,
+        action: AuthAction.verifyOtp,
       );
     }
   }
@@ -270,6 +302,7 @@ class AuthFormController extends StateNotifier<AuthState> {
       isLoading: true,
       errorMessage: null,
       isSuccess: false,
+      action: AuthAction.googleLogin,
     );
 
     try {
@@ -283,11 +316,13 @@ class AuthFormController extends StateNotifier<AuthState> {
         isLoading: false,
         isSuccess: true,
         message: 'Google login successful',
+        action: AuthAction.googleLogin,
       );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        action: AuthAction.googleLogin,
       );
     }
   }
@@ -296,7 +331,12 @@ class AuthFormController extends StateNotifier<AuthState> {
     required String email,
     required String password,
   }) async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      isSuccess: false,
+      action: AuthAction.assignPassword,
+    );
 
     try {
       final message = await repository.assignPassword(
@@ -308,18 +348,26 @@ class AuthFormController extends StateNotifier<AuthState> {
         isLoading: false,
         isSuccess: true,
         message: message,
+        action: AuthAction.assignPassword,
       );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         isSuccess: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        action: AuthAction.assignPassword,
       );
     }
   }
 
   Future<void> logout() async {
-    state = state.copyWith(isLoading: true, errorMessage: null, message: null);
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      message: null,
+      isSuccess: false,
+      action: AuthAction.logout,
+    );
 
     try {
       await repository.logout();
@@ -327,11 +375,13 @@ class AuthFormController extends StateNotifier<AuthState> {
       state = state.copyWith(
         isLoading: false,
         message: 'Logged out successfully',
+        action: AuthAction.logout,
       );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        action: AuthAction.logout,
       );
     }
 
@@ -340,11 +390,13 @@ class AuthFormController extends StateNotifier<AuthState> {
       state = state.copyWith(
         isLoading: false,
         message: 'Logged out Successfully',
+        action: AuthAction.logout,
       );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        action: AuthAction.logout,
       );
     }
   }
@@ -355,6 +407,7 @@ class AuthFormController extends StateNotifier<AuthState> {
       errorMessage: null,
       isSuccess: false,
       message: null,
+      action: AuthAction.resendVerification,
     );
 
     try {
@@ -365,6 +418,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: true,
         errorMessage: null,
         message: message,
+        action: AuthAction.resendVerification,
       );
     } catch (e) {
       state = state.copyWith(
@@ -372,6 +426,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
         message: null,
+        action: AuthAction.resendVerification,
       );
     }
   }
@@ -382,6 +437,7 @@ class AuthFormController extends StateNotifier<AuthState> {
       errorMessage: null,
       isSuccess: false,
       message: null,
+      action: AuthAction.companySendOtp,
     );
 
     try {
@@ -392,6 +448,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: true,
         errorMessage: null,
         message: message,
+        action: AuthAction.companySendOtp,
       );
     } catch (e) {
       state = state.copyWith(
@@ -399,6 +456,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
         message: null,
+        action: AuthAction.companySendOtp,
       );
     }
   }
@@ -413,6 +471,7 @@ class AuthFormController extends StateNotifier<AuthState> {
       errorMessage: null,
       message: null,
       resetToken: null,
+      action: AuthAction.companyVerifyOtp,
     );
 
     try {
@@ -423,6 +482,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: true,
         errorMessage: null,
         resetToken: token,
+        action: AuthAction.companyVerifyOtp,
       );
     } catch (e) {
       state = state.copyWith(
@@ -430,6 +490,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
         resetToken: null,
+        action: AuthAction.companyVerifyOtp,
       );
     }
   }
@@ -451,6 +512,7 @@ class AuthFormController extends StateNotifier<AuthState> {
       errorMessage: null,
       isSuccess: false,
       message: null,
+      action: AuthAction.companyRegister,
     );
 
     try {
@@ -472,6 +534,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: true,
         errorMessage: null,
         message: result.message,
+        action: AuthAction.companyRegister,
       );
     } catch (e) {
       state = state.copyWith(
@@ -479,6 +542,7 @@ class AuthFormController extends StateNotifier<AuthState> {
         isSuccess: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
         message: null,
+        action: AuthAction.companyRegister,
       );
     }
   }

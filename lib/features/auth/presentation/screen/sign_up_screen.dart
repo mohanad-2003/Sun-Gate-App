@@ -6,6 +6,7 @@ import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/core/services/location_helper_service.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
+import 'package:sun_gate_app/features/auth/presentation/controllers/auth_state.dart';
 import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auht_text_field.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_back_button.dart';
@@ -33,6 +34,79 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   bool acceptPolicy = false;
   bool obscurePassword = true;
 
+  String _localizedAuthError(String? message, AppLocalizations loc) {
+    if (message == null || message.trim().isEmpty) return '';
+
+    final normalized = message.toLowerCase();
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+
+    if (normalized.contains('cannot create a user account and a company account with the same email')) {
+      return isArabic
+          ? 'هذا البريد الإلكتروني مستخدم بالفعل في حساب شركة. لا يمكنك إنشاء حساب مستخدم عادي وحساب شركة بنفس البريد.'
+          : message;
+    }
+
+    if (normalized.contains('email is already used by another account') ||
+        normalized.contains('email already exists') ||
+        normalized.contains('already linked to another account')) {
+      return isArabic
+          ? 'هذا البريد الإلكتروني مستخدم بالفعل في حساب آخر.'
+          : message;
+    }
+
+    return message;
+  }
+
+  Future<void> _pickBirthDate() async {
+    final currentDate =
+        DateTime.tryParse(birthDateController.text) ?? DateTime.now();
+    final date = await showDatePicker(
+      context: context,
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
+      initialDate: currentDate,
+    );
+
+    if (date == null || !mounted) return;
+
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+
+    setState(() {
+      birthDateController.text = "${date.year}-$month-$day";
+    });
+  }
+
+  Future<void> _pickLocation() async {
+    final loc = AppLocalizations.of(context)!;
+
+    try {
+      final location = await LocationHelper.getCurrentLocationName();
+      if (!mounted) return;
+
+      setState(() {
+        locationController.text = location;
+      });
+    } catch (e) {
+      final message = e.toString();
+
+      if (message.contains('disabled')) {
+        await Geolocator.openLocationSettings();
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(loc.enableGpsMessage)));
+      } else if (message.contains('permission')) {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(loc.locationPermissionMessage)),
+        );
+      }
+    }
+  }
+
   @override
   void dispose() {
     firstNameController.dispose();
@@ -48,12 +122,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(authControllerProvider);
     final loc = AppLocalizations.of(context)!;
-    final locationText = locationController.text;
 
     ref.listen(authControllerProvider, (previous, next) {
       if (!context.mounted) return;
 
-      if (next.isSuccess) {
+      if (next.action == AuthAction.register && next.isSuccess) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(loc.registrationSuccess)));
@@ -83,21 +156,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             ],
           ),
           const SizedBox(height: 4),
-
           Text(
             loc.signUpTitle,
             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
           ),
-
           const SizedBox(height: 26),
-
           AuthHeader(
             title: loc.completeAccountTitle,
             subtitle: loc.createNewAccount,
           ),
-
           const SizedBox(height: 26),
-
           Row(
             children: [
               Expanded(
@@ -119,9 +187,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               ),
             ],
           ),
-
           const SizedBox(height: 14),
-
           AuthTextField(
             controller: emailController,
             label: loc.emailAddress,
@@ -129,66 +195,37 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             keyboardType: TextInputType.emailAddress,
             onChanged: (_) => setState(() {}),
           ),
-
           const SizedBox(height: 14),
           AuthTextField(
             controller: birthDateController,
             label: loc.birthDate,
             hintText: loc.enterBirthDate,
             readOnly: true,
-            onTap: () async {
-              final date = await showDatePicker(
-                context: context,
-                firstDate: DateTime(1950),
-                lastDate: DateTime.now(),
-                initialDate: DateTime(2000),
-              );
-
-              if (date != null) {
-                final month = date.month.toString().padLeft(2, '0');
-                final day = date.day.toString().padLeft(2, '0');
-
-                birthDateController.text = "${date.year}-$month-$day";
-              }
-            },
+            onTap: _pickBirthDate,
+            suffixIcon: IconButton(
+              onPressed: _pickBirthDate,
+              icon: const Icon(Icons.calendar_today_outlined, size: 18),
+            ),
           ),
           const SizedBox(height: 14),
-
           TextFormField(
             controller: locationController,
             readOnly: true,
             decoration: InputDecoration(
               labelText: loc.location,
-              suffixIcon: const Icon(Icons.location_on),
+              hintText: loc.enterLocation,
+              suffixIcon: const Icon(Icons.location_on_outlined),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xFFE4E7EC)),
+              ),
             ),
-            onTap: () async {
-              try {
-                final location = await LocationHelper.getCurrentLocationName();
-                locationController.text = location;
-              } catch (e) {
-                print(e);
-
-                final message = e.toString();
-
-                if (message.contains('disabled')) {
-                  await Geolocator.openLocationSettings();
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('الرجاء تفعيل الموقع (GPS)')),
-                  );
-                } else if (message.contains('permission')) {
-                  if (!context.mounted) return;
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('الرجاء إعطاء إذن الموقع')),
-                  );
-                }
-              }
-            },
+            onTap: _pickLocation,
           ),
-
           const SizedBox(height: 12),
-
           CheckboxListTile(
             value: acceptPolicy,
             onChanged: (value) {
@@ -201,10 +238,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             title: Text(loc.acceptPolicy, style: const TextStyle(fontSize: 12)),
             controlAffinity: ListTileControlAffinity.leading,
           ),
-
           if (state.errorMessage != null) ...[
             const SizedBox(height: 8),
-
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
@@ -214,14 +249,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 border: Border.all(color: Colors.red.withValues(alpha: 0.20)),
               ),
               child: Text(
-                state.errorMessage!,
+                _localizedAuthError(state.errorMessage, loc),
                 style: const TextStyle(color: Colors.red, fontSize: 13),
               ),
             ),
           ],
-
           const SizedBox(height: 12),
-
           AuthPrimaryButton(
             text: loc.signUpTitle,
             isLoading: state.isLoading,
@@ -249,24 +282,19 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       );
                       return;
                     }
-                    ref
-                        .read(authControllerProvider.notifier)
-                        .register(
-                          firstName: firstNameController.text.trim(),
-                          lastName: lastNameController.text.trim(),
-                          email: emailController.text.trim(),
-                          birthDate: birthDateController.text.trim(),
-
-                          location: (locationText.isNotEmpty)
-                              ? locationText.trim()
-                              : null,
-                        );
+                    ref.read(authControllerProvider.notifier).register(
+                      firstName: firstNameController.text.trim(),
+                      lastName: lastNameController.text.trim(),
+                      email: emailController.text.trim(),
+                      birthDate: birthDateController.text.trim(),
+                      location: locationController.text.trim().isNotEmpty
+                          ? locationController.text.trim()
+                          : null,
+                    );
                   }
                 : null,
           ),
-
           const SizedBox(height: 20),
-
           AuthBottomLink(
             text: loc.alreadyHaveAccount,
             actionText: loc.login,

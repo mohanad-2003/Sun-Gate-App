@@ -7,6 +7,7 @@ import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/core/services/location_helper_service.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
+import 'package:sun_gate_app/features/auth/presentation/controllers/auth_state.dart';
 import 'package:sun_gate_app/features/auth/presentation/otp_flow_type.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auht_text_field.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_back_button.dart';
@@ -35,6 +36,29 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
   String? logoPath;
   bool _isSendingCompanyOtp = false;
   final _imagePicker = ImagePicker();
+
+  String _localizedAuthError(String? message, AppLocalizations loc) {
+    if (message == null || message.trim().isEmpty) return '';
+
+    final normalized = message.toLowerCase();
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+
+    if (normalized.contains('cannot create a company account and a user account with the same email')) {
+      return isArabic
+          ? 'هذا البريد الإلكتروني مستخدم بالفعل في حساب مستخدم عادي. لا يمكنك إنشاء حساب شركة وحساب مستخدم بنفس البريد.'
+          : message;
+    }
+
+    if (normalized.contains('email is already used by another account') ||
+        normalized.contains('email already exists') ||
+        normalized.contains('already linked to another account')) {
+      return isArabic
+          ? 'هذا البريد الإلكتروني مستخدم بالفعل في حساب آخر.'
+          : message;
+    }
+
+    return message;
+  }
 
   @override
   void dispose() {
@@ -66,7 +90,7 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
   }
 
   Future<void> _pickLogo() async {
-    if (_isPickingLogo) return; // ← امنع الضغط المزدوج
+    if (_isPickingLogo) return;
     _isPickingLogo = true;
 
     try {
@@ -134,6 +158,8 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
 
     ref.listen(authControllerProvider, (previous, next) {
       if (!_isSendingCompanyOtp) return;
+
+      if (next.action != AuthAction.companySendOtp) return;
 
       if (next.errorMessage != null) {
         _isSendingCompanyOtp = false;
@@ -284,7 +310,7 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
                 border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
               ),
               child: Text(
-                state.errorMessage!,
+                _localizedAuthError(state.errorMessage, loc),
                 style: const TextStyle(color: Colors.red, fontSize: 13),
               ),
             ),

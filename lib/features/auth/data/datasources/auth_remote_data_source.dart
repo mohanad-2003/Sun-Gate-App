@@ -47,6 +47,32 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   AuthRemoteDataSourceImpl({required this.dio});
 
+  String _mapCrossAccountEmailConflict(
+    String? message, {
+    required bool forCompanyFlow,
+  }) {
+    final normalized = message?.toLowerCase() ?? '';
+    final isConflict =
+        normalized.contains('email already exists') ||
+        normalized.contains('already exists') ||
+        normalized.contains('already registered') ||
+        normalized.contains('email is already') ||
+        normalized.contains('duplicate') ||
+        normalized.contains('used before');
+
+    if (!isConflict) {
+      return message?.isNotEmpty == true
+          ? message!
+          : (forCompanyFlow
+                ? 'This email is already linked to another account.'
+                : 'This email is already linked to another account.');
+    }
+
+    return forCompanyFlow
+        ? 'This email is already used by another account. You cannot create a company account and a user account with the same email.'
+        : 'This email is already used by another account. You cannot create a user account and a company account with the same email.';
+  }
+
   @override
   Future<AuthResponseModel> login(LoginRequestDto request) async {
     try {
@@ -118,9 +144,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       if (e.response?.statusCode == 409) {
         throw Exception(
-          data is Map<String, dynamic>
-              ? data['message']?.toString() ?? 'Email already exists'
-              : 'Email already exists',
+          _mapCrossAccountEmailConflict(
+            data is Map<String, dynamic> ? data['message']?.toString() : null,
+            forCompanyFlow: false,
+          ),
         );
       }
 
@@ -421,7 +448,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           : null;
 
       if (message != null && message.isNotEmpty) {
-        throw Exception(message);
+        throw Exception(
+          _mapCrossAccountEmailConflict(message, forCompanyFlow: true),
+        );
       }
 
       throw Exception('Company send OTP failed');
@@ -471,7 +500,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           : null;
 
       if (message != null && message.isNotEmpty) {
-        throw Exception(message);
+        throw Exception(
+          _mapCrossAccountEmailConflict(message, forCompanyFlow: true),
+        );
       }
 
       throw Exception('Company registration failed');

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_controller.dart';
 import 'package:sun_gate_app/features/notifications/presentation/controllers/notification_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 
@@ -14,11 +15,13 @@ class HomeAppBarSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileControllerProvider);
     final notificationState = ref.watch(notificationControllerProvider);
+    final marketState = ref.watch(marketPlaceControllerProvider);
 
     final profile = profileState.profile;
-    final googlePhoto = profileState.googlePhoto;
-
-    final imageUrl = profile?.imageUrl ?? profile?.profileImage;
+    final imageUrl =
+        profile?.imageUrl ??
+        profile?.profileImage ??
+        marketState.myCompany?.logo;
 
     final loc = AppLocalizations.of(context)!;
 
