@@ -38,6 +38,6 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
 
   @override
   Future<void> markAsRead(String id) async {
-    await dio.patch('${ApiConstants.markAsRead}/$id');
+    await dio.patch('/api/notifications/$id/read');
   }
 }
