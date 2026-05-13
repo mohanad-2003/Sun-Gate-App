@@ -29,6 +29,7 @@ class ProductCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.vertical(
@@ -37,12 +38,12 @@ class ProductCard extends StatelessWidget {
               child: imageUrl.isNotEmpty
                   ? Image.network(
                       imageUrl,
-                      height: 120,
+                      height: 160,
                       width: double.infinity,
                       fit: BoxFit.cover,
                     )
                   : Container(
-                      height: 120,
+                      height: 160,
                       width: double.infinity,
                       color: colorScheme.surfaceContainerHighest,
                       child: Icon(

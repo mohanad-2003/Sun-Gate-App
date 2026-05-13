@@ -17,19 +17,27 @@ class ProfileHeaderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final hasImage = imageUrl != null && imageUrl!.trim().isNotEmpty;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CircleAvatar(
-          radius: 30,
-          backgroundColor: theme.colorScheme.surfaceContainerHighest,
-          backgroundImage: (imageUrl != null && imageUrl!.isNotEmpty)
-              ? NetworkImage(imageUrl!)
-              : null,
-          child: (imageUrl == null || imageUrl!.isEmpty)
-              ? const Icon(Icons.person, size: 28)
-              : null,
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceContainerHighest,
+            shape: BoxShape.circle,
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: hasImage
+              ? Image.network(
+                  imageUrl!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) =>
+                      const Icon(Icons.person, size: 28),
+                )
+              : const Icon(Icons.person, size: 28),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -61,7 +69,11 @@ class ProfileHeaderCard extends StatelessWidget {
             ),
           ),
         ),
-        IconButton(onPressed: onEditTap, icon: const Icon(Icons.edit_square)),
+        if (onEditTap != null)
+          IconButton(
+            onPressed: onEditTap,
+            icon: const Icon(Icons.edit_square),
+          ),
       ],
     );
   }

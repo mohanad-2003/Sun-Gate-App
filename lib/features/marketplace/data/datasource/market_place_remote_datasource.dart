@@ -17,13 +17,44 @@ class MarketPlaceRemoteDataSource {
 
   MarketPlaceRemoteDataSource(this.dio);
 
+  List<Map<String, dynamic>> _extractDocs(dynamic responseData) {
+    final root = responseData is Map<String, dynamic>
+        ? responseData
+        : <String, dynamic>{};
+    final data = root['data'];
+
+    dynamic docs;
+
+    if (data is Map<String, dynamic>) {
+      docs =
+          data['docs'] ??
+          data['items'] ??
+          data['products'] ??
+          data['results'] ??
+          data['rows'];
+    } else if (data is List) {
+      docs = data;
+    }
+
+    docs ??=
+        root['docs'] ??
+        root['items'] ??
+        root['products'] ??
+        root['results'] ??
+        root['rows'];
+
+    if (docs is! List) return const [];
+
+    return docs
+        .whereType<Map>()
+        .map((item) => Map<String, dynamic>.from(item))
+        .toList();
+  }
+
   Future<List<CompanyModel>> getCompanies() async {
     final response = await dio.get(ApiConstants.companies);
     debugPrint('COMPANIES RESPONSE: ${response.data}');
-    final data = response.data['data'];
-    final List docs = data is Map<String, dynamic>
-        ? data['docs'] ?? []
-        : data ?? [];
+    final docs = _extractDocs(response.data);
 
     return docs.map((e) => CompanyModel.fromJson(e)).toList();
   }
@@ -92,11 +123,9 @@ class MarketPlaceRemoteDataSource {
 
     print('ENGINEERS RESPONSE: ${response.data}');
 
-    final docs = response.data['data']?['docs'] as List? ?? [];
+    final docs = _extractDocs(response.data);
 
-    return docs
-        .map((e) => EngineerModel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    return docs.map((e) => EngineerModel.fromJson(e)).toList();
   }
 
   Future<EngineerModel?> getMyEngineer() async {
@@ -144,11 +173,9 @@ class MarketPlaceRemoteDataSource {
 
     debugPrint('PRODUCTS RESPONSE: ${response.data}');
 
-    final docs = response.data['data']?['docs'] as List? ?? [];
+    final docs = _extractDocs(response.data);
 
-    return docs
-        .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    return docs.map((e) => ProductModel.fromJson(e)).toList();
   }
 
   Future<ProductModel> getProductById(String productId) async {
@@ -204,11 +231,9 @@ class MarketPlaceRemoteDataSource {
       queryParameters: {'page': page, 'limit': limit},
     );
 
-    final docs = response.data['data']?['docs'] as List? ?? [];
+    final docs = _extractDocs(response.data);
 
-    return docs
-        .map((e) => ReservationModel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    return docs.map((e) => ReservationModel.fromJson(e)).toList();
   }
 
   Future<List<ReservationModel>> getSellerReservations({
@@ -220,11 +245,9 @@ class MarketPlaceRemoteDataSource {
       queryParameters: {'page': page, 'limit': limit},
     );
 
-    final docs = response.data['data']?['docs'] as List? ?? [];
+    final docs = _extractDocs(response.data);
 
-    return docs
-        .map((e) => ReservationModel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    return docs.map((e) => ReservationModel.fromJson(e)).toList();
   }
 
   Future<ReservationModel> updateReservation({

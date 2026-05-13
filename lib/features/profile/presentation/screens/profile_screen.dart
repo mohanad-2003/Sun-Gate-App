@@ -217,6 +217,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final profile = profileState.profile;
     final marketState = ref.watch(marketPlaceControllerProvider);
     final myCompany = marketState.myCompany;
+    final shouldUseCompanyProfile =
+        myCompany != null && profile?.email == myCompany.email;
     final currentThemeMode = ref.watch(appThemeModeProvider);
     final isDarkMode = currentThemeMode == ThemeMode.dark;
     final loc = AppLocalizations.of(context)!;
@@ -282,7 +284,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (profile != null)
+                      if (shouldUseCompanyProfile)
+                        ProfileHeaderCard(
+                          name: myCompany.companyName.isNotEmpty
+                              ? myCompany.companyName
+                              : myCompany.ownerName,
+                          email: myCompany.email.isNotEmpty
+                              ? myCompany.email
+                              : loc.userEmail,
+                          imageUrl: myCompany.logo,
+                          onEditTap: null,
+                        )
+                      else if (profile != null)
                         ProfileHeaderCard(
                           name: profile.displasyName,
                           email: profile.email,

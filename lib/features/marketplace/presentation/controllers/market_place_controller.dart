@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:sun_gate_app/features/marketplace/domain/repositories/market_place_repository.dart';
@@ -53,6 +54,25 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
+        myCompany: null,
+        errorMessage: null,
+      );
+    }
+  }
+
+  Future<void> getEngineers({String? companyId}) async {
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      successMessage: null,
+    );
+
+    try {
+      final engineers = await repository.getEngineers(companyId: companyId);
+      state = state.copyWith(isLoading: false, engineers: engineers);
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
       );
     }
@@ -76,6 +96,31 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
         isLoading: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
       );
+    }
+  }
+
+  Future<bool> createProduct(FormData formData) async {
+    state = state.copyWith(
+      isSaving: true,
+      errorMessage: null,
+      successMessage: null,
+    );
+
+    try {
+      await repository.createProduct(formData);
+      await getProducts();
+      state = state.copyWith(
+        isSaving: false,
+        successMessage: 'Product created successfully',
+      );
+      return true;
+    } catch (e) {
+      debugPrint('CREATE PRODUCT ERROR: $e');
+      state = state.copyWith(
+        isSaving: false,
+        errorMessage: e.toString().replaceFirst('Exception: ', ''),
+      );
+      return false;
     }
   }
 }

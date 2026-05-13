@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sun_gate_app/features/home/presentation/controllers/weather_provider.dart';
+import 'package:sun_gate_app/features/home/presentation/widgets/company_home_section.dart';
 import 'package:sun_gate_app/features/home/presentation/widgets/home_header_section.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_controller.dart';
 import 'package:sun_gate_app/features/notifications/presentation/controllers/notification_controller.dart';
@@ -34,11 +35,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final marketState = ref.watch(marketPlaceControllerProvider);
+    final myCompany = marketState.myCompany;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: const SingleChildScrollView(
-        child: HomeHeaderSection(),
-      ),
+      body: myCompany != null
+          ? CompanyHomeSection(company: myCompany)
+          : const SingleChildScrollView(child: HomeHeaderSection()),
     );
   }
 }

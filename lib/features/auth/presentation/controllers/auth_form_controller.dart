@@ -49,46 +49,13 @@ class AuthFormController extends StateNotifier<AuthState> {
         action: AuthAction.login,
       );
     } catch (e) {
-      final errorMessage = e.toString().replaceFirst('Exception: ', '');
-      if (_shouldTryCompanyLogin(errorMessage)) {
-        try {
-          await repository.companyLogin(email: email, password: password);
-          state = state.copyWith(
-            isLoading: false,
-            isSuccess: true,
-            action: AuthAction.companyLogin,
-          );
-          return;
-        } catch (companyError) {
-          state = state.copyWith(
-            isLoading: false,
-            errorMessage: companyError.toString().replaceFirst(
-              'Exception: ',
-              '',
-            ),
-            isSuccess: false,
-            action: AuthAction.companyLogin,
-          );
-          return;
-        }
-      }
-
       state = state.copyWith(
         isLoading: false,
-        errorMessage: errorMessage,
+        errorMessage: e.toString().replaceFirst('Exception: ', ''),
         isSuccess: false,
         action: AuthAction.login,
       );
     }
-  }
-
-  bool _shouldTryCompanyLogin(String errorMessage) {
-    final normalized = errorMessage.toLowerCase();
-    return normalized.contains('invalid email or password') ||
-        normalized.contains('invalid credentials') ||
-        normalized.contains('user not found') ||
-        normalized.contains('email not found') ||
-        normalized.contains('not found');
   }
 
   Future<void> companyLogin({
