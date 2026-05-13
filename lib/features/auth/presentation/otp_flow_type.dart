@@ -1,5 +1,1 @@
-enum OtpFlowType {
-  verifyEmail,
-  resetPassword,
-  companyRegistration,
-}
+enum OtpFlowType { verifyEmail, resetPassword, companyRegistration }

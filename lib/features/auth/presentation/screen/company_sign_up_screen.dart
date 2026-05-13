@@ -43,7 +43,9 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
     final normalized = message.toLowerCase();
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    if (normalized.contains('cannot create a company account and a user account with the same email')) {
+    if (normalized.contains(
+      'cannot create a company account and a user account with the same email',
+    )) {
       return isArabic
           ? 'هذا البريد الإلكتروني مستخدم بالفعل في حساب مستخدم عادي. لا يمكنك إنشاء حساب شركة وحساب مستخدم بنفس البريد.'
           : message;
@@ -74,7 +76,7 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
   bool _isPickingLogo = false;
 
   Future<void> _pickDocument() async {
-    if (_isPickingDocument) return; // ← امنع الضغط المزدوج
+    if (_isPickingDocument) return;
     _isPickingDocument = true;
 
     try {
