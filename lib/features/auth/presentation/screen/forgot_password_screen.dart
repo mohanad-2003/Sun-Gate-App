@@ -37,11 +37,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     ref.listen(authControllerProvider, (previous, next) {
       if (next.action == AuthAction.forgotPassword && next.isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              next.message ?? loc.passwordResetEmailSent,
-            ),
-          ),
+          SnackBar(content: Text(next.message ?? loc.passwordResetEmailSent)),
         );
 
         context.push(
@@ -57,9 +53,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     return AuthScaffoldBody(
       child: Column(
         children: [
-          AuthBackButton(
-            onTap: () => context.pop(),
-          ),
+          AuthBackButton(onTap: () => context.pop()),
           const SizedBox(height: 40),
 
           AuthHeader(
@@ -85,16 +79,11 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               decoration: BoxDecoration(
                 color: Colors.red.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.red.withValues(alpha: 0.20),
-                ),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.20)),
               ),
               child: Text(
                 state.errorMessage!,
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontSize: 13,
-                ),
+                style: const TextStyle(color: Colors.red, fontSize: 13),
               ),
             ),
             const SizedBox(height: 16),
@@ -104,9 +93,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
             text: loc.next,
             isLoading: state.isLoading,
             onPressed: () {
-              ref.read(authControllerProvider.notifier).forgotPassword(
-                    email: emailController.text.trim(),
-                  );
+              ref
+                  .read(authControllerProvider.notifier)
+                  .forgotPassword(email: emailController.text.trim());
             },
           ),
         ],

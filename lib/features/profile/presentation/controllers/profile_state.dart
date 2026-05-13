@@ -7,7 +7,6 @@ class ProfileState {
   final String? successMessage;
   final UserProfileEntity? profile;
   final String? googlePhoto;
-
   const ProfileState({
     this.isLoading = false,
     this.isSaving = false,
