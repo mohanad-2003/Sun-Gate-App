@@ -10,11 +10,9 @@ class CompleteProfileScreen extends ConsumerStatefulWidget {
       _CompleteProfileScreenState();
 }
 
-class _CompleteProfileScreenState
-    extends ConsumerState<CompleteProfileScreen> {
+class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
   final TextEditingController birthDateController = TextEditingController();
-  final TextEditingController locationController = TextEditingController();
-
+  final TextEditingController locationController = TextEditingController();      
   String gender = 'male';
 
   @override
@@ -35,7 +33,7 @@ class _CompleteProfileScreenState
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            /// 📅 Birth Date
+            /// Birth Date
             TextField(
               controller: birthDateController,
               readOnly: true,
@@ -52,8 +50,7 @@ class _CompleteProfileScreenState
                 );
 
                 if (date != null) {
-                  final formatted =
-                      "${date.year}-${date.month}-${date.day}";
+                  final formatted = "${date.year}-${date.month}-${date.day}";
 
                   birthDateController.text = formatted;
                 }
@@ -62,7 +59,7 @@ class _CompleteProfileScreenState
 
             const SizedBox(height: 16),
 
-            /// 📍 Location
+            ///  Location
             TextField(
               controller: locationController,
               readOnly: true,
@@ -71,8 +68,8 @@ class _CompleteProfileScreenState
                 prefixIcon: Icon(Icons.location_on),
               ),
               onTap: () async {
-                final location =
-                    await controller.getLocationForCompleteProfile();
+                final location = await controller
+                    .getLocationForCompleteProfile();
 
                 locationController.text = location;
               },
@@ -80,7 +77,7 @@ class _CompleteProfileScreenState
 
             const SizedBox(height: 16),
 
-            /// ⚧ Gender
+            ///  Gender
             Row(
               children: [
                 Expanded(
@@ -108,7 +105,7 @@ class _CompleteProfileScreenState
 
             const SizedBox(height: 20),
 
-            /// 💾 Save Button
+            ///  Save Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

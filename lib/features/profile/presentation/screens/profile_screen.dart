@@ -226,7 +226,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ? loc.arabic
         : loc.english;
 
-    // مراقبة حالة حذف الحساب
     ref.listen(authControllerProvider, (prev, next) {
       if (next.isSuccess && next.action == AuthAction.deleteAccount) {
         context.go(RouteNames.login);
@@ -404,7 +403,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
                       const SizedBox(height: 40),
 
-                      // ── زر تسجيل الخروج ──
                       SizedBox(
                         width: double.infinity,
                         child: OutlinedButton(
@@ -430,7 +428,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
                       const SizedBox(height: 12),
 
-                      // ── فاصل ──
                       Divider(
                         color: Colors.red.withValues(alpha: 0.15),
                         thickness: 1,
@@ -438,7 +435,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
                       const SizedBox(height: 12),
 
-                      // ── قسم الخطر ──
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(16),
@@ -513,6 +509,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                         ref,
                                         loc,
                                       ),
+
                                       style: OutlinedButton.styleFrom(
                                         foregroundColor: Colors.red,
                                         side: const BorderSide(

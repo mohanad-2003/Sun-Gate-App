@@ -224,11 +224,9 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                 onTap: () async {
                   final DateTime? date = await showDatePicker(
                     context: context,
-                    firstDate: DateTime(1950),
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
                     lastDate: DateTime.now(),
-                    initialDate:
-                        DateTime.tryParse(birthDateController.text) ??
-                        DateTime(2000),
                   );
 
                   if (date != null) {
