@@ -16,6 +16,7 @@ import 'package:sun_gate_app/features/auth/presentation/widgets/auth_primary_but
 import 'package:sun_gate_app/features/auth/presentation/widgets/auth_scaffold_body.dart';
 import 'package:sun_gate_app/features/auth/presentation/widgets/langauge_switcher.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_controller.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -49,19 +50,48 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (next.action == AuthAction.login && next.isSuccess && mounted) {
         await ref.read(profileControllerProvider.notifier).getMyProfile();
         if (!mounted) return;
-        context.go(RouteNames.main);
+
+        // Check if user has a company
+        await ref.read(marketPlaceControllerProvider.notifier).getMyCompany();
+        if (!mounted) return;
+
+        final marketState = ref.read(marketPlaceControllerProvider);
+        if (marketState.myCompany != null) {
+          // User is a company owner, navigate to company home
+          context.go(RouteNames.home);
+        } else {
+          // Regular user, navigate to main navigation
+          context.go(RouteNames.main);
+        }
         return;
       }
 
       if (next.action == AuthAction.companyLogin && next.isSuccess && mounted) {
         await ref.read(profileControllerProvider.notifier).getMyProfile();
         if (!mounted) return;
-        context.go(RouteNames.main);
+
+        // Company login always goes to company home
+        await ref.read(marketPlaceControllerProvider.notifier).getMyCompany();
+        if (!mounted) return;
+
+        context.go(RouteNames.home);
         return;
       }
 
       if (next.action == AuthAction.googleLogin && next.isSuccess && mounted) {
-        context.go(RouteNames.main);
+        // Check if Google user has a company
+        await ref.read(profileControllerProvider.notifier).getMyProfile();
+        if (!mounted) return;
+
+        await ref.read(marketPlaceControllerProvider.notifier).getMyCompany();
+        if (!mounted) return;
+
+        final marketState = ref.read(marketPlaceControllerProvider);
+        if (marketState.myCompany != null) {
+          context.go(RouteNames.home);
+        } else {
+          context.go(RouteNames.main);
+        }
       }
     });
 

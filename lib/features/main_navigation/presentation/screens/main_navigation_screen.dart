@@ -4,15 +4,29 @@ import 'package:sun_gate_app/features/calculator/presentation/screens/calculator
 import 'package:sun_gate_app/features/home/presentation/screens/home_screen.dart';
 import 'package:sun_gate_app/features/main_navigation/presentation/controllers/home_bottom_nav_provider.dart';
 import 'package:sun_gate_app/features/main_navigation/presentation/widgets/app_bottom_nav_bar.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_controller.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/screen/market_screen.dart';
 
-class MainNavigationScreen extends ConsumerWidget {
+class MainNavigationScreen extends ConsumerStatefulWidget {
   const MainNavigationScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentIndex = ref.watch(bottomNavProvider);
+  ConsumerState<MainNavigationScreen> createState() =>
+      _MainNavigationScreenState();
+}
 
+class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(
+      () => ref.read(marketPlaceControllerProvider.notifier).getMyCompany(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentIndex = ref.watch(bottomNavProvider);
     final pages = const [
       HomeScreen(),
       CalculatorScreen(),
@@ -25,7 +39,7 @@ class MainNavigationScreen extends ConsumerWidget {
       body: IndexedStack(index: currentIndex, children: pages),
       bottomNavigationBar: AppBottomNavBar(
         currentIndex: currentIndex,
-        onTap: (index) => {ref.read(bottomNavProvider.notifier).state = index},
+        onTap: (index) => ref.read(bottomNavProvider.notifier).state = index,
       ),
     );
   }

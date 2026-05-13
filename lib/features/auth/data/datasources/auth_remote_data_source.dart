@@ -74,6 +74,30 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         : 'This email is already used by another account. You cannot create a user account and a company account with the same email.';
   }
 
+  String? _extractMessage(Object? data) {
+    if (data is Map<String, dynamic>) {
+      return data['message']?.toString();
+    }
+    return null;
+  }
+
+  String? _mapPendingCompanyReviewMessage(String? message) {
+    if (message == null || message.isEmpty) return null;
+
+    final normalized = message.toLowerCase();
+    final isPendingCompanyReview =
+        normalized.contains('pending admin') ||
+        normalized.contains('pending review') ||
+        normalized.contains('not active') ||
+        normalized.contains('account is not active') ||
+        normalized.contains('not active yet');
+
+    if (!isPendingCompanyReview) return null;
+
+    return 'Your company request is still pending admin approval. '
+        'You can sign in after the company account is activated.';
+  }
+
   @override
   Future<AuthResponseModel> login(LoginRequestDto request) async {
     try {
@@ -85,38 +109,29 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       final data = e.response?.data;
+      final message = _extractMessage(data);
+      final pendingCompanyReviewMessage = _mapPendingCompanyReviewMessage(
+        message,
+      );
+
+      if (pendingCompanyReviewMessage != null) {
+        throw Exception(pendingCompanyReviewMessage);
+      }
 
       if (e.response?.statusCode == 400) {
-        throw Exception(
-          data is Map<String, dynamic>
-              ? data['message']?.toString() ?? 'Validation error'
-              : 'Validation error',
-        );
+        throw Exception(message ?? 'Validation error');
       }
 
       if (e.response?.statusCode == 401) {
-        throw Exception(
-          data is Map<String, dynamic>
-              ? data['message']?.toString() ?? 'Invalid email or password'
-              : 'Invalid email or password',
-        );
+        throw Exception(message ?? 'Invalid email or password');
       }
 
       if (e.response?.statusCode == 403) {
-        throw Exception(
-          data is Map<String, dynamic>
-              ? data['message']?.toString() ??
-                    'Please verify your email before signing in'
-              : 'Please verify your email before signing in',
-        );
+        throw Exception(message ?? 'Please verify your email before signing in');
       }
 
       if (e.response?.statusCode == 500) {
-        throw Exception(
-          data is Map<String, dynamic>
-              ? data['message']?.toString() ?? 'Internal server error'
-              : 'Internal server error',
-        );
+        throw Exception(message ?? 'Internal server error');
       }
 
       throw Exception('Something went wrong');
@@ -514,13 +529,22 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<AuthResponseModel> companyLogin(LoginRequestDto request) async {
     try {
       final response = await dio.post(
-        ApiConstants.companyLogin,
+        ApiConstants.login,
         data: request.toJson(),
       );
 
       return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       final data = e.response?.data;
+      final companyLoginMessage = _extractMessage(data);
+      final pendingCompanyReviewMessage = _mapPendingCompanyReviewMessage(
+        companyLoginMessage,
+      );
+
+      if (pendingCompanyReviewMessage != null) {
+        throw Exception(pendingCompanyReviewMessage);
+      }
+
       debugPrint('COMPANY LOGIN STATUS: ${e.response?.statusCode}'); // ← أضف
       debugPrint('COMPANY LOGIN DATA: $data'); // ← أضف
       if (e.response?.statusCode == 403) {
