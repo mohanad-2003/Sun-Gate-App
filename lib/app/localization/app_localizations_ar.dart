@@ -1420,4 +1420,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get confirmDelete => 'نعم,احذف';
+
+  @override
+  String get companyInfo => 'معلومات الشركة';
+
+  @override
+  String get owner => 'المالك';
+
+  @override
+  String get mobileNumber => 'رقم الجوال';
+
+  @override
+  String get engineerNumber => 'رقم المهندس';
+
+  @override
+  String get ownerName => 'اسم المالك';
+
+  @override
+  String get enterOwnerName => 'أدخل أسم المالك';
 }

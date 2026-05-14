@@ -2809,6 +2809,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm Delete'**
   String get confirmDelete;
+
+  /// No description provided for @companyInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Info'**
+  String get companyInfo;
+
+  /// No description provided for @owner.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get owner;
+
+  /// No description provided for @mobileNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile Number'**
+  String get mobileNumber;
+
+  /// No description provided for @engineerNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Engineer Number'**
+  String get engineerNumber;
+
+  /// No description provided for @ownerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner Name'**
+  String get ownerName;
+
+  /// No description provided for @enterOwnerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Owner Name'**
+  String get enterOwnerName;
 }
 
 class _AppLocalizationsDelegate

@@ -43,7 +43,7 @@ abstract class AuthRepository {
     required String logoPath,
     required String registrationToken,
     required String companyName,
-    required String ownerName,
+   required String ownerName,
     required String email,
     required String location,
     required String establishmentDate,

@@ -461,5 +461,11 @@
   "deleteAccountPostsWarning": "Delete Account Post Warning",
   "dangerZone": "Danger Zone",
   "dangerZoneDescription": "Danger Zone Description",
-  "confirmDelete": "Confirm Delete"
+  "confirmDelete": "Confirm Delete",
+  "companyInfo": "Company Info",
+  "owner": "Owner",
+  "mobileNumber": "Mobile Number",
+  "engineerNumber": "Engineer Number",
+  "ownerName":"Owner Name",
+  "enterOwnerName":"Enter Owner Name"
 }
