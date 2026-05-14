@@ -85,6 +85,8 @@
   "login": "تسجيل الدخول",
   "loginWelcomeTitle": "مرحبًا، أهلاً بعودتك! 👋",
   "loginWelcomeSubtitle": "بوابة الشمس ترحب بك",
+  "companyPendingReviewTitle": "طلبك قيد المراجعة",
+  "companyPendingReviewSubtitle": "تم إنشاء طلب الشركة بنجاح. يمكنك تسجيل الدخول بعد موافقة الإدارة وتفعيل الحساب.",
   "enterEmailAddress": "أدخل بريدك الإلكتروني",
   "enterPassword": "أدخل كلمة المرور",
   "forgotPassword": "هل نسيت كلمة المرور؟",

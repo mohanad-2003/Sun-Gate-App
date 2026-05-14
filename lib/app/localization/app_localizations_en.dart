@@ -287,6 +287,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginWelcomeSubtitle => 'Sun Gate welcomes you';
 
   @override
+  String get companyPendingReviewTitle => 'Your request is under review';
+
+  @override
+  String get companyPendingReviewSubtitle =>
+      'Your company request has been submitted successfully. You can log in once the admin approves and activates your account.';
+
+  @override
   String get enterEmailAddress => 'Enter your email address';
 
   @override

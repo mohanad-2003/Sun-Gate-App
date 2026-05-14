@@ -20,7 +20,6 @@ import 'package:sun_gate_app/features/calculator/presentation/screens/return_on_
 import 'package:sun_gate_app/features/calculator/presentation/screens/system_efficiency_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/title_of_panels_screen.dart';
 import 'package:sun_gate_app/features/calculator/presentation/screens/wire_cross_section_screen.dart';
-import 'package:sun_gate_app/features/home/presentation/screens/home_screen.dart';
 import 'package:sun_gate_app/features/main_navigation/presentation/screens/main_navigation_screen.dart';
 import 'package:sun_gate_app/features/marketplace/domain/entities/company_entity.dart';
 import 'package:sun_gate_app/features/marketplace/domain/entities/product_entity.dart';
@@ -51,7 +50,6 @@ class AppRouter {
         path: RouteNames.onboarding,
         builder: (context, state) => const OnboardingScreen(),
       ),
-
       GoRoute(
         path: RouteNames.login,
         builder: (context, state) => const LoginScreen(),
@@ -76,7 +74,6 @@ class AppRouter {
         path: RouteNames.otp,
         builder: (context, state) {
           final args = state.extra as Map<String, dynamic>? ?? {};
-
           return OtpScreen(
             email: args['email'] as String? ?? '',
             flowType:
@@ -121,11 +118,6 @@ class AppRouter {
         builder: (context, state) => const HelpSupportScreen(),
       ),
       GoRoute(
-        path: RouteNames.home,
-        builder: (context, state) => const HomeScreen(),
-      ),
-
-      GoRoute(
         path: RouteNames.market,
         builder: (context, state) => const MarketScreen(),
       ),
@@ -133,16 +125,13 @@ class AppRouter {
         path: RouteNames.companyDetail,
         builder: (context, state) {
           final company = state.extra as CompanyEntity;
-
           return CompanyDetailScreen(company: company);
         },
       ),
-
       GoRoute(
         path: RouteNames.productDetail,
         builder: (context, state) {
           final product = state.extra as ProductEntity;
-
           return ProductDetailScreen(product: product);
         },
       ),

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:sun_gate_app/features/marketplace/domain/entities/company_entity.dart';
 import 'package:sun_gate_app/features/marketplace/domain/repositories/market_place_repository.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_state.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/provider/market_place_provider.dart';
@@ -40,23 +40,24 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
     }
   }
 
-  Future<void> getMyCompany() async {
+  Future<CompanyEntity?> getMyCompany() async {
     state = state.copyWith(
-      isLoading: true,
+      isLoading: true,  
       errorMessage: null,
       successMessage: null,
     );
 
     try {
       final company = await repository.getMyCompany();
-
       state = state.copyWith(isLoading: false, myCompany: company);
+      return company;
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         myCompany: null,
         errorMessage: null,
       );
+      return null;
     }
   }
 
@@ -87,11 +88,9 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
 
     try {
       final products = await repository.getProducts();
-      debugPrint('✅ PRODUCTS COUNT: ${products.length}'); // ← أضف هاي
 
       state = state.copyWith(isLoading: false, products: products);
     } catch (e) {
-      debugPrint('❌ PRODUCTS ERROR: $e');
       state = state.copyWith(
         isLoading: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
@@ -115,7 +114,6 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
       );
       return true;
     } catch (e) {
-      debugPrint('CREATE PRODUCT ERROR: $e');
       state = state.copyWith(
         isSaving: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),

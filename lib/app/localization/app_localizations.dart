@@ -608,6 +608,18 @@ abstract class AppLocalizations {
   /// **'Sun Gate welcomes you'**
   String get loginWelcomeSubtitle;
 
+  /// No description provided for @companyPendingReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your request is under review'**
+  String get companyPendingReviewTitle;
+
+  /// No description provided for @companyPendingReviewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your company request has been submitted successfully. You can log in once the admin approves and activates your account.'**
+  String get companyPendingReviewSubtitle;
+
   /// No description provided for @enterEmailAddress.
   ///
   /// In en, this message translates to:

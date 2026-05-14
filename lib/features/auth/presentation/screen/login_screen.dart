@@ -51,18 +51,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         await ref.read(profileControllerProvider.notifier).getMyProfile();
         if (!mounted) return;
 
-        // Check if user has a company
         await ref.read(marketPlaceControllerProvider.notifier).getMyCompany();
         if (!mounted) return;
 
-        final marketState = ref.read(marketPlaceControllerProvider);
-        if (marketState.myCompany != null) {
-          // User is a company owner, navigate to company home
-          context.go(RouteNames.home);
-        } else {
-          // Regular user, navigate to main navigation
-          context.go(RouteNames.main);
-        }
+        context.go(RouteNames.main);
         return;
       }
 
@@ -70,28 +62,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         await ref.read(profileControllerProvider.notifier).getMyProfile();
         if (!mounted) return;
 
-        // Company login always goes to company home
         await ref.read(marketPlaceControllerProvider.notifier).getMyCompany();
         if (!mounted) return;
 
-        context.go(RouteNames.home);
+        context.go(RouteNames.main);
         return;
       }
 
       if (next.action == AuthAction.googleLogin && next.isSuccess && mounted) {
-        // Check if Google user has a company
         await ref.read(profileControllerProvider.notifier).getMyProfile();
         if (!mounted) return;
 
         await ref.read(marketPlaceControllerProvider.notifier).getMyCompany();
         if (!mounted) return;
 
-        final marketState = ref.read(marketPlaceControllerProvider);
-        if (marketState.myCompany != null) {
-          context.go(RouteNames.home);
-        } else {
-          context.go(RouteNames.main);
-        }
+        context.go(RouteNames.main);
       }
     });
 
@@ -149,7 +134,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             if (state.errorMessage != null) ...[
               isPendingCompanyReview
-                  ? const _CompanyPendingReviewCard()
+                  ? _CompanyPendingReviewCard()
                   : _LoginErrorCard(message: state.errorMessage!),
             ],
             const SizedBox(height: 10),
@@ -182,7 +167,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                 if (account == null) {
                   if (!context.mounted) return;
-
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(loc.googleSignInFailed)),
                   );
@@ -195,7 +179,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                 if (idToken == null) {
                   if (!context.mounted) return;
-
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(loc.googleSignInFailed)),
                   );
@@ -221,9 +204,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   bool _isPendingCompanyReviewMessage(String? message) {
     if (message == null || message.isEmpty) return false;
-
     final normalized = message.toLowerCase();
-
     return normalized.contains('pending admin') ||
         normalized.contains('pending review') ||
         normalized.contains('not active') ||
@@ -265,6 +246,8 @@ class _CompanyPendingReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(14),
