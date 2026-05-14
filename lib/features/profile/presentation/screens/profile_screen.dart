@@ -217,8 +217,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final profile = profileState.profile;
     final marketState = ref.watch(marketPlaceControllerProvider);
     final myCompany = marketState.myCompany;
-    final shouldUseCompanyProfile =
-        myCompany != null && profile?.email == myCompany.email;
+    final shouldUseCompanyProfile = myCompany != null;
     final currentThemeMode = ref.watch(appThemeModeProvider);
     final isDarkMode = currentThemeMode == ThemeMode.dark;
     final loc = AppLocalizations.of(context)!;
@@ -293,7 +292,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               ? myCompany.email
                               : loc.userEmail,
                           imageUrl: myCompany.logo,
-                          onEditTap: null,
+                          onEditTap: () => context.push(RouteNames.userInfo),
                         )
                       else if (profile != null)
                         ProfileHeaderCard(

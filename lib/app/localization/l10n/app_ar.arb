@@ -456,5 +456,12 @@
   "deleteAccountPostsWarning": "تأكد من حذف منتجاتك ومنشوراتك أولاً",
   "dangerZone": "منطقة الخطر",
   "dangerZoneDescription": "حذف الحساب إجراء دائم ولا يمكن التراجع عنه.",
-  "confirmDelete": "نعم,احذف"
+  "confirmDelete": "نعم,احذف",
+  "ownerName":"اسم المالك",
+  "enterOwnerName":"أدخل أسم المالك"
+  ,
+  "companyInfo": "معلومات الشركة",
+  "owner": "المالك",
+  "mobileNumber": "رقم الجوال",
+  "engineerNumber": "رقم المهندس"
 }

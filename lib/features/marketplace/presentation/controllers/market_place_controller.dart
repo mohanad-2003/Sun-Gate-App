@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:sun_gate_app/features/marketplace/data/dto/update_company_request_dto.dart';
 import 'package:sun_gate_app/features/marketplace/domain/entities/company_entity.dart';
 import 'package:sun_gate_app/features/marketplace/domain/repositories/market_place_repository.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_state.dart';
@@ -42,7 +43,7 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
 
   Future<CompanyEntity?> getMyCompany() async {
     state = state.copyWith(
-      isLoading: true,  
+      isLoading: true,
       errorMessage: null,
       successMessage: null,
     );
@@ -95,6 +96,35 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
         isLoading: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),
       );
+    }
+  }
+
+  Future<bool> updateCompany(UpdateCompanyRequestDto request) async {
+    if (state.myCompany == null) return false;
+
+    state = state.copyWith(
+      isSaving: true,
+      errorMessage: null,
+      successMessage: null,
+    );
+
+    try {
+      final updatedCompany = await repository.updateCompany(
+        companyId: state.myCompany!.id,
+        request: request,
+      );
+      state = state.copyWith(
+        isSaving: false,
+        myCompany: updatedCompany,
+        successMessage: 'Company updated successfully',
+      );
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isSaving: false,
+        errorMessage: e.toString().replaceFirst('Exception: ', ''),
+      );
+      return false;
     }
   }
 

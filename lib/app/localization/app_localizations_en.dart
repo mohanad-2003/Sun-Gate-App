@@ -1428,4 +1428,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirmDelete => 'Confirm Delete';
+
+  @override
+  String get companyInfo => 'Company Info';
+
+  @override
+  String get owner => 'Owner';
+
+  @override
+  String get mobileNumber => 'Mobile Number';
+
+  @override
+  String get engineerNumber => 'Engineer Number';
+
+  @override
+  String get ownerName => 'Owner Name';
+
+  @override
+  String get enterOwnerName => 'Enter Owner Name';
 }

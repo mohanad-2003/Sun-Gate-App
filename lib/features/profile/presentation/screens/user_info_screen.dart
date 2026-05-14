@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/core/services/location_helper_service.dart';
+import 'package:sun_gate_app/features/marketplace/data/dto/update_company_request_dto.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/profile_section_label.dart';
 
@@ -19,8 +21,16 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
   late final TextEditingController emailController;
   late final TextEditingController locationController;
   late final TextEditingController birthDateController;
+  late final TextEditingController ownerController;
+  late final TextEditingController descriptionController;
+  late final TextEditingController companyLocationController;
+  late final TextEditingController phoneController;
+  late final TextEditingController companyEmailController;
+  late final TextEditingController engineerNumberController;
 
-  bool _didPopulateInitialData = false;
+  String selectedGender = 'male';
+  bool _didPopulateUserData = false;
+  bool _didPopulateCompanyData = false;
   final _picker = ImagePicker();
 
   Future<void> _pickImage(ImageSource source) async {
@@ -33,7 +43,6 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
         .uploadProfilePicture(filePath: file.path);
   }
 
-  String selectedGender = 'male';
   Future<void> _loadCurrentLocation() async {
     try {
       final location = await LocationHelper.getCurrentLocationName();
@@ -52,19 +61,38 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
   void initState() {
     super.initState();
     final profile = ref.read(profileControllerProvider).profile;
+    final marketState = ref.read(marketPlaceControllerProvider);
+    final myCompany = marketState.myCompany;
 
     firstNameController = TextEditingController(text: profile?.firstName ?? '');
     lastNameController = TextEditingController(text: profile?.lastName ?? '');
     emailController = TextEditingController(text: profile?.email ?? '');
     locationController = TextEditingController(text: profile?.location ?? '');
+    birthDateController = TextEditingController(text: profile?.birthDate ?? '');
+
     selectedGender = (profile?.gender?.isNotEmpty ?? false)
         ? profile!.gender!
         : 'male';
 
-    if ((profile?.location == null || profile!.location!.isEmpty)) {
+    ownerController = TextEditingController(text: myCompany?.ownerName ?? '');
+    descriptionController = TextEditingController();
+    companyLocationController = TextEditingController(
+      text: myCompany?.address ?? '',
+    );
+    phoneController = TextEditingController(text: myCompany?.phone ?? '');
+    companyEmailController = TextEditingController(
+      text: myCompany?.email ?? '',
+    );
+    engineerNumberController = TextEditingController();
+
+    if (profile?.location == null || profile!.location!.isEmpty) {
       _loadCurrentLocation();
     }
-    birthDateController = TextEditingController(text: profile?.birthDate ?? '');
+
+    Future.microtask(() {
+      ref.read(profileControllerProvider.notifier).getMyProfile();
+      ref.read(marketPlaceControllerProvider.notifier).getMyCompany();
+    });
   }
 
   @override
@@ -74,6 +102,12 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
     emailController.dispose();
     locationController.dispose();
     birthDateController.dispose();
+    ownerController.dispose();
+    descriptionController.dispose();
+    companyLocationController.dispose();
+    phoneController.dispose();
+    companyEmailController.dispose();
+    engineerNumberController.dispose();
     super.dispose();
   }
 
@@ -81,20 +115,31 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(profileControllerProvider);
     final profile = state.profile;
+    final marketState = ref.watch(marketPlaceControllerProvider);
+    final myCompany = marketState.myCompany;
+    final shouldUseCompanyProfile = myCompany != null;
     final loc = AppLocalizations.of(context)!;
 
-    if (profile != null && !_didPopulateInitialData) {
+    if (profile != null && !_didPopulateUserData) {
       firstNameController.text = profile.firstName;
       lastNameController.text = profile.lastName;
       emailController.text = profile.email;
       locationController.text = profile.location ?? '';
-
+      birthDateController.text = profile.birthDate ?? '';
       selectedGender = (profile.gender?.isNotEmpty ?? false)
           ? profile.gender!
           : 'male';
-
-      _didPopulateInitialData = true;
+      _didPopulateUserData = true;
     }
+
+    if (myCompany != null && !_didPopulateCompanyData) {
+      ownerController.text = myCompany.ownerName;
+      companyLocationController.text = myCompany.address;
+      phoneController.text = myCompany.phone;
+      companyEmailController.text = myCompany.email;
+      _didPopulateCompanyData = true;
+    }
+
     ref.listen(profileControllerProvider, (previous, next) {
       if (next.successMessage != null && next.successMessage!.isNotEmpty) {
         ScaffoldMessenger.of(
@@ -103,8 +148,18 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
       }
     });
 
+    ref.listen(marketPlaceControllerProvider, (previous, next) {
+      if (next.successMessage != null && next.successMessage!.isNotEmpty) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(next.successMessage!)));
+      }
+    });
+
     return Scaffold(
-      appBar: AppBar(title: Text(loc.userInfo)),
+      appBar: AppBar(
+        title: Text(shouldUseCompanyProfile ? loc.companyInfo : loc.userInfo),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -117,13 +172,21 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                     CircleAvatar(
                       radius: 34,
                       backgroundImage:
-                          (profile?.imageUrl != null &&
-                              profile!.imageUrl!.isNotEmpty)
-                          ? NetworkImage(profile.imageUrl!)
+                          shouldUseCompanyProfile &&
+                              myCompany.logo != null &&
+                              myCompany.logo!.isNotEmpty
+                          ? NetworkImage(myCompany.logo!)
+                          : (!shouldUseCompanyProfile &&
+                                profile?.imageUrl?.isNotEmpty == true)
+                          ? NetworkImage(profile!.imageUrl!)
                           : null,
                       child:
-                          (profile?.imageUrl == null ||
-                              profile!.imageUrl!.isEmpty)
+                          (shouldUseCompanyProfile &&
+                                  (myCompany.logo == null ||
+                                      myCompany.logo!.isEmpty)) ||
+                              (!shouldUseCompanyProfile &&
+                                  (profile?.imageUrl == null ||
+                                      profile?.imageUrl?.isEmpty == true))
                           ? const Icon(Icons.person, size: 32)
                           : null,
                     ),
@@ -200,106 +263,136 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                 ),
               ),
               const SizedBox(height: 28),
+              if (shouldUseCompanyProfile) ...[
+                ProfileSectionLabel(title: loc.owner),
+                const SizedBox(height: 8),
+                TextField(controller: ownerController),
+                const SizedBox(height: 16),
+                ProfileSectionLabel(title: loc.description),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: descriptionController,
+                  maxLines: 3,
+                  enabled: false,
+                ),
+                const SizedBox(height: 16),
+                ProfileSectionLabel(title: loc.location),
+                const SizedBox(height: 8),
+                TextField(controller: companyLocationController),
+                const SizedBox(height: 16),
+                ProfileSectionLabel(title: loc.mobileNumber),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: phoneController,
+                  keyboardType: TextInputType.phone,
+                ),
+                const SizedBox(height: 16),
+                ProfileSectionLabel(title: loc.email),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: companyEmailController,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 16),
+                ProfileSectionLabel(title: loc.engineerNumber),
+                const SizedBox(height: 8),
+                TextField(controller: engineerNumberController, enabled: false),
+                const SizedBox(height: 16),
+              ] else ...[
+                ProfileSectionLabel(title: loc.firstName),
+                const SizedBox(height: 8),
+                TextField(controller: firstNameController),
+                const SizedBox(height: 16),
+                ProfileSectionLabel(title: loc.lastName),
+                const SizedBox(height: 8),
+                TextField(controller: lastNameController),
+                const SizedBox(height: 16),
+                ProfileSectionLabel(title: loc.email),
+                const SizedBox(height: 8),
+                TextField(controller: emailController, enabled: false),
+                const SizedBox(height: 16),
+                ProfileSectionLabel(title: loc.birthDate),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: birthDateController,
+                  readOnly: true,
+                  onTap: () async {
+                    final date = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                    );
 
-              ProfileSectionLabel(title: loc.firstName),
-              const SizedBox(height: 8),
-              TextField(controller: firstNameController),
-              const SizedBox(height: 16),
+                    if (date != null) {
+                      ref
+                          .read(profileControllerProvider.notifier)
+                          .updateBirthDate(date);
 
-              ProfileSectionLabel(title: loc.lastName),
-              const SizedBox(height: 8),
-              TextField(controller: lastNameController),
-              const SizedBox(height: 16),
+                      final month = date.month.toString().padLeft(2, '0');
+                      final day = date.day.toString().padLeft(2, '0');
 
-              ProfileSectionLabel(title: loc.email),
-              const SizedBox(height: 8),
-              TextField(controller: emailController, enabled: false),
-              const SizedBox(height: 16),
-              ProfileSectionLabel(title: loc.birthDate),
-              const SizedBox(height: 8),
-
-              TextField(
-                controller: birthDateController,
-                readOnly: true,
-                onTap: () async {
-                  final DateTime? date = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime.now(),
-                  );
-
-                  if (date != null) {
-                    ref
-                        .read(profileControllerProvider.notifier)
-                        .updateBirthDate(date);
-
-                    final month = date.month.toString().padLeft(2, '0');
-                    final day = date.day.toString().padLeft(2, '0');
-
-                    setState(() {
-                      birthDateController.text = "${date.year}-$month-$day";
-                    });
-                  }
-                },
-                decoration: InputDecoration(
-                  suffixIcon: const Icon(Icons.edit_calendar),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                      setState(() {
+                        birthDateController.text = '${date.year}-$month-$day';
+                      });
+                    }
+                  },
+                  decoration: InputDecoration(
+                    suffixIcon: const Icon(Icons.edit_calendar),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
-              ),
-
-              const SizedBox(height: 16),
-              ProfileSectionLabel(title: loc.location),
-              const SizedBox(height: 8),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: locationController,
-                      maxLines: 1,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        hintText: loc.location,
-                        prefixIcon: const Icon(Icons.location_on_outlined),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 16),
+                ProfileSectionLabel(title: loc.location),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: locationController,
+                        maxLines: 1,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          hintText: loc.location,
+                          prefixIcon: const Icon(Icons.location_on_outlined),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-
-                  const SizedBox(width: 10),
-
-                  SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        ref
-                            .read(profileControllerProvider.notifier)
-                            .updateLocation();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    const SizedBox(width: 10),
+                    SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          ref
+                              .read(profileControllerProvider.notifier)
+                              .updateLocation();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          padding: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.my_location,
+                          color: Colors.white,
                         ),
                       ),
-                      child: const Icon(Icons.my_location, color: Colors.white),
                     ),
-                  ),
-                ],
-              ),
-
+                  ],
+                ),
+                const SizedBox(height: 20),
+              ],
               const SizedBox(height: 20),
-
-              const SizedBox(height: 20),
-
-              if (state.errorMessage != null) ...[
+              if (state.errorMessage != null ||
+                  marketState.errorMessage != null) ...[
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(12),
@@ -311,29 +404,41 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                     ),
                   ),
                   child: Text(
-                    state.errorMessage!,
+                    state.errorMessage ?? marketState.errorMessage!,
                     style: const TextStyle(color: Colors.red),
                   ),
                 ),
                 const SizedBox(height: 16),
               ],
-
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: state.isSaving
+                  onPressed: state.isSaving || marketState.isSaving
                       ? null
                       : () {
-                          ref
-                              .read(profileControllerProvider.notifier)
-                              .updateProfile(
-                                firstName: firstNameController.text.trim(),
-                                lastName: lastNameController.text.trim(),
-                                gender: selectedGender,
-                                location: locationController.text.trim(),
-                              );
+                          if (shouldUseCompanyProfile) {
+                            final request = UpdateCompanyRequestDto(
+                              ownerName: ownerController.text.trim(),
+                              email: companyEmailController.text.trim(),
+                              address: companyLocationController.text.trim(),
+                              phone: phoneController.text.trim(),
+                            );
+
+                            ref
+                                .read(marketPlaceControllerProvider.notifier)
+                                .updateCompany(request);
+                          } else {
+                            ref
+                                .read(profileControllerProvider.notifier)
+                                .updateProfile(
+                                  firstName: firstNameController.text.trim(),
+                                  lastName: lastNameController.text.trim(),
+                                  gender: selectedGender,
+                                  location: locationController.text.trim(),
+                                );
+                          }
                         },
-                  child: state.isSaving
+                  child: (state.isSaving || marketState.isSaving)
                       ? const SizedBox(
                           height: 18,
                           width: 18,

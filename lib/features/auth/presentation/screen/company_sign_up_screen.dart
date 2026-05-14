@@ -235,7 +235,13 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
             onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 14),
-
+          AuthTextField(
+            controller: ownerNameController,
+            label: loc.ownerName,
+            hintText: loc.enterOwnerName,
+            onChanged: (_) => setState(() {}),
+          ),
+          const SizedBox(height: 14),
           AuthTextField(
             controller: emailController,
             label: loc.emailAddress,
