@@ -276,7 +276,7 @@ class _NumberOfPanelsScreenState extends State<NumberOfPanelsScreen> {
         ),
         const SizedBox(height: 14),
         DropdownButtonFormField<_SeasonOption>(
-          value: _selectedSeason,
+          initialValue: _selectedSeason,
           decoration: InputDecoration(
             labelText: loc.monthSeason,
             border: const OutlineInputBorder(

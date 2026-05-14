@@ -33,7 +33,7 @@ class CompanyDetailScreen extends StatelessWidget {
                 ? Image.network(
                     company.logo!,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) {
+                    errorBuilder: (_, _, _) {
                       return Icon(
                         Icons.business,
                         size: 70,

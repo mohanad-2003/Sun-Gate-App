@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
@@ -72,38 +73,43 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
     super.dispose();
   }
 
-  bool _isPickingDocument = false;
-  bool _isPickingLogo = false;
+  bool _isPickingImage = false;
 
   Future<void> _pickDocument() async {
-    if (_isPickingDocument) return;
-    _isPickingDocument = true;
+    if (_isPickingImage) return;
+    _isPickingImage = true;
 
     try {
       final image = await _imagePicker.pickImage(source: ImageSource.gallery);
       if (image == null) return;
+      if (!mounted) return;
       setState(() {
         documentPath = image.path;
         documentName = image.name;
       });
+    } on PlatformException catch (e) {
+      if (e.code != 'already_active') rethrow;
     } finally {
-      _isPickingDocument = false;
+      _isPickingImage = false;
     }
   }
 
   Future<void> _pickLogo() async {
-    if (_isPickingLogo) return;
-    _isPickingLogo = true;
+    if (_isPickingImage) return;
+    _isPickingImage = true;
 
     try {
       final image = await _imagePicker.pickImage(source: ImageSource.gallery);
       if (image == null) return;
+      if (!mounted) return;
       setState(() {
         logoPath = image.path;
         logoName = image.name;
       });
+    } on PlatformException catch (e) {
+      if (e.code != 'already_active') rethrow;
     } finally {
-      _isPickingLogo = false;
+      _isPickingImage = false;
     }
   }
 

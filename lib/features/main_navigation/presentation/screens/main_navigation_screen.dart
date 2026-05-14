@@ -19,9 +19,12 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-      () => ref.read(marketPlaceControllerProvider.notifier).getMyCompany(),
-    );
+    Future.microtask(() {
+      final marketState = ref.read(marketPlaceControllerProvider);
+      if (marketState.myCompany == null && !marketState.isLoading) {
+        ref.read(marketPlaceControllerProvider.notifier).getMyCompany();
+      }
+    });
   }
 
   @override

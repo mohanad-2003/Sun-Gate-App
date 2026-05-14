@@ -85,6 +85,8 @@
   "login": "Login",
   "loginWelcomeTitle": "Hi, Welcome Back ! 👋",
   "loginWelcomeSubtitle": "Sun Gate welcomes you",
+  "companyPendingReviewTitle": "Your request is under review",
+  "companyPendingReviewSubtitle": "Your company request has been submitted successfully. You can log in once the admin approves and activates your account.",
   "enterEmailAddress": "Enter your email address",
   "enterPassword": "Enter your password",
   "forgotPassword": "Forgot Password?",

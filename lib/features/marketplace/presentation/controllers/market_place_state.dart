@@ -4,6 +4,8 @@ import 'package:sun_gate_app/features/marketplace/domain/entities/product_entity
 import 'package:sun_gate_app/features/marketplace/domain/entities/reservation_entity.dart';
 
 class MarketPlaceState {
+  static const _undefined = Object();
+
   final bool isLoading;
   final bool isSaving;
   final String? errorMessage;
@@ -53,7 +55,7 @@ class MarketPlaceState {
     String? errorMessage,
     String? successMessage,
     List<CompanyEntity>? companies,
-    CompanyEntity? myCompany,
+    Object? myCompany = _undefined,
     List<EngineerEntity>? engineers,
     EngineerEntity? myEngineer,
     List<ProductEntity>? products,
@@ -66,7 +68,9 @@ class MarketPlaceState {
       errorMessage: errorMessage,
       successMessage: successMessage,
       companies: companies ?? this.companies,
-      myCompany: myCompany ?? this.myCompany,
+      myCompany: myCompany == _undefined
+          ? this.myCompany
+          : myCompany as CompanyEntity?,
       engineers: engineers ?? this.engineers,
       myEngineer: myEngineer ?? this.myEngineer,
       products: products ?? this.products,

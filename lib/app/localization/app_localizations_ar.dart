@@ -284,6 +284,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginWelcomeSubtitle => 'بوابة الشمس ترحب بك';
 
   @override
+  String get companyPendingReviewTitle => 'طلبك قيد المراجعة';
+
+  @override
+  String get companyPendingReviewSubtitle =>
+      'تم إنشاء طلب الشركة بنجاح. يمكنك تسجيل الدخول بعد موافقة الإدارة وتفعيل الحساب.';
+
+  @override
   String get enterEmailAddress => 'أدخل بريدك الإلكتروني';
 
   @override
