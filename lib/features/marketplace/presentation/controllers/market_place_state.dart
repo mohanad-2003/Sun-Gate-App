@@ -17,6 +17,7 @@ class MarketPlaceState {
   final List<EngineerEntity> engineers;
   final EngineerEntity? myEngineer;
   final List<ProductEntity> products;
+  final Set<String> ownedProductKeys;
   final List<ReservationEntity> myReservations;
   final List<ReservationEntity> sellerReservations;
   const MarketPlaceState({
@@ -29,6 +30,7 @@ class MarketPlaceState {
     required this.engineers,
     required this.myEngineer,
     required this.products,
+    required this.ownedProductKeys,
     required this.myReservations,
     required this.sellerReservations,
   });
@@ -44,6 +46,7 @@ class MarketPlaceState {
       engineers: [],
       myEngineer: null,
       products: [],
+      ownedProductKeys: {},
       myReservations: [],
       sellerReservations: [],
     );
@@ -59,6 +62,7 @@ class MarketPlaceState {
     List<EngineerEntity>? engineers,
     EngineerEntity? myEngineer,
     List<ProductEntity>? products,
+    Set<String>? ownedProductKeys,
     List<ReservationEntity>? myReservations,
     List<ReservationEntity>? sellerReservations,
   }) {
@@ -74,6 +78,7 @@ class MarketPlaceState {
       engineers: engineers ?? this.engineers,
       myEngineer: myEngineer ?? this.myEngineer,
       products: products ?? this.products,
+      ownedProductKeys: ownedProductKeys ?? this.ownedProductKeys,
       myReservations: myReservations ?? this.myReservations,
       sellerReservations: sellerReservations ?? this.sellerReservations,
     );

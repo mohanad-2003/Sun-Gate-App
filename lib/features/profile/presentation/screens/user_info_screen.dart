@@ -38,6 +38,18 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
 
     if (file == null) return;
 
+    final myCompany = ref.read(marketPlaceControllerProvider).myCompany;
+    if (myCompany != null) {
+      final logo = myCompany.logo;
+      if (logo != null && logo.isNotEmpty) {
+        await NetworkImage(logo).evict();
+      }
+      await ref
+          .read(marketPlaceControllerProvider.notifier)
+          .uploadCompanyLogo(filePath: file.path);
+      return;
+    }
+
     await ref
         .read(profileControllerProvider.notifier)
         .uploadProfilePicture(filePath: file.path);
@@ -77,6 +89,15 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
     });
   }
 
+  String _dateOnly(String value) {
+    final date = DateTime.tryParse(value);
+    if (date == null) return value;
+
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '${date.year}-$month-$day';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -95,15 +116,19 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
         : 'male';
 
     ownerController = TextEditingController(text: myCompany?.ownerName ?? '');
-    descriptionController = TextEditingController();
+    descriptionController = TextEditingController(
+      text: myCompany?.description ?? '',
+    );
     companyLocationController = TextEditingController(
       text: myCompany?.address ?? '',
     );
     phoneController = TextEditingController(text: myCompany?.phone ?? '');
     establishmentDateController = TextEditingController(
-      text: myCompany?.establishmentDate ?? '',
+      text: _dateOnly(myCompany?.establishmentDate ?? ''),
     );
-    engineerNumberController = TextEditingController();
+    engineerNumberController = TextEditingController(
+      text: myCompany?.engineerNumber ?? '',
+    );
 
     if (profile?.location == null || profile!.location!.isEmpty) {
       _loadCurrentLocation();
@@ -154,9 +179,13 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
 
     if (myCompany != null && !_didPopulateCompanyData) {
       ownerController.text = myCompany.ownerName;
+      descriptionController.text = myCompany.description ?? '';
       companyLocationController.text = myCompany.address;
       phoneController.text = myCompany.phone;
-      establishmentDateController.text = myCompany.establishmentDate ?? '';
+      engineerNumberController.text = myCompany.engineerNumber ?? '';
+      establishmentDateController.text = _dateOnly(
+        myCompany.establishmentDate ?? '',
+      );
       _didPopulateCompanyData = true;
     }
 
@@ -293,7 +322,6 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                 TextField(
                   controller: descriptionController,
                   maxLines: 3,
-                  enabled: false,
                 ),
                 const SizedBox(height: 16),
                 ProfileSectionLabel(title: loc.location),
@@ -312,12 +340,8 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                 TextField(
                   controller: establishmentDateController,
                   readOnly: true,
-                  onTap: _pickCompanyEstablishmentDate,
+                  enabled: false,
                   decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      onPressed: _pickCompanyEstablishmentDate,
-                      icon: const Icon(Icons.edit_calendar),
-                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -326,7 +350,11 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                 const SizedBox(height: 16),
                 ProfileSectionLabel(title: loc.engineerNumber),
                 const SizedBox(height: 8),
-                TextField(controller: engineerNumberController, enabled: false),
+                TextField(
+                  controller: engineerNumberController,
+                  enabled: false,
+                  keyboardType: TextInputType.phone,
+                ),
                 const SizedBox(height: 16),
               ] else ...[
                 ProfileSectionLabel(title: loc.firstName),
@@ -449,11 +477,9 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                           if (shouldUseCompanyProfile) {
                             final request = UpdateCompanyRequestDto(
                               ownerName: ownerController.text.trim(),
+                              description: descriptionController.text.trim(),
                               address: companyLocationController.text.trim(),
                               phone: phoneController.text.trim(),
-                              establishmentDate: establishmentDateController
-                                  .text
-                                  .trim(),
                             );
 
                             ref

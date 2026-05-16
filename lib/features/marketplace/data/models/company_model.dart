@@ -8,6 +8,8 @@ class CompanyModel extends CompanyEntity {
     required super.email,
     required super.address,
     required super.phone,
+    super.description,
+    super.engineerNumber,
     super.establishmentDate,
     super.logo,
     super.createAt,
@@ -22,6 +24,14 @@ class CompanyModel extends CompanyEntity {
       email: json['email']?.toString() ?? '',
       address: json['address']?.toString() ?? '',
       phone: json['phone']?.toString() ?? '',
+      description:
+          json['description']?.toString() ??
+          json['about']?.toString() ??
+          json['bio']?.toString(),
+      engineerNumber:
+          json['engineerNumber']?.toString() ??
+          json['engineersNumber']?.toString() ??
+          json['engineerPhone']?.toString(),
       establishmentDate: json['establishmentDate']?.toString(),
       logo: json['logo']?.toString(),
       createAt: json['createAt']?.toString(),

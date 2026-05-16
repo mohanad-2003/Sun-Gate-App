@@ -5,9 +5,7 @@ class UpdateProductRequestDto {
   final double? price;
   final String? condition;
   final String? status;
-  final String? sellAs;
   final bool? replaceImages;
-  final List<String>? existingImageUrls;
 
   const UpdateProductRequestDto({
     this.title,
@@ -16,9 +14,7 @@ class UpdateProductRequestDto {
     this.price,
     this.condition,
     this.status,
-    this.sellAs,
     this.replaceImages,
-    this.existingImageUrls,
   });
 
   Map<String, dynamic> toJson() {
@@ -29,9 +25,7 @@ class UpdateProductRequestDto {
       if (price != null) 'price': price,
       if (condition != null) 'condition': condition,
       if (status != null) 'status': status,
-      if (sellAs != null) 'sellAs': sellAs,
       if (replaceImages != null) 'replaceImages': replaceImages,
-      if (existingImageUrls != null) 'existingImageUrls': existingImageUrls,
     };
   }
 }

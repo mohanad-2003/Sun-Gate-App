@@ -18,6 +18,7 @@ class RouteNames {
   static const String allCompanies = '/companies';
   static const String categoryProducts = '/category-products';
   static const String createProduct = '/create-product';
+  static const String editProduct = '/edit-product';
   static const String market = '/market';
   static const companyDetail = '/company-detail';
   static const productDetail = '/product-detail';
