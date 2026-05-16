@@ -14,11 +14,11 @@ class ProductDetailScreen extends StatelessWidget {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FB),
+      backgroundColor: theme.scaffoldBackgroundColor, // ✅ كان Color(0xFFF5F7FB)
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 300,
+            expandedHeight: 320,
             pinned: true,
             stretch: true,
             backgroundColor: colorScheme.primary,
@@ -38,25 +38,53 @@ class ProductDetailScreen extends StatelessWidget {
             ),
             flexibleSpace: FlexibleSpaceBar(
               stretchModes: const [StretchMode.zoomBackground],
-              background: imageUrl.isNotEmpty
-                  ? Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                          _imagePlaceholder(colorScheme),
-                    )
-                  : _imagePlaceholder(colorScheme),
+              background: Stack(
+                fit: StackFit.expand,
+                children: [
+                  imageUrl.isNotEmpty
+                      ? Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) =>
+                              _imagePlaceholder(colorScheme),
+                        )
+                      : _imagePlaceholder(colorScheme),
+                  // gradient للأسفل عشان يندمج مع الكارد
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: 80,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withValues(alpha: 0.18),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
+
           SliverToBoxAdapter(
             child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+              decoration: BoxDecoration(
+                color: theme.scaffoldBackgroundColor, // ✅ كان Colors.white ثابت
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(28),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // ── Header: العنوان + السعر ──
                   Padding(
                     padding: const EdgeInsets.fromLTRB(18, 24, 18, 0),
                     child: Row(
@@ -66,6 +94,7 @@ class ProductDetailScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // Category badge
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 10,
@@ -73,7 +102,7 @@ class ProductDetailScreen extends StatelessWidget {
                                 ),
                                 decoration: BoxDecoration(
                                   color: colorScheme.primary.withValues(
-                                    alpha: 0.08,
+                                    alpha: 0.10,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -97,14 +126,24 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 12),
+                        // Price badge
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 10,
+                            horizontal: 16,
+                            vertical: 12,
                           ),
                           decoration: BoxDecoration(
                             color: colorScheme.primary,
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: colorScheme.primary.withValues(
+                                  alpha: 0.35,
+                                ),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
                           child: Text(
                             '\$${product.price.toStringAsFixed(0)}',
@@ -118,10 +157,15 @@ class ProductDetailScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+
+                  const SizedBox(height: 18),
+
+                  // ── Status badges ──
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18),
-                    child: Row(
+                    child: Wrap(
+                      spacing: 10,
+                      runSpacing: 8,
                       children: [
                         _StatusBadge(
                           icon: Icons.fiber_new_rounded,
@@ -130,7 +174,6 @@ class ProductDetailScreen extends StatelessWidget {
                               ? Colors.green
                               : Colors.orange,
                         ),
-                        const SizedBox(width: 10),
                         _StatusBadge(
                           icon: Icons.circle,
                           label: product.status,
@@ -138,7 +181,6 @@ class ProductDetailScreen extends StatelessWidget {
                               ? Colors.blue
                               : Colors.grey,
                         ),
-                        const SizedBox(width: 10),
                         _StatusBadge(
                           icon: Icons.storefront_outlined,
                           label: product.sellAs,
@@ -147,7 +189,21 @@ class ProductDetailScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 24),
+
+                  // ── Divider ──
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    indent: 18,
+                    endIndent: 18,
+                    color: colorScheme.outlineVariant, // ✅
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // ── Description ──
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18),
                     child: Text(
@@ -168,7 +224,10 @@ class ProductDetailScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 28),
+
+                  // ── More Images ──
                   if (product.images.length > 1) ...[
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -188,8 +247,14 @@ class ProductDetailScreen extends StatelessWidget {
                         itemCount: product.images.length,
                         separatorBuilder: (_, __) => const SizedBox(width: 10),
                         itemBuilder: (context, index) {
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: colorScheme.outlineVariant, // ✅
+                              ),
+                            ),
+                            clipBehavior: Clip.antiAlias,
                             child: Image.network(
                               product.images[index],
                               width: 90,
@@ -202,6 +267,8 @@ class ProductDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 28),
                   ],
+
+                  // ── Reserve Button ──
                   Padding(
                     padding: const EdgeInsets.fromLTRB(18, 0, 18, 32),
                     child: SizedBox(
@@ -210,8 +277,11 @@ class ProductDetailScreen extends StatelessWidget {
                       child: ElevatedButton.icon(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
+                          backgroundColor: colorScheme.primary, // ✅
+                          foregroundColor: Colors.white,
+                          elevation: 0,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(16),
                           ),
                         ),
                         icon: const Icon(Icons.bookmark_add_outlined),
@@ -264,7 +334,7 @@ class _StatusBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

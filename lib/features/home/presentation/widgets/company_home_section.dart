@@ -5,6 +5,7 @@ import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/features/marketplace/domain/entities/company_entity.dart';
 import 'package:sun_gate_app/features/marketplace/domain/entities/product_entity.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CompanyHomeSection extends ConsumerStatefulWidget {
   final CompanyEntity company;
@@ -19,6 +20,55 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
   String _selectedCategory = 'all';
 
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref
+          .read(marketPlaceControllerProvider.notifier)
+          .getEngineers(companyId: widget.company.id);
+    });
+  }
+
+  Future<void> _launchCompanyAction(Uri uri) async {
+    bool launched = false;
+    try {
+      launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      launched = false;
+    }
+
+    if (launched || !mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Could not open this contact option')),
+    );
+  }
+
+  Future<void> _callCompany() async {
+    final phone = widget.company.phone.trim();
+    if (phone.isEmpty) return;
+    await _launchCompanyAction(Uri(scheme: 'tel', path: phone));
+  }
+
+  Future<void> _emailCompany() async {
+    final email = widget.company.email.trim();
+    if (email.isEmpty) return;
+    await _launchCompanyAction(Uri(scheme: 'mailto', path: email));
+  }
+
+  Future<void> _openCompanyLocation() async {
+    final address = widget.company.address.trim();
+    if (address.isEmpty) return;
+
+    await _launchCompanyAction(
+      Uri.https('www.google.com', '/maps/search/', {
+        'api': '1',
+        'query': address,
+      }),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = ref.watch(marketPlaceControllerProvider);
     final theme = Theme.of(context);
@@ -26,6 +76,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final filteredProducts = _filterProducts(state.products);
     final products = filteredProducts.take(4).toList();
+    final engineerCount = state.engineers.length;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor, // ✅ كان Color(0xFFF5F7FB)
@@ -173,16 +224,33 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
                           label: widget.company.address.isNotEmpty
                               ? widget.company.address
                               : (isArabic ? 'العنوان غير متوفر' : 'No address'),
+                          onTap: widget.company.address.isNotEmpty
+                              ? _openCompanyLocation
+                              : null,
                         ),
                         _InfoChip(
                           icon: Icons.phone_outlined,
                           label: widget.company.phone.isNotEmpty
                               ? widget.company.phone
                               : (isArabic ? 'الهاتف غير متوفر' : 'No phone'),
+                          onTap: widget.company.phone.isNotEmpty
+                              ? _callCompany
+                              : null,
                         ),
                         _InfoChip(
                           icon: Icons.email_outlined,
-                          label: widget.company.email,
+                          label: widget.company.email.isNotEmpty
+                              ? widget.company.email
+                              : (isArabic ? 'البريد غير متوفر' : 'No email'),
+                          onTap: widget.company.email.isNotEmpty
+                              ? _emailCompany
+                              : null,
+                        ),
+                        _InfoChip(
+                          icon: Icons.engineering_outlined,
+                          label: isArabic
+                              ? 'عدد المهندسين: $engineerCount'
+                              : 'Engineers: $engineerCount',
                         ),
                       ],
                     ),
@@ -320,7 +388,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(
-                          color: colorScheme.surface, // ✅
+                          color: colorScheme.surface, 
                           borderRadius: BorderRadius.circular(18),
                           border: Border.all(color: colorScheme.outlineVariant),
                         ),
@@ -340,7 +408,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.symmetric(horizontal: 18),
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      separatorBuilder: (_, _) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
                         final product = products[index];
                         return _CompanyProductListTile(
@@ -410,7 +478,7 @@ class _CompanyProductListTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: colorScheme.surface, // ✅ يتغير مع الثيم
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(color: colorScheme.outlineVariant),
         ),
@@ -425,7 +493,7 @@ class _CompanyProductListTile extends StatelessWidget {
                       width: 64,
                       height: 64,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
+                      errorBuilder: (_, _, _) =>
                           _productPlaceholder(colorScheme),
                     )
                   : _productPlaceholder(colorScheme),
@@ -506,19 +574,41 @@ class _CompanyProductListTile extends StatelessWidget {
 class _InfoChip extends StatelessWidget {
   final IconData icon;
   final String label;
+  final VoidCallback? onTap;
 
-  const _InfoChip({required this.icon, required this.label});
+  const _InfoChip({required this.icon, required this.label, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Row(
+    final child = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: 16, color: colorScheme.primary),
         const SizedBox(width: 5),
-        Text(label, style: const TextStyle(fontSize: 13)),
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.sizeOf(context).width - 72,
+          ),
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 13),
+          ),
+        ),
       ],
+    );
+
+    if (onTap == null) return child;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+        child: child,
+      ),
     );
   }
 }
@@ -545,7 +635,7 @@ class _CategoryPill extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? colorScheme.primary
-              : colorScheme.surfaceContainerHighest, // ✅ يتغير مع الثيم
+              : colorScheme.surfaceContainerHighest, 
           borderRadius: BorderRadius.circular(14),
         ),
         child: Text(
