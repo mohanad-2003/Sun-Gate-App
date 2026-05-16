@@ -89,13 +89,14 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(marketPlaceControllerProvider);
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FB),
+      backgroundColor: theme.scaffoldBackgroundColor, // ✅ كان Color(0xFFF5F7FB)
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.appBarTheme.backgroundColor, // ✅ من الثيم
         elevation: 0,
         centerTitle: true,
         title: Text(
@@ -121,9 +122,9 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
                   width: double.infinity,
                   height: 180,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: colorScheme.surface, // ✅ كان Colors.white
                     borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: const Color(0xFFE4E7EC)),
+                    border: Border.all(color: colorScheme.outlineVariant), // ✅
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: _selectedImage != null
@@ -155,7 +156,7 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
                                   ? 'اضغط لاختيار صورة'
                                   : 'Tap to select image',
                               style: TextStyle(
-                                color: colorScheme.onSurfaceVariant,
+                                color: colorScheme.onSurfaceVariant, // ✅
                                 fontSize: 13,
                               ),
                             ),
@@ -169,9 +170,9 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
               Container(
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colorScheme.surface, // ✅ كان Colors.white
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: const Color(0xFFE4E7EC)),
+                  border: Border.all(color: colorScheme.outlineVariant), // ✅
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,6 +182,7 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
                     ),
                     const SizedBox(height: 14),
                     _buildField(
+                      context: context,
                       controller: _titleController,
                       label: isArabic ? 'اسم المنتج' : 'Product Name',
                       hint: isArabic ? 'أدخل اسم المنتج' : 'Enter product name',
@@ -189,6 +191,7 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
                     ),
                     const SizedBox(height: 14),
                     _buildField(
+                      context: context,
                       controller: _descriptionController,
                       label: isArabic ? 'الوصف' : 'Description',
                       hint: isArabic ? 'أدخل وصف المنتج' : 'Enter description',
@@ -196,6 +199,7 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
                     ),
                     const SizedBox(height: 14),
                     _buildField(
+                      context: context,
                       controller: _priceController,
                       label: isArabic ? 'السعر' : 'Price',
                       hint: '0.00',
@@ -218,9 +222,9 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
               Container(
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colorScheme.surface, // ✅
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: const Color(0xFFE4E7EC)),
+                  border: Border.all(color: colorScheme.outlineVariant), // ✅
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,7 +246,7 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
                             decoration: BoxDecoration(
                               color: selected
                                   ? colorScheme.primary
-                                  : colorScheme.surfaceContainerHighest,
+                                  : colorScheme.surfaceContainerHighest, // ✅
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
@@ -250,7 +254,9 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 13,
-                                color: selected ? Colors.white : null,
+                                color: selected
+                                    ? Colors.white
+                                    : colorScheme.onSurfaceVariant, // ✅
                               ),
                             ),
                           ),
@@ -266,9 +272,9 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
               Container(
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colorScheme.surface, // ✅
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: const Color(0xFFE4E7EC)),
+                  border: Border.all(color: colorScheme.outlineVariant), // ✅
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,6 +284,7 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
                     ),
                     const SizedBox(height: 14),
                     _buildDropdown(
+                      context: context,
                       label: isArabic ? 'الحالة' : 'Condition',
                       value: _condition,
                       items: const [
@@ -290,6 +297,7 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
                     ),
                     const SizedBox(height: 14),
                     _buildDropdown(
+                      context: context,
                       label: isArabic ? 'الظهور' : 'Status',
                       value: _status,
                       items: const [
@@ -309,6 +317,7 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
                     ),
                     const SizedBox(height: 14),
                     _buildDropdown(
+                      context: context,
                       label: isArabic ? 'البيع كـ' : 'Sell As',
                       value: _sellAs,
                       items: const [
@@ -364,6 +373,7 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
   }
 
   Widget _buildField({
+    required BuildContext context,
     required TextEditingController controller,
     required String label,
     required String hint,
@@ -372,6 +382,8 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
     Widget? prefixIcon,
     String? Function(String?)? validator,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return TextFormField(
       controller: controller,
       maxLines: maxLines,
@@ -384,35 +396,39 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFE4E7EC)),
+          borderSide: BorderSide(color: colorScheme.outlineVariant), // ✅
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+          borderSide: BorderSide(color: colorScheme.primary),
         ),
         filled: true,
-        fillColor: const Color(0xFFF9FAFB),
+        fillColor: colorScheme.surfaceContainerHighest, // ✅ كان Color(0xFFF9FAFB)
       ),
     );
   }
 
   Widget _buildDropdown({
+    required BuildContext context,
     required String label,
     required String value,
     required List<DropdownMenuItem<String>> items,
     required void Function(String?) onChanged,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return DropdownButtonFormField<String>(
       value: value,
+      dropdownColor: colorScheme.surface, // ✅ لون قائمة الـ dropdown
       decoration: InputDecoration(
         labelText: label,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFE4E7EC)),
+          borderSide: BorderSide(color: colorScheme.outlineVariant), // ✅
         ),
         filled: true,
-        fillColor: const Color(0xFFF9FAFB),
+        fillColor: colorScheme.surfaceContainerHighest, // ✅
       ),
       items: items,
       onChanged: onChanged,
@@ -428,10 +444,10 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       label,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w700,
-        color: Color(0xFF274777),
+        color: Theme.of(context).colorScheme.primary, // ✅ كان Color(0xFF274777) ثابت
       ),
     );
   }

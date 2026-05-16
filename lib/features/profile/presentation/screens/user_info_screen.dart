@@ -25,7 +25,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
   late final TextEditingController descriptionController;
   late final TextEditingController companyLocationController;
   late final TextEditingController phoneController;
-  late final TextEditingController companyEmailController;
+  late final TextEditingController establishmentDateController;
   late final TextEditingController engineerNumberController;
 
   String selectedGender = 'male';
@@ -57,6 +57,26 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
     }
   }
 
+  Future<void> _pickCompanyEstablishmentDate() async {
+    final currentDate =
+        DateTime.tryParse(establishmentDateController.text) ?? DateTime.now();
+    final date = await showDatePicker(
+      context: context,
+      initialDate: currentDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (date == null || !mounted) return;
+
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+
+    setState(() {
+      establishmentDateController.text = '${date.year}-$month-$day';
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -80,8 +100,8 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
       text: myCompany?.address ?? '',
     );
     phoneController = TextEditingController(text: myCompany?.phone ?? '');
-    companyEmailController = TextEditingController(
-      text: myCompany?.email ?? '',
+    establishmentDateController = TextEditingController(
+      text: myCompany?.establishmentDate ?? '',
     );
     engineerNumberController = TextEditingController();
 
@@ -106,7 +126,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
     descriptionController.dispose();
     companyLocationController.dispose();
     phoneController.dispose();
-    companyEmailController.dispose();
+    establishmentDateController.dispose();
     engineerNumberController.dispose();
     super.dispose();
   }
@@ -136,7 +156,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
       ownerController.text = myCompany.ownerName;
       companyLocationController.text = myCompany.address;
       phoneController.text = myCompany.phone;
-      companyEmailController.text = myCompany.email;
+      establishmentDateController.text = myCompany.establishmentDate ?? '';
       _didPopulateCompanyData = true;
     }
 
@@ -287,11 +307,21 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                   keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 16),
-                ProfileSectionLabel(title: loc.email),
+                ProfileSectionLabel(title: loc.establishmentDate),
                 const SizedBox(height: 8),
                 TextField(
-                  controller: companyEmailController,
-                  keyboardType: TextInputType.emailAddress,
+                  controller: establishmentDateController,
+                  readOnly: true,
+                  onTap: _pickCompanyEstablishmentDate,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      onPressed: _pickCompanyEstablishmentDate,
+                      icon: const Icon(Icons.edit_calendar),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 ProfileSectionLabel(title: loc.engineerNumber),
@@ -419,9 +449,11 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                           if (shouldUseCompanyProfile) {
                             final request = UpdateCompanyRequestDto(
                               ownerName: ownerController.text.trim(),
-                              email: companyEmailController.text.trim(),
                               address: companyLocationController.text.trim(),
                               phone: phoneController.text.trim(),
+                              establishmentDate: establishmentDateController
+                                  .text
+                                  .trim(),
                             );
 
                             ref

@@ -28,7 +28,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
     final products = filteredProducts.take(4).toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FB),
+      backgroundColor: theme.scaffoldBackgroundColor, // ✅ كان Color(0xFFF5F7FB)
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -98,8 +98,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
                             ),
                           ),
                           clipBehavior: Clip.antiAlias,
-                          child:
-                              widget.company.logo != null &&
+                          child: widget.company.logo != null &&
                                   widget.company.logo!.isNotEmpty
                               ? Image.network(
                                   widget.company.logo!,
@@ -154,7 +153,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
           SliverToBoxAdapter(
             child: Container(
               decoration: BoxDecoration(
-                color: theme.scaffoldBackgroundColor,
+                color: theme.scaffoldBackgroundColor, // ✅ كان theme.scaffoldBackgroundColor بالفعل صح
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(28),
                 ),
@@ -321,7 +320,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(
-                          color: colorScheme.surface,
+                          color: colorScheme.surface, // ✅
                           borderRadius: BorderRadius.circular(18),
                           border: Border.all(color: colorScheme.outlineVariant),
                         ),
@@ -411,7 +410,7 @@ class _CompanyProductListTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: colorScheme.surface,
+          color: colorScheme.surface, // ✅ يتغير مع الثيم
           borderRadius: BorderRadius.circular(18),
           border: Border.all(color: colorScheme.outlineVariant),
         ),
@@ -546,14 +545,14 @@ class _CategoryPill extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? colorScheme.primary
-              : colorScheme.surfaceContainerHighest,
+              : colorScheme.surfaceContainerHighest, // ✅ يتغير مع الثيم
           borderRadius: BorderRadius.circular(14),
         ),
         child: Text(
           label,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w600,
-            color: isSelected ? Colors.white : null,
+            color: isSelected ? Colors.white : colorScheme.onSurfaceVariant,
           ),
         ),
       ),
