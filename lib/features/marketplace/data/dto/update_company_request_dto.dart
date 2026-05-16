@@ -4,6 +4,7 @@ class UpdateCompanyRequestDto {
   final String? email;
   final String? address;
   final String? phone;
+  final String? establishmentDate;
 
   const UpdateCompanyRequestDto({
     this.companyName,
@@ -11,6 +12,7 @@ class UpdateCompanyRequestDto {
     this.email,
     this.address,
     this.phone,
+    this.establishmentDate,
   });
 
   Map<String, dynamic> toJson() {
@@ -29,6 +31,9 @@ class UpdateCompanyRequestDto {
     }
     if (phone != null && phone!.trim().isNotEmpty) {
       map['phone'] = phone!.trim();
+    }
+    if (establishmentDate != null && establishmentDate!.trim().isNotEmpty) {
+      map['establishmentDate'] = establishmentDate!.trim();
     }
     return map;
   }

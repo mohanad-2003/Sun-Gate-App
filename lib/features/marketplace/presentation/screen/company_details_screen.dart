@@ -4,10 +4,7 @@ import 'package:sun_gate_app/features/marketplace/domain/entities/company_entity
 class CompanyDetailScreen extends StatelessWidget {
   final CompanyEntity company;
 
-  const CompanyDetailScreen({
-    super.key,
-    required this.company,
-  });
+  const CompanyDetailScreen({super.key, required this.company});
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +12,7 @@ class CompanyDetailScreen extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor, // ✅
       appBar: AppBar(
         title: const Text('Company Detail'),
         centerTitle: true,
@@ -25,7 +23,7 @@ class CompanyDetailScreen extends StatelessWidget {
           Container(
             height: 190,
             decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest,
+              color: colorScheme.surfaceContainerHighest, // ✅
               borderRadius: BorderRadius.circular(24),
             ),
             clipBehavior: Clip.antiAlias,
@@ -33,7 +31,7 @@ class CompanyDetailScreen extends StatelessWidget {
                 ? Image.network(
                     company.logo!,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) {
+                    errorBuilder: (_, __, ___) {
                       return Icon(
                         Icons.business,
                         size: 70,
@@ -41,11 +39,7 @@ class CompanyDetailScreen extends StatelessWidget {
                       );
                     },
                   )
-                : Icon(
-                    Icons.business,
-                    size: 70,
-                    color: colorScheme.primary,
-                  ),
+                : Icon(Icons.business, size: 70, color: colorScheme.primary),
           ),
 
           const SizedBox(height: 20),
@@ -81,6 +75,7 @@ class CompanyDetailScreen extends StatelessWidget {
               onPressed: () {},
               icon: const Icon(Icons.call),
               label: const Text('Contact Company'),
+              // يأخذ الألوان من elevatedButtonTheme تلقائياً ✅
             ),
           ),
         ],
@@ -108,7 +103,7 @@ class _InfoTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: colorScheme.surface,
+        color: colorScheme.surface, // ✅ يتغير مع الثيم
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: colorScheme.outlineVariant),
       ),
@@ -120,7 +115,12 @@ class _InfoTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: theme.textTheme.labelMedium),
+                Text(
+                  title,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
                 const SizedBox(height: 4),
                 Text(
                   value,
