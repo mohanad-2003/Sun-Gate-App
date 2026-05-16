@@ -26,6 +26,7 @@ import 'package:sun_gate_app/features/marketplace/domain/entities/product_entity
 import 'package:sun_gate_app/features/marketplace/presentation/screen/all_company_screen.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/screen/company_details_screen.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/screen/create_product_screen.dart';
+import 'package:sun_gate_app/features/marketplace/presentation/screen/edit_product_screen.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/screen/market_screen.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/screen/product_details_screen.dart';
 import 'package:sun_gate_app/features/notifications/presentation/screens/notification_screen.dart';
@@ -138,6 +139,13 @@ class AppRouter {
       GoRoute(
         path: RouteNames.createProduct,
         builder: (context, state) => const CreateProductScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.editProduct,
+        builder: (context, state) {
+          final product = state.extra as ProductEntity;
+          return EditProductScreen(product: product);
+        },
       ),
       GoRoute(
         path: RouteNames.main,

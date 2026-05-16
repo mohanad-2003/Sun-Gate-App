@@ -5,6 +5,8 @@ class CompanyEntity {
   final String email;
   final String address;
   final String phone;
+  final String? description;
+  final String? engineerNumber;
   final String? establishmentDate;
   final String? logo;
   final String? createAt;
@@ -17,6 +19,8 @@ class CompanyEntity {
     required this.email,
     required this.address,
     required this.phone,
+    this.description,
+    this.engineerNumber,
     this.establishmentDate,
     this.logo,
     this.createAt,

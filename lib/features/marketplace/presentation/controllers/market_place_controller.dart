@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sun_gate_app/features/marketplace/data/dto/update_company_request_dto.dart';
 import 'package:sun_gate_app/features/marketplace/domain/entities/company_entity.dart';
 import 'package:sun_gate_app/features/marketplace/domain/repositories/market_place_repository.dart';
@@ -14,10 +15,13 @@ final marketPlaceControllerProvider =
     });
 
 class MarketPlaceController extends StateNotifier<MarketPlaceState> {
+  static const _ownedProductKeysPrefsKey = 'marketplace_owned_product_keys';
+
   final MarketPlaceRepository repository;
 
   MarketPlaceController({required this.repository})
     : super(MarketPlaceState.initial()) {
+    _loadOwnedProductKeys();
     getCompanies();
     getProducts();
   }
@@ -122,8 +126,36 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
     } catch (e) {
       state = state.copyWith(
         isSaving: false,
-        errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        errorMessage: _errorMessage(e),
       );
+      return false;
+    }
+  }
+
+  Future<bool> uploadCompanyLogo({required String filePath}) async {
+    final company = state.myCompany;
+    if (company == null) return false;
+
+    state = state.copyWith(
+      isSaving: true,
+      errorMessage: null,
+      successMessage: null,
+    );
+
+    try {
+      final updatedCompany = await repository.uploadCompanyLogo(
+        companyId: company.id,
+        filePath: filePath,
+      );
+
+      state = state.copyWith(
+        isSaving: false,
+        myCompany: updatedCompany,
+        successMessage: 'Company logo updated successfully',
+      );
+      return true;
+    } catch (e) {
+      state = state.copyWith(isSaving: false, errorMessage: _errorMessage(e));
       return false;
     }
   }
@@ -136,12 +168,18 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
     );
 
     try {
-      await repository.createProduct(formData);
+      final createdProduct = await repository.createProduct(formData);
       await getProducts();
       state = state.copyWith(
         isSaving: false,
+        ownedProductKeys: {
+          ...state.ownedProductKeys,
+          if (state.myCompany != null)
+            _ownedProductKey(state.myCompany!.id, createdProduct.id),
+        },
         successMessage: 'Product created successfully',
       );
+      await _saveOwnedProductKeys(state.ownedProductKeys);
       return true;
     } catch (e) {
       state = state.copyWith(
@@ -150,5 +188,96 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
       );
       return false;
     }
+  }
+
+  Future<bool> updateProduct({
+    required String productId,
+    required FormData formData,
+  }) async {
+    state = state.copyWith(
+      isSaving: true,
+      errorMessage: null,
+      successMessage: null,
+    );
+
+    try {
+      await repository.updateProduct(productId: productId, formData: formData);
+      await getProducts();
+      state = state.copyWith(
+        isSaving: false,
+        successMessage: 'Product updated successfully',
+      );
+      return true;
+    } catch (e) {
+      final message = _errorMessage(e);
+      state = state.copyWith(
+        isSaving: false,
+        errorMessage: message,
+      );
+      return false;
+    }
+  }
+
+  Future<bool> deleteProduct(String productId) async {
+    state = state.copyWith(
+      isSaving: true,
+      errorMessage: null,
+      successMessage: null,
+    );
+
+    try {
+      await repository.deleteProduct(productId);
+      await getProducts();
+      final ownedProductKeys = {...state.ownedProductKeys};
+      if (state.myCompany != null) {
+        ownedProductKeys.remove(
+          _ownedProductKey(state.myCompany!.id, productId),
+        );
+      }
+      state = state.copyWith(
+        isSaving: false,
+        ownedProductKeys: ownedProductKeys,
+        successMessage: 'Product deleted successfully',
+      );
+      await _saveOwnedProductKeys(state.ownedProductKeys);
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isSaving: false,
+        errorMessage: e.toString().replaceFirst('Exception: ', ''),
+      );
+      return false;
+    }
+  }
+
+  String _errorMessage(Object error) {
+    if (error is DioException) {
+      final data = error.response?.data;
+      if (data is Map<String, dynamic>) {
+        return data['message']?.toString() ??
+            data['error']?.toString() ??
+            error.message ??
+            'Request failed';
+      }
+      if (data != null) return data.toString();
+      return error.message ?? 'Request failed';
+    }
+
+    return error.toString().replaceFirst('Exception: ', '');
+  }
+
+  String _ownedProductKey(String companyId, String productId) {
+    return '${companyId.trim()}:${productId.trim()}';
+  }
+
+  Future<void> _loadOwnedProductKeys() async {
+    final prefs = await SharedPreferences.getInstance();
+    final keys = prefs.getStringList(_ownedProductKeysPrefsKey) ?? const [];
+    state = state.copyWith(ownedProductKeys: keys.toSet());
+  }
+
+  Future<void> _saveOwnedProductKeys(Set<String> keys) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(_ownedProductKeysPrefsKey, keys.toList());
   }
 }

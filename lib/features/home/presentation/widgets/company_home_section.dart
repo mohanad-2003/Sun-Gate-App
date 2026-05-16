@@ -19,16 +19,6 @@ class CompanyHomeSection extends ConsumerStatefulWidget {
 class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
   String _selectedCategory = 'all';
 
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      ref
-          .read(marketPlaceControllerProvider.notifier)
-          .getEngineers(companyId: widget.company.id);
-    });
-  }
-
   Future<void> _launchCompanyAction(Uri uri) async {
     bool launched = false;
     try {
@@ -47,7 +37,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
   Future<void> _callCompany() async {
     final phone = widget.company.phone.trim();
     if (phone.isEmpty) return;
-    await _launchCompanyAction(Uri(scheme: 'tel', path: phone));
+    await _openWhatsApp(phone);
   }
 
   Future<void> _emailCompany() async {
@@ -68,6 +58,31 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
     );
   }
 
+  Future<void> _openEngineerWhatsApp() async {
+    final engineerNumber = widget.company.engineerNumber?.trim() ?? '';
+    if (engineerNumber.isEmpty) return;
+    await _openWhatsApp(engineerNumber);
+  }
+
+  Future<void> _openWhatsApp(String phone) async {
+    final normalizedPhone = _normalizeWhatsAppPhone(phone);
+    if (normalizedPhone.isEmpty) return;
+
+    await _launchCompanyAction(Uri.https('wa.me', '/$normalizedPhone'));
+  }
+
+  String _normalizeWhatsAppPhone(String phone) {
+    var normalized = phone.trim();
+    if (normalized.startsWith('00')) {
+      normalized = normalized.substring(2);
+    }
+    normalized = normalized.replaceAll(RegExp(r'[^0-9]'), '');
+    if (normalized.startsWith('0')) {
+      normalized = '970${normalized.substring(1)}';
+    }
+    return normalized;
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(marketPlaceControllerProvider);
@@ -76,7 +91,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final filteredProducts = _filterProducts(state.products);
     final products = filteredProducts.take(4).toList();
-    final engineerCount = state.engineers.length;
+    final engineerNumber = widget.company.engineerNumber?.trim() ?? '';
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor, // ✅ كان Color(0xFFF5F7FB)
@@ -248,9 +263,14 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
                         ),
                         _InfoChip(
                           icon: Icons.engineering_outlined,
-                          label: isArabic
-                              ? 'عدد المهندسين: $engineerCount'
-                              : 'Engineers: $engineerCount',
+                          label: engineerNumber.isNotEmpty
+                              ? engineerNumber
+                              : (isArabic
+                                    ? 'رقم المهندس غير متوفر'
+                                    : 'No engineer number'),
+                          onTap: engineerNumber.isNotEmpty
+                              ? _openEngineerWhatsApp
+                              : null,
                         ),
                       ],
                     ),
@@ -269,7 +289,9 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18),
                     child: Text(
-                      isArabic
+                      widget.company.description?.trim().isNotEmpty == true
+                          ? widget.company.description!.trim()
+                          : isArabic
                           ? 'هذه واجهة الشركة داخل الصفحة الرئيسية. يمكنك منها استعراض بيانات الشركة، فتح السوق، إضافة منتج جديد، ومشاهدة المنتجات حسب القسم.'
                           : 'This company home highlights company details, quick market access, product creation, and category-based browsing.',
                       style: theme.textTheme.bodyMedium?.copyWith(
@@ -413,6 +435,11 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
                         final product = products[index];
                         return _CompanyProductListTile(
                           product: product,
+                          canManage:
+                              state.ownedProductKeys.contains(
+                                _ownedProductKey(product),
+                              ) ||
+                              _canManageProduct(product),
                           onTap: () => context.push(
                             RouteNames.productDetail,
                             extra: product,
@@ -458,19 +485,92 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
       }
     }).toList();
   }
+
+  bool _canManageProduct(ProductEntity product) {
+    if (product.isOwnedByCurrentUser != null) {
+      return product.isOwnedByCurrentUser!;
+    }
+
+    final ownerCompanyId = product.ownerCompanyId?.trim();
+    final currentCompanyId = widget.company.id.trim();
+
+    return ownerCompanyId != null &&
+        ownerCompanyId.isNotEmpty &&
+        currentCompanyId.isNotEmpty &&
+        ownerCompanyId == currentCompanyId;
+  }
+
+  String _ownedProductKey(ProductEntity product) {
+    return '${widget.company.id.trim()}:${product.id.trim()}';
+  }
 }
 
-class _CompanyProductListTile extends StatelessWidget {
+class _CompanyProductListTile extends ConsumerWidget {
   final ProductEntity product;
+  final bool canManage;
   final VoidCallback onTap;
 
-  const _CompanyProductListTile({required this.product, required this.onTap});
+  const _CompanyProductListTile({
+    required this.product,
+    required this.canManage,
+    required this.onTap,
+  });
+
+  Future<void> _editProduct(BuildContext context) async {
+    await context.push(RouteNames.editProduct, extra: product);
+  }
+
+  Future<void> _deleteProduct(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete product?'),
+          content: Text(
+            'This will permanently delete "${product.title}". This action cannot be undone.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: FilledButton.styleFrom(backgroundColor: Colors.red),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
+    final success = await ref
+        .read(marketPlaceControllerProvider.notifier)
+        .deleteProduct(product.id);
+
+    if (!context.mounted) return;
+
+    final state = ref.read(marketPlaceControllerProvider);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          success
+              ? 'Product deleted successfully'
+              : (state.errorMessage ?? 'Failed to delete product'),
+        ),
+        backgroundColor: success ? Colors.green : Colors.red,
+      ),
+    );
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final imageUrl = product.images.isNotEmpty ? product.images.first : '';
+    final isSaving = ref.watch(marketPlaceControllerProvider).isSaving;
 
     return InkWell(
       onTap: onTap,
@@ -533,24 +633,57 @@ class _CompanyProductListTile extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 8),
-            InkWell(
-              onTap: onTap,
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  border: Border.all(color: colorScheme.outlineVariant),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.shopping_cart_outlined,
-                  size: 18,
-                  color: colorScheme.onSurfaceVariant,
+            if (canManage) ...[
+              const SizedBox(width: 10),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 126),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: isSaving ? null : () => _editProduct(context),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(0, 34),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      icon: const Icon(Icons.edit_outlined, size: 16),
+                      label: const Text(
+                        'Edit Product',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    OutlinedButton.icon(
+                      onPressed: isSaving
+                          ? null
+                          : () => _deleteProduct(context, ref),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(0, 34),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        visualDensity: VisualDensity.compact,
+                        foregroundColor: Colors.red,
+                        side: BorderSide(
+                          color: Colors.red.withValues(alpha: 0.5),
+                        ),
+                      ),
+                      icon: const Icon(Icons.delete_outline, size: 16),
+                      label: const Text(
+                        'Delete Product',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
+            ],
           ],
         ),
       ),

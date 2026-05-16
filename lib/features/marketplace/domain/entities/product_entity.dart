@@ -8,6 +8,8 @@ class ProductEntity {
   final String status;
   final String sellAs;
   final List<String> images;
+  final String? ownerCompanyId;
+  final bool? isOwnedByCurrentUser;
 
   const ProductEntity({
     required this.id,
@@ -19,5 +21,7 @@ class ProductEntity {
     required this.status,
     required this.sellAs,
     required this.images,
+    this.ownerCompanyId,
+    this.isOwnedByCurrentUser,
   });
 }
