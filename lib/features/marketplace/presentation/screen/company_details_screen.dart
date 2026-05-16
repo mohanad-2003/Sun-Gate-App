@@ -12,7 +12,7 @@ class CompanyDetailScreen extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor, // ✅
+      backgroundColor: theme.scaffoldBackgroundColor, 
       appBar: AppBar(
         title: const Text('Company Detail'),
         centerTitle: true,
@@ -23,7 +23,7 @@ class CompanyDetailScreen extends StatelessWidget {
           Container(
             height: 190,
             decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest, // ✅
+              color: colorScheme.surfaceContainerHighest, 
               borderRadius: BorderRadius.circular(24),
             ),
             clipBehavior: Clip.antiAlias,
@@ -31,7 +31,7 @@ class CompanyDetailScreen extends StatelessWidget {
                 ? Image.network(
                     company.logo!,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) {
+                    errorBuilder: (_, _, _) {
                       return Icon(
                         Icons.business,
                         size: 70,
@@ -75,7 +75,6 @@ class CompanyDetailScreen extends StatelessWidget {
               onPressed: () {},
               icon: const Icon(Icons.call),
               label: const Text('Contact Company'),
-              // يأخذ الألوان من elevatedButtonTheme تلقائياً ✅
             ),
           ),
         ],

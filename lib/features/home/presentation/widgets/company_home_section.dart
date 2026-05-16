@@ -89,7 +89,10 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final filteredProducts = _filterProducts(state.products);
+    final filteredProducts = _filterProducts(
+      state.products,
+      state.ownedProductKeys,
+    );
     final products = filteredProducts.take(4).toList();
     final engineerNumber = widget.company.engineerNumber?.trim() ?? '';
 
@@ -435,11 +438,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
                         final product = products[index];
                         return _CompanyProductListTile(
                           product: product,
-                          canManage:
-                              state.ownedProductKeys.contains(
-                                _ownedProductKey(product),
-                              ) ||
-                              _canManageProduct(product),
+                          canManage: true,
                           onTap: () => context.push(
                             RouteNames.productDetail,
                             extra: product,
@@ -469,9 +468,17 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
     );
   }
 
-  List<ProductEntity> _filterProducts(List<ProductEntity> products) {
-    if (_selectedCategory == 'all') return products;
-    return products.where((product) {
+  List<ProductEntity> _filterProducts(
+    List<ProductEntity> products,
+    Set<String> ownedProductKeys,
+  ) {
+    final companyProducts = products.where(
+      (product) => _isCompanyProduct(product, ownedProductKeys),
+    );
+
+    if (_selectedCategory == 'all') return companyProducts.toList();
+
+    return companyProducts.where((product) {
       final category = product.category.toLowerCase();
       switch (_selectedCategory) {
         case 'battery':
@@ -484,6 +491,14 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
           return true;
       }
     }).toList();
+  }
+
+  bool _isCompanyProduct(
+    ProductEntity product,
+    Set<String> ownedProductKeys,
+  ) {
+    return ownedProductKeys.contains(_ownedProductKey(product)) ||
+        _canManageProduct(product);
   }
 
   bool _canManageProduct(ProductEntity product) {
