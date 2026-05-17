@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,6 +39,27 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
   String? logoPath;
   bool _isSendingCompanyOtp = false;
   final _imagePicker = ImagePicker();
+
+  Future<String> _persistPickedFile(XFile file, String prefix) async {
+    final originalFile = File(file.path);
+    final appCacheDir = originalFile.parent;
+    final appRootDir = appCacheDir.parent;
+    final uploadDir = Directory('${appRootDir.path}/files/company_uploads');
+
+    if (!await uploadDir.exists()) {
+      await uploadDir.create(recursive: true);
+    }
+
+    final extensionIndex = file.name.lastIndexOf('.');
+    final extension = extensionIndex >= 0
+        ? file.name.substring(extensionIndex)
+        : '';
+    final targetPath =
+        '${uploadDir.path}/${prefix}_${DateTime.now().millisecondsSinceEpoch}$extension';
+
+    final savedFile = await File(file.path).copy(targetPath);
+    return savedFile.path;
+  }
 
   String _localizedAuthError(String? message, AppLocalizations loc) {
     if (message == null || message.trim().isEmpty) return '';
@@ -82,9 +105,10 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
     try {
       final image = await _imagePicker.pickImage(source: ImageSource.gallery);
       if (image == null) return;
+      final persistedPath = await _persistPickedFile(image, 'document');
       if (!mounted) return;
       setState(() {
-        documentPath = image.path;
+        documentPath = persistedPath;
         documentName = image.name;
       });
     } on PlatformException catch (e) {
@@ -101,9 +125,10 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
     try {
       final image = await _imagePicker.pickImage(source: ImageSource.gallery);
       if (image == null) return;
+      final persistedPath = await _persistPickedFile(image, 'logo');
       if (!mounted) return;
       setState(() {
-        logoPath = image.path;
+        logoPath = persistedPath;
         logoName = image.name;
       });
     } on PlatformException catch (e) {
