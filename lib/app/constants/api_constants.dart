@@ -29,6 +29,8 @@ class ApiConstants {
   static const String companies = '/api/companies';
   static const String myCompany = '/api/companies/me';
   static String updateCompany(String companyId) => '/api/companies/$companyId';
+  static String companyEngineers(String companyId) =>
+      '/api/companies/$companyId/engineers';
   static String uploadCompanyLogo(String companyId) =>
       '/api/companies/$companyId/logo';
   static const String engineers = '/api/engineers';
@@ -41,4 +43,25 @@ class ApiConstants {
       '/api/reservations/$reservationId';
   static const String products = '/api/products';
   static const String deleteAccount = '/api/users/me';
+
+  // Admin
+  static const String adminCompanyRequests = '/api/admin/company-requests';
+  static String adminConfirmCompanyPayment(String requestId) =>
+      '/api/admin/company-requests/$requestId/confirm-payment';
+  static String adminRejectCompanyRequest(String requestId) =>
+      '/api/admin/company-requests/$requestId/reject';
+  static const String adminUsers = '/api/admin/users';
+  static const String adminAccounts = '/api/admin/accounts';
+  static String adminActivateAccount(String userId) =>
+      '/api/admin/accounts/$userId/activate';
+  static String adminSuspendAccount(String userId) =>
+      '/api/admin/accounts/$userId/suspend';
+  static String adminDeleteAccount(String userId) =>
+      '/api/admin/accounts/$userId';
+
+  // Articles (admin content / instructions)
+  static const String articles = '/api/articles';
+  static String articleById(String articleId) => '/api/articles/$articleId';
+  static String articleCover(String articleId) =>
+      '/api/articles/$articleId/cover';
 }

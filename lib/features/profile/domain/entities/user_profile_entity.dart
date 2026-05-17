@@ -13,6 +13,8 @@ class UserProfileEntity {
   final String? gender;
   final String? location;
   final String? whatsappnumbers;
+  final String? role;
+  final String? accountStatus;
   final String? createdAt;
   final String? updatedAt;
 
@@ -31,9 +33,14 @@ class UserProfileEntity {
     this.gender,
     this.location,
     this.whatsappnumbers,
+    this.role,
+    this.accountStatus,
     this.createdAt,
     this.updatedAt,
   });
+
+  bool get isAdmin => role?.toLowerCase() == 'admin';
+
   String get displasyName {
     if (fullName.trim().isNotEmpty) return fullName;
     final combined = '$firstName $lastName'.trim();
@@ -55,6 +62,8 @@ class UserProfileEntity {
     String? birthDate,
     String? gender,
     String? whatsappNumbers,
+    String? role,
+    String? accountStatus,
     String? createdAt,
     String? updatedAt,
   }) {
@@ -72,6 +81,8 @@ class UserProfileEntity {
       birthDate: birthDate ?? this.birthDate,
       gender: gender ?? this.gender,
       whatsappnumbers: whatsappNumbers ?? whatsappnumbers,
+      role: role ?? this.role,
+      accountStatus: accountStatus ?? this.accountStatus,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

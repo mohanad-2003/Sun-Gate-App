@@ -55,8 +55,18 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
 
     try {
       final company = await repository.getMyCompany();
-      state = state.copyWith(isLoading: false, myCompany: company);
-      return company;
+      if (company == null) {
+        state = state.copyWith(isLoading: false, myCompany: null);
+        return null;
+      }
+
+      final enrichedCompany = await _enrichCompanyWithEngineerNumber(company);
+
+      state = state.copyWith(
+        isLoading: false,
+        myCompany: enrichedCompany,
+      );
+      return enrichedCompany;
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -118,9 +128,12 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
         companyId: state.myCompany!.id,
         request: request,
       );
+      final enrichedCompany = await _enrichCompanyWithEngineerNumber(
+        updatedCompany,
+      );
       state = state.copyWith(
         isSaving: false,
-        myCompany: updatedCompany,
+        myCompany: enrichedCompany,
         successMessage: 'Company updated successfully',
       );
       return true;
@@ -145,10 +158,13 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
         companyId: company.id,
         filePath: filePath,
       );
+      final enrichedCompany = await _enrichCompanyWithEngineerNumber(
+        updatedCompany,
+      );
 
       state = state.copyWith(
         isSaving: false,
-        myCompany: updatedCompany,
+        myCompany: enrichedCompany,
         successMessage: 'Company logo updated successfully',
       );
       return true;
@@ -266,6 +282,21 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
     }
 
     return error.toString().replaceFirst('Exception: ', '');
+  }
+
+  Future<CompanyEntity> _enrichCompanyWithEngineerNumber(
+    CompanyEntity company,
+  ) async {
+    final engineers = await repository.getEngineers(companyId: company.id);
+    final engineerNumber = engineers
+        .map((engineer) => engineer.phoneWhatsapp?.trim() ?? '')
+        .firstWhere((phone) => phone.isNotEmpty, orElse: () => '');
+
+    state = state.copyWith(engineers: engineers);
+
+    return company.copyWith(
+      engineerNumber: engineerNumber.isNotEmpty ? engineerNumber : null,
+    );
   }
 
   String _ownedProductKey(String companyId, String productId) {

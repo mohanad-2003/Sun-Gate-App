@@ -36,4 +36,10 @@ class RouteNames {
   static const inverterPower = '/inverter-power';
   static const wireCrossSection = '/wire-cross-section';
   static const chargeController = '/charge-controller';
+
+  static const String adminMain = '/admin';
+  static const String adminRequests = '/admin/requests';
+  static const String adminUsers = '/admin/users';
+  static const String adminProducts = '/admin/products';
+  static const String adminArticles = '/admin/articles';
 }

@@ -24,6 +24,8 @@ class AuthUserModel extends AuthUser {
     this.isEmailVerified,
     this.createdAt,
     this.updatedAt,
+    super.role,
+    super.accountStatus,
   });
 
   factory AuthUserModel.fromJson(Map<String, dynamic> json) {
@@ -55,6 +57,8 @@ class AuthUserModel extends AuthUser {
       updatedAt: json['updatedAt'] != null
           ? DateTime.tryParse(json['updatedAt'].toString())
           : null,
+      role: json['role']?.toString(),
+      accountStatus: json['accountStatus']?.toString(),
     );
   }
 }

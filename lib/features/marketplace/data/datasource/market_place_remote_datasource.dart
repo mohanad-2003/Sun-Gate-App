@@ -112,12 +112,14 @@ class MarketPlaceRemoteDataSource {
     int limit = 10,
     String? companyId,
   }) async {
+    final endpoint = companyId != null && companyId.isNotEmpty
+        ? ApiConstants.companyEngineers(companyId)
+        : ApiConstants.engineers;
     final response = await dio.get(
-      ApiConstants.engineers,
+      endpoint,
       queryParameters: {
-        'page': page,
-        'limit': limit,
-        if (companyId != null && companyId.isNotEmpty) 'companyId': companyId,
+        if (companyId == null || companyId.isEmpty) 'page': page,
+        if (companyId == null || companyId.isEmpty) 'limit': limit,
       },
     );
 

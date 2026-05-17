@@ -26,4 +26,34 @@ class CompanyEntity {
     this.createAt,
     this.updateAt,
   });
+
+  CompanyEntity copyWith({
+    String? id,
+    String? companyName,
+    String? ownerName,
+    String? email,
+    String? address,
+    String? phone,
+    String? description,
+    String? engineerNumber,
+    String? establishmentDate,
+    String? logo,
+    String? createAt,
+    String? updateAt,
+  }) {
+    return CompanyEntity(
+      id: id ?? this.id,
+      companyName: companyName ?? this.companyName,
+      ownerName: ownerName ?? this.ownerName,
+      email: email ?? this.email,
+      address: address ?? this.address,
+      phone: phone ?? this.phone,
+      description: description ?? this.description,
+      engineerNumber: engineerNumber ?? this.engineerNumber,
+      establishmentDate: establishmentDate ?? this.establishmentDate,
+      logo: logo ?? this.logo,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
 }

@@ -95,6 +95,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
     );
     final products = filteredProducts;
     final engineerNumber = widget.company.engineerNumber?.trim() ?? '';
+    final engineersCount = state.engineers.length;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor, // ✅ كان Color(0xFFF5F7FB)
@@ -270,10 +271,16 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
                               ? engineerNumber
                               : (isArabic
                                     ? 'رقم المهندس غير متوفر'
-                                    : 'No engineer number'),
+                                    : 'No engineer WhatsApp number'),
                           onTap: engineerNumber.isNotEmpty
                               ? _openEngineerWhatsApp
                               : null,
+                        ),
+                        _InfoChip(
+                          icon: Icons.groups_2_outlined,
+                          label: isArabic
+                              ? 'عدد المهندسين: $engineersCount'
+                              : 'Engineers count: $engineersCount',
                         ),
                       ],
                     ),
