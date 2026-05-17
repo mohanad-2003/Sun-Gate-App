@@ -1,4 +1,8 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sun_gate_app/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:sun_gate_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:sun_gate_app/features/auth/data/dto/company_send_otp_request_dto.dart';
@@ -178,6 +182,12 @@ class AuthRepositoryImpl implements AuthRepository {
 
     final token = result.registrationToken;
 
+    debugPrint('COMPANY VERIFY OTP EMAIL: ${email.trim()}');
+    debugPrint('COMPANY VERIFY OTP TOKEN: $token');
+    debugPrint(
+      'COMPANY VERIFY OTP TOKEN LENGTH: ${token == null ? 0 : token.length}',
+    );
+
     if (token == null || token.isEmpty) {
       throw Exception('Registration token was not returned');
     }
@@ -198,15 +208,41 @@ class AuthRepositoryImpl implements AuthRepository {
     required bool acceptPrivacyPolicy,
     required String password,
   }) async {
+    final normalizedEmail = email.trim();
+    final normalizedOwnerName = ownerName.trim();
+    final normalizedLocation = location.trim();
+    final normalizedEstablishmentDate = establishmentDate.trim();
+
+    debugPrint('COMPANY REGISTER EMAIL: $normalizedEmail');
+    debugPrint('COMPANY REGISTER OWNER NAME: $normalizedOwnerName');
+    debugPrint('COMPANY REGISTER LOCATION: $normalizedLocation');
+    debugPrint(
+      'COMPANY REGISTER DATE OF ESTABLISHMENT: $normalizedEstablishmentDate',
+    );
+    debugPrint(
+      'COMPANY REGISTER TOKEN LENGTH: ${registrationToken.trim().length}',
+    );
+    debugPrint(
+      'COMPANY REGISTER TOKEN PREFIX: ${registrationToken.trim().substring(0, min(20, registrationToken.trim().length))}',
+    );
+    debugPrint('COMPANY REGISTER DOCUMENT PATH: $documentPath');
+    debugPrint('COMPANY REGISTER LOGO PATH: $logoPath');
+    debugPrint(
+      'COMPANY REGISTER DOCUMENT EXISTS: ${await File(documentPath).exists()}',
+    );
+    debugPrint(
+      'COMPANY REGISTER LOGO EXISTS: ${await File(logoPath).exists()}',
+    );
+
     final formData = FormData.fromMap({
       'document': await MultipartFile.fromFile(documentPath),
       'logo': await MultipartFile.fromFile(logoPath),
       'registrationToken': registrationToken,
       'companyName': companyName.trim(),
-      'ownerName': ownerName.trim(),
-      'email': email.trim(),
-      'location': location.trim(),
-      'dateOfEstablishment': establishmentDate.trim(),
+      'ownerName': normalizedOwnerName,
+      'email': normalizedEmail,
+      'location': normalizedLocation,
+      'dateOfEstablishment': normalizedEstablishmentDate,
       'acceptPrivacyPolicy': acceptPrivacyPolicy,
       'password': password,
     });

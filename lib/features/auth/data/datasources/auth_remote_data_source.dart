@@ -483,11 +483,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: request.toJson(),
       );
 
+      debugPrint('COMPANY VERIFY OTP STATUS: ${response.statusCode}');
+      debugPrint('COMPANY VERIFY OTP DATA: ${response.data}');
+
       return BasicMessageResponseModel.fromJson(
         response.data as Map<String, dynamic>,
       );
     } on DioException catch (e) {
       final data = e.response?.data;
+      debugPrint('COMPANY VERIFY OTP ERROR STATUS: ${e.response?.statusCode}');
+      debugPrint('COMPANY VERIFY OTP ERROR DATA: $data');
       final message = data is Map<String, dynamic>
           ? data['message']?.toString()
           : null;
@@ -508,9 +513,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: formData,
       );
 
+      debugPrint('COMPANY REGISTER STATUS: ${response.statusCode}');
+      debugPrint('COMPANY REGISTER DATA: ${response.data}');
+
       return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       final data = e.response?.data;
+      debugPrint('COMPANY REGISTER ERROR STATUS: ${e.response?.statusCode}');
+      debugPrint('COMPANY REGISTER ERROR DATA: $data');
       final message = data is Map<String, dynamic>
           ? data['message']?.toString()
           : null;
