@@ -29,6 +29,7 @@ class _EngineersScreenState extends ConsumerState<EngineersScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Engineers'), centerTitle: true),
+<<<<<<< Updated upstream
       body: RefreshIndicator(
         onRefresh: () => ref
             .read(marketPlaceControllerProvider.notifier)
@@ -41,6 +42,42 @@ class _EngineersScreenState extends ConsumerState<EngineersScreen> {
                   SizedBox(
                     height: 280,
                     child: Center(child: CircularProgressIndicator()),
+=======
+      body: Builder(
+        builder: (context) {
+          if (state.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state.errorMessage != null) {
+            return Center(
+              child: Text(
+                state.errorMessage!,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.red),
+              ),
+            );
+          }
+
+          if (state.engineers.isEmpty) {
+            return const Center(child: Text('No engineers found'));
+          }
+
+          return ListView.separated(
+            padding: const EdgeInsets.all(16),
+            itemCount: state.engineers.length,
+            separatorBuilder: (_, _) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              final engineer = state.engineers[index];
+
+              return Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.15),
+>>>>>>> Stashed changes
                   ),
                 ],
               );
