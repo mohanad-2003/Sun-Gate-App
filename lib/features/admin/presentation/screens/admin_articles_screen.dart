@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sun_gate_app/features/admin/domain/entities/admin_article_entity.dart';
 import 'package:sun_gate_app/features/admin/presentation/controllers/admin_controller.dart';
 import 'package:sun_gate_app/features/admin/presentation/widgets/admin_message_banner.dart';
+import 'package:sun_gate_app/core/notifications/notification_bootstrap.dart';
 import 'package:sun_gate_app/features/admin/presentation/widgets/admin_ui_kit.dart';
 
 class AdminArticlesScreen extends ConsumerStatefulWidget {
@@ -23,85 +24,24 @@ class _AdminArticlesScreenState extends ConsumerState<AdminArticlesScreen> {
   }
 
   Future<void> _openEditor({AdminArticleEntity? article}) async {
-    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final titleController = TextEditingController(text: article?.title ?? '');
-    final bodyController = TextEditingController(text: article?.body ?? '');
-
-    final saved = await showModalBottomSheet<bool>(
+    final result = await showModalBottomSheet<_ArticleEditorResult>(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: 20,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                article == null
-                    ? (isArabic ? 'إضافة محتوى' : 'Add content')
-                    : (isArabic ? 'تعديل المحتوى' : 'Edit content'),
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                isArabic
-                    ? 'أدخل عنوان المقال والنص الذي سيظهر للمستخدمين.'
-                    : 'Enter the article title and the body shown to users.',
-              ),
-              const SizedBox(height: 18),
-              TextField(
-                controller: titleController,
-                decoration: InputDecoration(
-                  labelText: isArabic ? 'العنوان' : 'Title',
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: bodyController,
-                maxLines: 6,
-                decoration: InputDecoration(
-                  labelText: isArabic ? 'التفاصيل' : 'Details',
-                ),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: () => Navigator.pop(context, true),
-                  child: Text(isArabic ? 'حفظ' : 'Save'),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+      builder: (context) => _ArticleEditorSheet(article: article),
     );
 
-    if (saved == true && mounted) {
-      final title = titleController.text.trim();
-      final body = bodyController.text.trim();
-      titleController.dispose();
-      bodyController.dispose();
-      await ref.read(adminControllerProvider.notifier).saveArticle(
+    if (result != null && mounted) {
+      final saved = await ref.read(adminControllerProvider.notifier).saveArticle(
             articleId: article?.id,
-            title: title,
-            body: body,
+            title: result.title,
+            body: result.body,
           );
-    } else {
-      titleController.dispose();
-      bodyController.dispose();
+      if (saved && mounted) {
+        refreshAppNotifications(ref);
+      }
     }
   }
 
@@ -247,6 +187,125 @@ class _AdminArticlesScreenState extends ConsumerState<AdminArticlesScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ArticleEditorResult {
+  final String title;
+  final String body;
+
+  const _ArticleEditorResult({required this.title, required this.body});
+}
+
+class _ArticleEditorSheet extends StatefulWidget {
+  final AdminArticleEntity? article;
+
+  const _ArticleEditorSheet({this.article});
+
+  @override
+  State<_ArticleEditorSheet> createState() => _ArticleEditorSheetState();
+}
+
+class _ArticleEditorSheetState extends State<_ArticleEditorSheet> {
+  late final TextEditingController _titleController;
+  late final TextEditingController _bodyController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.article?.title ?? '');
+    _bodyController = TextEditingController(text: widget.article?.body ?? '');
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _bodyController.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final title = _titleController.text.trim();
+    final body = _bodyController.text.trim();
+
+    if (title.isEmpty || body.isEmpty) {
+      final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            isArabic
+                ? 'يرجى إدخال العنوان والتفاصيل'
+                : 'Please enter both title and details',
+          ),
+        ),
+      );
+      return;
+    }
+
+    Navigator.pop(
+      context,
+      _ArticleEditorResult(title: title, body: body),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final isEditing = widget.article != null;
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 20,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isEditing
+                ? (isArabic ? 'تعديل المحتوى' : 'Edit content')
+                : (isArabic ? 'إضافة محتوى' : 'Add content'),
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            isArabic
+                ? 'أدخل عنوان المقال والنص الذي سيظهر للمستخدمين.'
+                : 'Enter the article title and the body shown to users.',
+          ),
+          const SizedBox(height: 18),
+          TextField(
+            controller: _titleController,
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              labelText: isArabic ? 'العنوان' : 'Title',
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _bodyController,
+            maxLines: 6,
+            decoration: InputDecoration(
+              labelText: isArabic ? 'التفاصيل' : 'Details',
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: _submit,
+              child: Text(isArabic ? 'حفظ' : 'Save'),
+            ),
+          ),
+        ],
       ),
     );
   }

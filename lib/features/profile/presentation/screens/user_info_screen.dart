@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/core/services/location_helper_service.dart';
 import 'package:sun_gate_app/features/marketplace/data/dto/update_company_request_dto.dart';
+import 'package:sun_gate_app/features/marketplace/domain/entities/company_entity.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/profile_section_label.dart';
@@ -134,6 +135,21 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
     return '${date.year}-$month-$day';
   }
 
+  void _syncEngineerContactFields(
+    CompanyEntity company,
+    String engineerWhatsapp,
+    int engineersCount,
+  ) {
+    if (engineerNumberController.text != engineerWhatsapp) {
+      engineerNumberController.text = engineerWhatsapp;
+    }
+
+    final countText = engineersCount.toString();
+    if (engineersCountController.text != countText) {
+      engineersCountController.text = countText;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -223,17 +239,18 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
       descriptionController.text = myCompany.description ?? '';
       companyLocationController.text = myCompany.address;
       phoneController.text = myCompany.phone;
-      final engineerWhatsapp = marketState.engineers
-          .map((e) => e.phoneWhatsapp?.trim() ?? '')
-          .firstWhere((p) => p.isNotEmpty, orElse: () => '');
-      engineerNumberController.text = engineerWhatsapp.isNotEmpty
-          ? engineerWhatsapp
-          : (myCompany.engineerNumber ?? '');
-      engineersCountController.text = marketState.engineers.length.toString();
       establishmentDateController.text = _dateOnly(
         myCompany.establishmentDate ?? '',
       );
       _didPopulateCompanyData = true;
+    }
+
+    if (myCompany != null) {
+      _syncEngineerContactFields(
+        myCompany,
+        marketState.engineerWhatsappFor(myCompany),
+        marketState.engineers.length,
+      );
     }
 
     ref.listen(profileControllerProvider, (previous, next) {

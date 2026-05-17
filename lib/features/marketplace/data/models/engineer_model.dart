@@ -12,9 +12,16 @@ class EngineerModel extends EngineerEntity {
   });
 
   factory EngineerModel.fromJson(Map<String, dynamic> json) {
+    final user = json['user'];
+    final userMap = user is Map<String, dynamic>
+        ? user
+        : user is Map
+        ? Map<String, dynamic>.from(user)
+        : null;
+
     return EngineerModel(
       id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
-      userId: json['userId']?.toString() ?? '',
+      userId: json['userId']?.toString() ?? userMap?['_id']?.toString() ?? '',
       companyId: json['companyId']?.toString() ?? '',
       yearsOfExperience: (json['yearsOfExperience'] as num?)?.toInt() ?? 0,
       certificate:
@@ -22,7 +29,9 @@ class EngineerModel extends EngineerEntity {
           json['certificate']?.toString() ??
           '',
       rating: (json['rating'] as num?)?.toDouble() ?? 0,
-      phoneWhatsapp: json['phoneWhatsapp']?.toString(),
+      phoneWhatsapp:
+          json['phoneWhatsapp']?.toString() ??
+          userMap?['phoneWhatsapp']?.toString(),
     );
   }
 }

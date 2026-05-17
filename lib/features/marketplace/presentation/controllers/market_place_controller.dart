@@ -288,11 +288,9 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
     CompanyEntity company,
   ) async {
     final engineers = await repository.getEngineers(companyId: company.id);
-    final engineerNumber = engineers
-        .map((engineer) => engineer.phoneWhatsapp?.trim() ?? '')
-        .firstWhere((phone) => phone.isNotEmpty, orElse: () => '');
-
     state = state.copyWith(engineers: engineers);
+
+    final engineerNumber = state.engineerWhatsappFor(company);
 
     return company.copyWith(
       engineerNumber: engineerNumber.isNotEmpty ? engineerNumber : null,

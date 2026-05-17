@@ -7,6 +7,7 @@ import 'package:sun_gate_app/app/router/app_router.dart';
 import 'package:sun_gate_app/core/theme/app_theme.dart';
 import 'package:sun_gate_app/core/theme/theme_mode_provider.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
+import 'package:sun_gate_app/core/notifications/notification_bootstrap.dart';
 
 class SunGateApp extends ConsumerWidget {
   const SunGateApp({super.key});
@@ -16,7 +17,8 @@ class SunGateApp extends ConsumerWidget {
     final themeMode = ref.watch(appThemeModeProvider);
     final locale = ref.watch(appLocaleProvider);
 
-    return MaterialApp.router(
+    return NotificationBootstrap(
+      child: MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: AppRouter.router,
 
@@ -32,6 +34,7 @@ class SunGateApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      ),
     );
   }
 }

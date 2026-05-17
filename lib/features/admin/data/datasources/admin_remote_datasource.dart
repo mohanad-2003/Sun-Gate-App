@@ -145,33 +145,65 @@ class AdminRemoteDataSource {
     int limit = 50,
   }) async {
     final safeLimit = _safeLimit(limit);
+    final merged = <String, AdminAccountModel>{};
+
     try {
-      final response = await dio.get(
-        ApiConstants.adminUsers,
-        queryParameters: {'page': page, 'limit': safeLimit},
-      );
-      final accounts = _extractDocs(response.data)
-          .map(AdminAccountModel.fromJson)
-          .toList();
-      if (accounts.isNotEmpty) return accounts;
+      final users = await _fetchAllAdminUserAccounts(limit: safeLimit);
+      for (final account in users) {
+        merged[account.id] = account;
+      }
     } on DioException catch (e) {
-      final status = e.response?.statusCode;
-      if (status != null && status != 404 && status != 405) {
-        throw Exception(_errorMessage(e, 'Failed to load accounts'));
+      if (e.response?.statusCode != 404 && e.response?.statusCode != 405) {
+        // Keep going — engineers/companies may still be available.
       }
     }
 
-    return _loadAccountsFromAvailableSources(limit: safeLimit);
+    await _mergeEngineerAccounts(merged, limit: safeLimit);
+    await _mergeCompanyAccounts(merged);
+
+    if (merged.isEmpty) {
+      throw Exception('No accounts found');
+    }
+
+    return merged.values.toList()
+      ..sort((a, b) => a.fullName.compareTo(b.fullName));
   }
 
-  /// Backend exposes account actions per userId only — not a list endpoint.
-  /// Build the admin user list from engineers + pending company requests.
-  Future<List<AdminAccountModel>> _loadAccountsFromAvailableSources({
+  Future<List<AdminAccountModel>> _fetchAllAdminUserAccounts({
     int limit = 50,
   }) async {
     final safeLimit = _safeLimit(limit);
     final accounts = <AdminAccountModel>[];
-    final seenIds = <String>{};
+    var page = 1;
+    var hasNext = true;
+
+    while (hasNext && page <= 20) {
+      final response = await dio.get(
+        ApiConstants.adminAccounts,
+        queryParameters: {'page': page, 'limit': safeLimit},
+      );
+      final docs = _extractDocs(response.data);
+      accounts.addAll(docs.map(AdminAccountModel.fromJson));
+
+      final data = response.data is Map<String, dynamic>
+          ? response.data['data']
+          : null;
+      if (data is Map<String, dynamic>) {
+        hasNext = data['hasNextPage'] == true;
+      } else {
+        hasNext = docs.length >= safeLimit;
+      }
+      page++;
+    }
+
+    return accounts;
+  }
+
+  Future<void> _mergeEngineerAccounts(
+    Map<String, AdminAccountModel> merged, {
+    int limit = 50,
+  }) async {
+    final safeLimit = _safeLimit(limit);
 
     try {
       final response = await dio.get(
@@ -180,49 +212,78 @@ class AdminRemoteDataSource {
       );
       for (final doc in _extractDocs(response.data)) {
         final userId = doc['userId']?.toString() ?? '';
-        if (userId.isEmpty || !seenIds.add(userId)) continue;
+        if (userId.isEmpty) continue;
 
         final user = doc['user'];
-        final userMap = user is Map<String, dynamic> ? user : doc;
+        final userMap = user is Map<String, dynamic>
+            ? user
+            : user is Map
+            ? Map<String, dynamic>.from(user)
+            : doc;
 
-        accounts.add(
-          AdminAccountModel.fromJson({
-            ...userMap,
-            '_id': userId,
-            'role': userMap['role']?.toString() ?? 'engineer',
-            'phoneWhatsapp':
-                doc['phoneWhatsapp']?.toString() ??
-                userMap['phoneWhatsapp']?.toString(),
-          }),
+        merged[userId] = AdminAccountModel.fromJson({
+          ...userMap,
+          '_id': userId,
+          'role': userMap['role']?.toString() ?? 'engineer',
+          'phoneWhatsapp':
+              doc['phoneWhatsapp']?.toString() ??
+              userMap['phoneWhatsapp']?.toString(),
+          'accountStatus':
+              userMap['accountStatus']?.toString() ?? 'active',
+        });
+      }
+    } catch (_) {}
+  }
+
+  Future<void> _mergeCompanyAccounts(Map<String, AdminAccountModel> merged) async {
+    try {
+      final requests = await getCompanyRequests(limit: 100);
+      for (final request in requests) {
+        final userId = request.userId?.trim() ?? '';
+        if (userId.isEmpty) continue;
+
+        final status = request.isActive
+            ? 'active'
+            : request.isRejected
+            ? 'suspended'
+            : 'pending';
+
+        merged[userId] = AdminAccountModel(
+          id: userId,
+          fullName: request.ownerName.isNotEmpty
+              ? request.ownerName
+              : request.companyName,
+          email: request.email,
+          role: 'company',
+          accountStatus: status,
+          phoneWhatsapp: request.phone.isNotEmpty ? request.phone : null,
+          location: request.location.isNotEmpty ? request.location : null,
         );
       }
     } catch (_) {}
 
     try {
-      final requests = await getCompanyRequests();
-      for (final request in requests) {
-        final userId = request.userId?.trim() ?? '';
-        if (userId.isEmpty || !seenIds.add(userId)) continue;
+      final response = await dio.get(
+        ApiConstants.companies,
+        queryParameters: {'page': 1, 'limit': 50},
+      );
+      for (final doc in _extractDocs(response.data)) {
+        final userId = doc['userId']?.toString() ?? '';
+        if (userId.isEmpty || merged.containsKey(userId)) continue;
 
-        accounts.add(
-          AdminAccountModel(
-            id: userId,
-            fullName: request.ownerName.isNotEmpty
-                ? request.ownerName
-                : request.companyName,
-            email: request.email,
-            role: 'company',
-            accountStatus: request.isActive
-                ? 'active'
-                : request.isRejected
-                ? 'suspended'
-                : 'suspended',
-          ),
-        );
+        merged[userId] = AdminAccountModel.fromJson({
+          ...doc,
+          '_id': userId,
+          'role': 'company',
+          'fullName':
+              doc['ownerName']?.toString() ??
+              doc['companyName']?.toString() ??
+              'Company',
+          'email': doc['email']?.toString() ?? '',
+          'accountStatus': doc['status']?.toString() ?? 'active',
+        });
       }
     } catch (_) {}
-
-    return accounts;
   }
 
   Future<void> activateAccount(String userId) async {

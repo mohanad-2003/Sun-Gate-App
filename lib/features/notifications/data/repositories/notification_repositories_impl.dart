@@ -9,9 +9,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
   @override
   Future<List<NotificationEntity>> getNotifications() {
-
-    return remoteDataSource.getNotifications();
-    
+    return remoteDataSource.getAllNotifications();
   }
 
   @override
