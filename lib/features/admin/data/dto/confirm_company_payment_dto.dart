@@ -1,26 +1,9 @@
+/// Backend: `PATCH /api/admin/company-requests/{id}/confirm-payment`
+/// Body: `{ "plan": "free" | "monthly" }`
 class ConfirmCompanyPaymentDto {
   final String plan;
-  final DateTime startDate;
-  final DateTime endDate;
 
-  const ConfirmCompanyPaymentDto({
-    required this.plan,
-    required this.startDate,
-    required this.endDate,
-  });
+  const ConfirmCompanyPaymentDto({required this.plan});
 
-  Map<String, dynamic> toJson() {
-    final subscription = {
-      'plan': plan,
-      'startDate': startDate.toUtc().toIso8601String(),
-      'endDate': endDate.toUtc().toIso8601String(),
-    };
-
-    return {
-      'plan': plan,
-      'startDate': subscription['startDate'],
-      'endDate': subscription['endDate'],
-      'subscription': subscription,
-    };
-  }
+  Map<String, dynamic> toJson() => {'plan': plan};
 }
