@@ -1,5 +1,6 @@
 import 'package:sun_gate_app/features/admin/data/datasources/admin_remote_datasource.dart';
 import 'package:sun_gate_app/features/admin/data/dto/confirm_company_payment_dto.dart';
+import 'package:sun_gate_app/features/admin/data/dto/reject_company_request_dto.dart';
 import 'package:sun_gate_app/features/admin/domain/entities/admin_account_entity.dart';
 import 'package:sun_gate_app/features/admin/domain/entities/admin_article_entity.dart';
 import 'package:sun_gate_app/features/admin/domain/entities/admin_company_request_entity.dart';
@@ -50,7 +51,7 @@ class AdminRepositoryImpl implements AdminRepository {
           ? companiesCount
           : accounts.where((a) => a.role.toLowerCase() == 'company').length,
       productsCount: productsCount,
-      pendingRequestsCount: requests.where((r) => r.isPending).length,
+      pendingRequestsCount: requests.where((r) => r.needsAdminAction).length,
       engineersCount: engineersCount > 0
           ? engineersCount
           : accounts.where((a) => a.role.toLowerCase() == 'engineer').length,
@@ -58,30 +59,43 @@ class AdminRepositoryImpl implements AdminRepository {
   }
 
   @override
-  Future<List<AdminCompanyRequestEntity>> getCompanyRequests() {
-    return remoteDataSource.getCompanyRequests();
-  }
-
-  @override
-  Future<void> confirmCompanyPayment({
-    required String requestId,
-    required String plan,
-    required DateTime startDate,
-    required DateTime endDate,
+  Future<List<AdminCompanyRequestEntity>> getCompanyRequests({
+    int page = 1,
+    int limit = 20,
+    String? status,
   }) {
-    return remoteDataSource.confirmCompanyPayment(
-      requestId: requestId,
-      request: ConfirmCompanyPaymentDto(
-        plan: plan,
-        startDate: startDate,
-        endDate: endDate,
-      ),
+    return remoteDataSource.getCompanyRequests(
+      page: page,
+      limit: limit,
+      status: status,
     );
   }
 
   @override
-  Future<void> rejectCompanyRequest(String requestId) {
-    return remoteDataSource.rejectCompanyRequest(requestId);
+  Future<AdminCompanyRequestEntity> approveCompanyRequest(String requestId) {
+    return remoteDataSource.approveCompanyRequest(requestId);
+  }
+
+  @override
+  Future<AdminCompanyRequestEntity> confirmCompanyPayment({
+    required String requestId,
+    required String plan,
+  }) {
+    return remoteDataSource.confirmCompanyPayment(
+      requestId: requestId,
+      request: ConfirmCompanyPaymentDto(plan: plan),
+    );
+  }
+
+  @override
+  Future<AdminCompanyRequestEntity> rejectCompanyRequest({
+    required String requestId,
+    String? reason,
+  }) {
+    return remoteDataSource.rejectCompanyRequest(
+      requestId: requestId,
+      request: RejectCompanyRequestDto(reason: reason),
+    );
   }
 
   @override

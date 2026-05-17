@@ -46,6 +46,8 @@ class ApiConstants {
 
   // Admin
   static const String adminCompanyRequests = '/api/admin/company-requests';
+  static String adminApproveCompanyRequest(String requestId) =>
+      '/api/admin/company-requests/$requestId/approve';
   static String adminConfirmCompanyPayment(String requestId) =>
       '/api/admin/company-requests/$requestId/confirm-payment';
   static String adminRejectCompanyRequest(String requestId) =>

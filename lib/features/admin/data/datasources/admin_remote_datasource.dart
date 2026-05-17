@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:sun_gate_app/app/constants/api_constants.dart';
 import 'package:sun_gate_app/features/admin/data/dto/confirm_company_payment_dto.dart';
+import 'package:sun_gate_app/features/admin/data/dto/reject_company_request_dto.dart';
 import 'package:sun_gate_app/features/admin/data/models/admin_account_model.dart';
 import 'package:sun_gate_app/features/admin/data/models/admin_article_model.dart';
 import 'package:sun_gate_app/features/admin/data/models/admin_company_request_model.dart';
@@ -12,8 +13,12 @@ class AdminRemoteDataSource {
   AdminRemoteDataSource(this.dio);
 
   static const int _maxPageLimit = 50;
+  static const int _maxCompanyRequestsLimit = 100;
 
   int _safeLimit(int limit) => limit.clamp(1, _maxPageLimit);
+
+  int _safeCompanyRequestsLimit(int limit) =>
+      limit.clamp(1, _maxCompanyRequestsLimit);
 
   List<Map<String, dynamic>> _extractDocs(dynamic responseData) {
     final root = responseData is Map<String, dynamic>
@@ -60,9 +65,20 @@ class AdminRemoteDataSource {
     return fallback;
   }
 
-  Future<List<AdminCompanyRequestModel>> getCompanyRequests() async {
+  Future<List<AdminCompanyRequestModel>> getCompanyRequests({
+    int page = 1,
+    int limit = 20,
+    String? status,
+  }) async {
     try {
-      final response = await dio.get(ApiConstants.adminCompanyRequests);
+      final response = await dio.get(
+        ApiConstants.adminCompanyRequests,
+        queryParameters: {
+          'page': page,
+          'limit': _safeCompanyRequestsLimit(limit),
+          if (status != null && status.trim().isNotEmpty) 'status': status.trim(),
+        },
+      );
       return _extractDocs(response.data)
           .map(AdminCompanyRequestModel.fromJson)
           .toList();
@@ -71,33 +87,56 @@ class AdminRemoteDataSource {
     }
   }
 
-  Future<void> confirmCompanyPayment({
+  Future<AdminCompanyRequestModel> approveCompanyRequest(String requestId) async {
+    try {
+      final response = await dio.patch(
+        ApiConstants.adminApproveCompanyRequest(requestId),
+      );
+      final data = response.data['data'];
+      if (data is Map<String, dynamic>) {
+        return AdminCompanyRequestModel.fromJson(data);
+      }
+      throw Exception('Invalid approve response');
+    } on DioException catch (e) {
+      throw Exception(_errorMessage(e, 'Failed to approve company request'));
+    }
+  }
+
+  Future<AdminCompanyRequestModel> confirmCompanyPayment({
     required String requestId,
     required ConfirmCompanyPaymentDto request,
   }) async {
     try {
-      await dio.patch(
+      final response = await dio.patch(
         ApiConstants.adminConfirmCompanyPayment(requestId),
         data: request.toJson(),
       );
+      final data = response.data['data'];
+      if (data is Map<String, dynamic>) {
+        return AdminCompanyRequestModel.fromJson(data);
+      }
+      throw Exception('Invalid confirm-payment response');
     } on DioException catch (e) {
       throw Exception(_errorMessage(e, 'Failed to confirm payment'));
     }
   }
 
-  Future<void> rejectCompanyRequest(String requestId) async {
+  Future<AdminCompanyRequestModel> rejectCompanyRequest({
+    required String requestId,
+    RejectCompanyRequestDto request = const RejectCompanyRequestDto(),
+  }) async {
     try {
-      await dio.patch(ApiConstants.adminRejectCompanyRequest(requestId));
-    } on DioException {
-      try {
-        await dio.delete(
-          '${ApiConstants.adminCompanyRequests}/$requestId',
-        );
-      } on DioException catch (deleteError) {
-        throw Exception(
-          _errorMessage(deleteError, 'Failed to reject company request'),
-        );
+      final response = await dio.patch(
+        ApiConstants.adminRejectCompanyRequest(requestId),
+        data: request.toJson(),
+      );
+      final data = response.data['data'];
+      if (data is Map<String, dynamic>) {
+        return AdminCompanyRequestModel.fromJson(data);
       }
+      throw Exception('Invalid reject response');
+    } on DioException catch (e) {
+      throw Exception(_errorMessage(e, 'Failed to reject company request'));
     }
   }
 
@@ -173,7 +212,11 @@ class AdminRemoteDataSource {
                 : request.companyName,
             email: request.email,
             role: 'company',
-            accountStatus: request.isPending ? 'suspended' : 'active',
+            accountStatus: request.isActive
+                ? 'active'
+                : request.isRejected
+                ? 'suspended'
+                : 'suspended',
           ),
         );
       }

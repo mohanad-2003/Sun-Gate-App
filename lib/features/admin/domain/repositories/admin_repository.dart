@@ -6,14 +6,20 @@ import 'package:sun_gate_app/features/marketplace/domain/entities/product_entity
 
 abstract class AdminRepository {
   Future<AdminDashboardStatsEntity> getDashboardStats();
-  Future<List<AdminCompanyRequestEntity>> getCompanyRequests();
-  Future<void> confirmCompanyPayment({
+  Future<List<AdminCompanyRequestEntity>> getCompanyRequests({
+    int page = 1,
+    int limit = 20,
+    String? status,
+  });
+  Future<AdminCompanyRequestEntity> approveCompanyRequest(String requestId);
+  Future<AdminCompanyRequestEntity> confirmCompanyPayment({
     required String requestId,
     required String plan,
-    required DateTime startDate,
-    required DateTime endDate,
   });
-  Future<void> rejectCompanyRequest(String requestId);
+  Future<AdminCompanyRequestEntity> rejectCompanyRequest({
+    required String requestId,
+    String? reason,
+  });
   Future<List<AdminAccountEntity>> getAccounts({int page = 1, int limit = 50});
   Future<void> activateAccount(String userId);
   Future<void> suspendAccount(String userId);

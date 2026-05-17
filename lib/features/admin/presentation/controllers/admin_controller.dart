@@ -26,10 +26,14 @@ class AdminController extends StateNotifier<AdminState> {
     }
   }
 
-  Future<void> loadCompanyRequests() async {
+  Future<void> loadCompanyRequests({String? status}) async {
     state = state.copyWith(isLoading: true, clearMessages: true);
     try {
-      final requests = await repository.getCompanyRequests();
+      final requests = await repository.getCompanyRequests(
+        page: 1,
+        limit: 50,
+        status: status,
+      );
       state = state.copyWith(isLoading: false, companyRequests: requests);
     } catch (e) {
       state = state.copyWith(
@@ -78,25 +82,16 @@ class AdminController extends StateNotifier<AdminState> {
     }
   }
 
-  Future<bool> confirmCompanyRequest({
-    required String requestId,
-    required String plan,
-    required DateTime startDate,
-    required DateTime endDate,
-  }) async {
+  Future<bool> approveCompanyRequest(String requestId) async {
     state = state.copyWith(isSaving: true, clearMessages: true);
     try {
-      await repository.confirmCompanyPayment(
-        requestId: requestId,
-        plan: plan,
-        startDate: startDate,
-        endDate: endDate,
-      );
+      await repository.approveCompanyRequest(requestId);
       await loadCompanyRequests();
       await loadDashboard();
       state = state.copyWith(
         isSaving: false,
-        successMessage: 'Company approved successfully',
+        successMessage:
+            'Request approved. Payment instructions were sent to the company.',
       );
       return true;
     } catch (e) {
@@ -108,10 +103,50 @@ class AdminController extends StateNotifier<AdminState> {
     }
   }
 
-  Future<bool> rejectCompanyRequest(String requestId) async {
+  Future<bool> confirmCompanyPayment({
+    required String requestId,
+    required String plan,
+  }) async {
+    final normalizedPlan = plan.trim().toLowerCase();
+    if (normalizedPlan != 'free' && normalizedPlan != 'monthly') {
+      state = state.copyWith(
+        errorMessage: 'Plan must be either free or monthly.',
+      );
+      return false;
+    }
+
     state = state.copyWith(isSaving: true, clearMessages: true);
     try {
-      await repository.rejectCompanyRequest(requestId);
+      await repository.confirmCompanyPayment(
+        requestId: requestId,
+        plan: normalizedPlan,
+      );
+      await loadCompanyRequests();
+      await loadDashboard();
+      state = state.copyWith(
+        isSaving: false,
+        successMessage: 'Payment confirmed. Company is now active.',
+      );
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isSaving: false,
+        errorMessage: _friendlyError(e),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> rejectCompanyRequest({
+    required String requestId,
+    String? reason,
+  }) async {
+    state = state.copyWith(isSaving: true, clearMessages: true);
+    try {
+      await repository.rejectCompanyRequest(
+        requestId: requestId,
+        reason: reason,
+      );
       await loadCompanyRequests();
       await loadDashboard();
       state = state.copyWith(

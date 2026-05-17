@@ -1,4 +1,5 @@
 import 'package:sun_gate_app/features/admin/domain/entities/admin_company_request_entity.dart';
+import 'package:sun_gate_app/features/admin/domain/entities/admin_company_subscription_entity.dart';
 
 class AdminCompanyRequestModel extends AdminCompanyRequestEntity {
   const AdminCompanyRequestModel({
@@ -8,11 +9,14 @@ class AdminCompanyRequestModel extends AdminCompanyRequestEntity {
     required super.companyName,
     required super.ownerName,
     required super.email,
+    required super.phone,
     required super.location,
     required super.status,
+    super.rejectionReason,
     super.documentUrl,
     super.logo,
     super.establishmentDate,
+    super.subscription,
   });
 
   factory AdminCompanyRequestModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +24,16 @@ class AdminCompanyRequestModel extends AdminCompanyRequestEntity {
     final user = json['user'];
     final companyMap = company is Map<String, dynamic> ? company : json;
     final userMap = user is Map<String, dynamic> ? user : json;
+    final subscriptionJson = companyMap['subscription'] ?? json['subscription'];
+
+    AdminCompanySubscriptionEntity? subscription;
+    if (subscriptionJson is Map<String, dynamic>) {
+      subscription = AdminCompanySubscriptionEntity(
+        plan: subscriptionJson['plan']?.toString(),
+        startDate: subscriptionJson['startDate']?.toString(),
+        endDate: subscriptionJson['endDate']?.toString(),
+      );
+    }
 
     return AdminCompanyRequestModel(
       id: json['_id']?.toString() ??
@@ -46,15 +60,24 @@ class AdminCompanyRequestModel extends AdminCompanyRequestEntity {
           json['email']?.toString() ??
           userMap['email']?.toString() ??
           '',
+      phone:
+          companyMap['phone']?.toString() ??
+          json['phone']?.toString() ??
+          userMap['phoneWhatsapp']?.toString() ??
+          '',
       location:
           companyMap['location']?.toString() ??
           companyMap['address']?.toString() ??
           json['location']?.toString() ??
+          json['address']?.toString() ??
           '',
       status:
           companyMap['status']?.toString() ??
           json['status']?.toString() ??
           'pending_review',
+      rejectionReason:
+          companyMap['rejectionReason']?.toString() ??
+          json['rejectionReason']?.toString(),
       documentUrl:
           companyMap['documentUrl']?.toString() ??
           json['documentUrl']?.toString(),
@@ -63,6 +86,7 @@ class AdminCompanyRequestModel extends AdminCompanyRequestEntity {
           companyMap['dateOfEstablishment']?.toString() ??
           companyMap['establishmentDate']?.toString() ??
           json['dateOfEstablishment']?.toString(),
+      subscription: subscription,
     );
   }
 }

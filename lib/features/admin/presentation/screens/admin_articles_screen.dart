@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sun_gate_app/features/admin/domain/entities/admin_article_entity.dart';
 import 'package:sun_gate_app/features/admin/presentation/controllers/admin_controller.dart';
 import 'package:sun_gate_app/features/admin/presentation/widgets/admin_message_banner.dart';
+import 'package:sun_gate_app/features/admin/presentation/widgets/admin_ui_kit.dart';
 
 class AdminArticlesScreen extends ConsumerStatefulWidget {
   const AdminArticlesScreen({super.key});
@@ -30,7 +31,7 @@ class _AdminArticlesScreenState extends ConsumerState<AdminArticlesScreen> {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       builder: (context) {
         return Padding(
@@ -42,17 +43,24 @@ class _AdminArticlesScreenState extends ConsumerState<AdminArticlesScreen> {
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 article == null
                     ? (isArabic ? 'إضافة محتوى' : 'Add content')
                     : (isArabic ? 'تعديل المحتوى' : 'Edit content'),
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 8),
+              Text(
+                isArabic
+                    ? 'أدخل عنوان المقال والنص الذي سيظهر للمستخدمين.'
+                    : 'Enter the article title and the body shown to users.',
+              ),
+              const SizedBox(height: 18),
               TextField(
                 controller: titleController,
                 decoration: InputDecoration(
@@ -68,9 +76,12 @@ class _AdminArticlesScreenState extends ConsumerState<AdminArticlesScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              FilledButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text(isArabic ? 'حفظ' : 'Save'),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: Text(isArabic ? 'حفظ' : 'Save'),
+                ),
               ),
             ],
           ),
@@ -94,6 +105,31 @@ class _AdminArticlesScreenState extends ConsumerState<AdminArticlesScreen> {
     }
   }
 
+  Future<bool?> _confirmDelete(bool isArabic) {
+    return showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Text(isArabic ? 'حذف المحتوى' : 'Delete content'),
+        content: Text(
+          isArabic
+              ? 'هل تريد حذف هذا المحتوى نهائياً؟'
+              : 'Do you want to delete this content permanently?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(isArabic ? 'إلغاء' : 'Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(isArabic ? 'حذف' : 'Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(adminControllerProvider);
@@ -101,77 +137,115 @@ class _AdminArticlesScreenState extends ConsumerState<AdminArticlesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isArabic ? 'تعديل المعلومات' : 'Edit Information'),
+        title: Text(isArabic ? 'إدارة المحتوى' : 'Content management'),
         actions: [
           IconButton(
             onPressed: () => _openEditor(),
-            icon: const Icon(Icons.add),
+            tooltip: isArabic ? 'إضافة محتوى' : 'Add content',
+            icon: const Icon(Icons.add_circle_outline),
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () =>
-            ref.read(adminControllerProvider.notifier).loadArticles(),
-        child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(16),
-          children: [
-            AdminMessageBanner(
-              errorMessage: state.errorMessage,
-              successMessage: state.successMessage,
-            ),
-            if (state.isLoading)
-              const SizedBox(
-                height: 280,
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else if (state.articles.isEmpty)
-              SizedBox(
-                height: 280,
-                child: Center(
-                  child: Text(
-                    isArabic ? 'لا يوجد محتوى بعد' : 'No content yet',
+      body: AdminScreenContainer(
+        child: RefreshIndicator(
+          onRefresh: () =>
+              ref.read(adminControllerProvider.notifier).loadArticles(),
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+            children: [
+              AdminHeroBanner(
+                eyebrow: isArabic ? 'المحتوى' : 'Content',
+                title: isArabic ? 'المقالات والتعليمات' : 'Articles and guides',
+                subtitle: isArabic
+                    ? 'أنشئ المحتوى وحرره ليظهر للمستخدمين داخل التطبيق.'
+                    : 'Create and update the content shown to users inside the app.',
+                icon: Icons.article_outlined,
+                footer: [
+                  AdminHeroMetric(
+                    label: isArabic ? 'عدد العناصر' : 'Items',
+                    value: '${state.articles.length}',
                   ),
-                ),
-              )
-            else
-              ...state.articles.map((article) {
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  child: ListTile(
-                    title: Text(
-                      article.title,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                    subtitle: Text(
-                      article.body,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          onPressed: () => _openEditor(article: article),
-                          icon: const Icon(Icons.edit_outlined),
-                        ),
-                        IconButton(
-                          onPressed: state.isSaving
-                              ? null
-                              : () => ref
-                                    .read(adminControllerProvider.notifier)
-                                    .deleteArticle(article.id),
-                          icon: const Icon(
-                            Icons.delete_outline,
-                            color: Colors.red,
+                ],
+              ),
+              const SizedBox(height: 16),
+              AdminMessageBanner(
+                errorMessage: state.errorMessage,
+                successMessage: state.successMessage,
+              ),
+              if (state.isLoading)
+                const SizedBox(
+                  height: 280,
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (state.articles.isEmpty)
+                AdminEmptyState(
+                  icon: Icons.article_outlined,
+                  title: isArabic ? 'لا يوجد محتوى بعد' : 'No content yet',
+                  subtitle: isArabic
+                      ? 'أضف أول مقال أو تعليمات لتظهر هنا.'
+                      : 'Add your first article or guide and it will appear here.',
+                )
+              else
+                ...state.articles.map((article) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: AdminPanel(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  article.title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () => _openEditor(article: article),
+                                icon: const Icon(Icons.edit_outlined),
+                              ),
+                              IconButton(
+                                onPressed: state.isSaving
+                                    ? null
+                                    : () async {
+                                        final confirmed =
+                                            await _confirmDelete(isArabic);
+                                        if (confirmed == true && mounted) {
+                                          await ref
+                                              .read(
+                                                adminControllerProvider.notifier,
+                                              )
+                                              .deleteArticle(article.id);
+                                        }
+                                      },
+                                icon: const Icon(
+                                  Icons.delete_outline,
+                                  color: Color(0xFFC62828),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 10),
+                          Text(
+                            article.body,
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              height: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }),
-          ],
+                  );
+                }),
+            ],
+          ),
         ),
       ),
     );

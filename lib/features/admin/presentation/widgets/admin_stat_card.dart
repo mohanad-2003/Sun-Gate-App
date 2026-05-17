@@ -19,8 +19,9 @@ class AdminStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: color.withValues(alpha: 0.12),
+      color: Theme.of(context).colorScheme.surface,
       borderRadius: BorderRadius.circular(18),
+      elevation: 0,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(18),
@@ -30,7 +31,8 @@ class AdminStatCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                height: 44,
+                width: 44,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.18),
                   borderRadius: BorderRadius.circular(12),
@@ -42,7 +44,6 @@ class AdminStatCard extends StatelessWidget {
                 value,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w800,
-                  color: color,
                 ),
               ),
               const SizedBox(height: 4),
@@ -50,6 +51,15 @@ class AdminStatCard extends StatelessWidget {
                 label,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                height: 4,
+                width: 48,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.22),
+                  borderRadius: BorderRadius.circular(999),
                 ),
               ),
             ],

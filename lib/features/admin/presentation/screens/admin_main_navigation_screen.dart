@@ -25,10 +25,12 @@ class AdminMainNavigationScreen extends ConsumerWidget {
     ];
 
     return Scaffold(
+      extendBody: true,
       body: IndexedStack(index: currentIndex, children: pages),
       bottomNavigationBar: AdminBottomNavBar(
         currentIndex: currentIndex,
-        onTap: (index) => ref.read(adminBottomNavProvider.notifier).state = index,
+        onTap: (index) =>
+            ref.read(adminBottomNavProvider.notifier).state = index,
       ),
     );
   }
