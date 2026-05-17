@@ -28,6 +28,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
   late final TextEditingController phoneController;
   late final TextEditingController establishmentDateController;
   late final TextEditingController engineerNumberController;
+  late final TextEditingController engineersCountController;
 
   String selectedGender = 'male';
   bool _didPopulateUserData = false;
@@ -164,6 +165,9 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
     engineerNumberController = TextEditingController(
       text: myCompany?.engineerNumber ?? '',
     );
+    engineersCountController = TextEditingController(
+      text: marketState.engineers.length.toString(),
+    );
 
     if (profile?.location == null || profile!.location!.isEmpty) {
       _loadCurrentLocation();
@@ -188,6 +192,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
     phoneController.dispose();
     establishmentDateController.dispose();
     engineerNumberController.dispose();
+    engineersCountController.dispose();
     super.dispose();
   }
 
@@ -199,6 +204,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
     final myCompany = marketState.myCompany;
     final shouldUseCompanyProfile = myCompany != null;
     final loc = AppLocalizations.of(context)!;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     if (profile != null && !_didPopulateUserData) {
       firstNameController.text = profile.firstName;
@@ -217,7 +223,13 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
       descriptionController.text = myCompany.description ?? '';
       companyLocationController.text = myCompany.address;
       phoneController.text = myCompany.phone;
-      engineerNumberController.text = myCompany.engineerNumber ?? '';
+      final engineerWhatsapp = marketState.engineers
+          .map((e) => e.phoneWhatsapp?.trim() ?? '')
+          .firstWhere((p) => p.isNotEmpty, orElse: () => '');
+      engineerNumberController.text = engineerWhatsapp.isNotEmpty
+          ? engineerWhatsapp
+          : (myCompany.engineerNumber ?? '');
+      engineersCountController.text = marketState.engineers.length.toString();
       establishmentDateController.text = _dateOnly(
         myCompany.establishmentDate ?? '',
       );
@@ -396,12 +408,45 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                ProfileSectionLabel(title: loc.engineerNumber),
+                ProfileSectionLabel(
+                  title: isArabic
+                      ? 'رقم واتساب المهندس'
+                      : 'Engineer WhatsApp Number',
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  isArabic
+                      ? 'يُجلب من بيانات المهندسين المرتبطين بالشركة'
+                      : 'Loaded from engineers linked to your company',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.color
+                        ?.withValues(alpha: 0.65),
+                  ),
+                ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: engineerNumberController,
                   readOnly: true,
                   keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    hintText: isArabic
+                        ? 'لا يوجد رقم بعد'
+                        : 'No number yet',
+                    prefixIcon: const Icon(Icons.chat_outlined),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ProfileSectionLabel(
+                  title: isArabic ? 'عدد المهندسين' : 'Engineers Count',
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: engineersCountController,
+                  readOnly: true,
+                  keyboardType: TextInputType.number,
                 ),
                 const SizedBox(height: 16),
               ] else ...[

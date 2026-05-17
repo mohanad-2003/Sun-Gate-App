@@ -371,7 +371,6 @@ class _CompanySignUpScreenState extends ConsumerState<CompanySignUpScreen> {
                     if (companyNameController.text.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(loc.pleaseEnterCompanyName)),
-                        
                       );
                       return;
                     }

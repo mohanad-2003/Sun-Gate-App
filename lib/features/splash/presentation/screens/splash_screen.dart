@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/core/widgets/app_scaffold.dart';
+import 'package:sun_gate_app/core/navigation/post_auth_navigation.dart';
 import 'package:sun_gate_app/features/splash/presentation/controllers/splash_controller.dart';
 import 'package:sun_gate_app/features/splash/presentation/widgets/splash_logo.dart';
 
@@ -34,7 +35,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     if (!mounted) return;
 
-    Future.microtask(() {
+    Future.microtask(() async {
       if (!mounted) return;
 
       switch (target) {
@@ -43,7 +44,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           break;
 
         case SplashNavigationTarget.authenticated:
-          context.go(RouteNames.main);
+          await navigateAfterAuthentication(context, ref);
           break;
 
         case SplashNavigationTarget.unauthenticated:

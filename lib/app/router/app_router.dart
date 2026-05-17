@@ -37,6 +37,11 @@ import 'package:sun_gate_app/features/profile/presentation/screens/help_support_
 import 'package:sun_gate_app/features/profile/presentation/screens/legal_policies_screen.dart';
 import 'package:sun_gate_app/features/profile/presentation/screens/profile_screen.dart';
 import 'package:sun_gate_app/features/profile/presentation/screens/user_info_screen.dart';
+import 'package:sun_gate_app/features/admin/presentation/screens/admin_articles_screen.dart';
+import 'package:sun_gate_app/features/admin/presentation/screens/admin_company_requests_screen.dart';
+import 'package:sun_gate_app/features/admin/presentation/screens/admin_main_navigation_screen.dart';
+import 'package:sun_gate_app/features/admin/presentation/screens/admin_products_screen.dart';
+import 'package:sun_gate_app/features/admin/presentation/screens/admin_users_screen.dart';
 import 'package:sun_gate_app/features/splash/presentation/screens/splash_screen.dart';
 
 class AppRouter {
@@ -234,6 +239,26 @@ class AppRouter {
       GoRoute(
         path: RouteNames.completeProfile,
         builder: (context, state) => const CompleteProfileScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.adminMain,
+        builder: (context, state) => const AdminMainNavigationScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.adminRequests,
+        builder: (context, state) => const AdminCompanyRequestsScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.adminUsers,
+        builder: (context, state) => const AdminUsersScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.adminProducts,
+        builder: (context, state) => const AdminProductsScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.adminArticles,
+        builder: (context, state) => const AdminArticlesScreen(),
       ),
     ],
   );

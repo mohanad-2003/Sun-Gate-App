@@ -16,6 +16,8 @@ class UserProfileModels extends UserProfileEntity {
     super.gender,
     super.location,
     super.whatsappnumbers,
+    super.role,
+    super.accountStatus,
     super.createdAt,
     super.updatedAt,
   });
@@ -61,7 +63,10 @@ class UserProfileModels extends UserProfileEntity {
       location: json['location']?.toString(),
       whatsappnumbers:
           json['whatsappNumbers']?.toString() ??
-          json['whatsappnumbers']?.toString(),
+          json['whatsappnumbers']?.toString() ??
+          json['phoneWhatsapp']?.toString(),
+      role: json['role']?.toString(),
+      accountStatus: json['accountStatus']?.toString(),
       createdAt: json['createdAt']?.toString() ?? json['cratedAt']?.toString(),
       updatedAt: json['updatedAt']?.toString() ?? json['updateAt']?.toString(),
     );
