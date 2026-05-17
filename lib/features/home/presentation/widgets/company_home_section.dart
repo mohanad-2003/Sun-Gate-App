@@ -93,7 +93,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
       state.products,
       state.ownedProductKeys,
     );
-    final products = filteredProducts.take(4).toList();
+    final products = filteredProducts;
     final engineerNumber = widget.company.engineerNumber?.trim() ?? '';
 
     return Scaffold(
@@ -645,6 +645,10 @@ class _CompanyProductListTile extends ConsumerWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
+                  if (product.status.trim().isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    _ProductStatusChip(status: product.status),
+                  ],
                 ],
               ),
             ),
@@ -714,6 +718,42 @@ class _CompanyProductListTile extends ConsumerWidget {
         Icons.image_not_supported_outlined,
         color: colorScheme.onSurfaceVariant,
         size: 20,
+      ),
+    );
+  }
+}
+
+class _ProductStatusChip extends StatelessWidget {
+  final String status;
+
+  const _ProductStatusChip({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final normalizedStatus = status.trim().toLowerCase();
+    final isActive = normalizedStatus == 'active';
+    final isDraft = normalizedStatus == 'draft';
+    final color = isActive
+        ? Colors.green
+        : isDraft
+        ? Colors.orange
+        : colorScheme.onSurfaceVariant;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: color.withValues(alpha: 0.24)),
+      ),
+      child: Text(
+        normalizedStatus.isEmpty ? status : normalizedStatus,
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+        ),
       ),
     );
   }

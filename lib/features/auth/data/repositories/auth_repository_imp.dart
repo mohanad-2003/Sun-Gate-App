@@ -206,7 +206,7 @@ class AuthRepositoryImpl implements AuthRepository {
       'ownerName': ownerName.trim(),
       'email': email.trim(),
       'location': location.trim(),
-      'establishmentDate': establishmentDate.trim(),
+      'dateOfEstablishment': establishmentDate.trim(),
       'acceptPrivacyPolicy': acceptPrivacyPolicy,
       'password': password,
     });

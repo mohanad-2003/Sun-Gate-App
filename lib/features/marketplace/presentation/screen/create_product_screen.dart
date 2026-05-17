@@ -418,7 +418,7 @@ class _CreateProductScreenState extends ConsumerState<CreateProductScreen> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       dropdownColor: colorScheme.surface, // ✅ لون قائمة الـ dropdown
       decoration: InputDecoration(
         labelText: label,

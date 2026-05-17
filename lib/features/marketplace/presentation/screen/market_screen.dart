@@ -33,6 +33,10 @@ class _MarketScreenState extends ConsumerState<MarketScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final loc = AppLocalizations.of(context)!;
+    final visibleProducts = state.products.where((product) {
+      final status = product.status.trim().toLowerCase();
+      return status.isEmpty || status == 'active';
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -81,7 +85,7 @@ class _MarketScreenState extends ConsumerState<MarketScreen> {
                   child: CircularProgressIndicator(),
                 ),
               )
-            else if (state.products.isEmpty)
+            else if (visibleProducts.isEmpty)
               const Padding(
                 padding: EdgeInsets.all(16),
                 child: Center(
@@ -90,7 +94,7 @@ class _MarketScreenState extends ConsumerState<MarketScreen> {
               )
             else
               GridView.builder(
-                itemCount: state.products.length,
+                itemCount: visibleProducts.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate:
@@ -101,7 +105,7 @@ class _MarketScreenState extends ConsumerState<MarketScreen> {
                       childAspectRatio: 0.72,
                     ),
                 itemBuilder: (context, index) {
-                  final product = state.products[index];
+                  final product = visibleProducts[index];
 
                   return ProductCard(
                     product: product,

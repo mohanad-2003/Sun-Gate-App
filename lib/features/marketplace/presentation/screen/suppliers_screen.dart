@@ -151,9 +151,15 @@ class _SuppliersScreenState extends ConsumerState<SuppliersScreen> {
   List<ProductEntity> _supplierProducts(List<ProductEntity> products) {
     return products.where((product) {
       if (_isCurrentCompanyProduct(product)) return false;
+      if (!_isActiveProduct(product)) return false;
       if (!_matchesCategory(product)) return false;
       return _matchesQuery(product);
     }).toList();
+  }
+
+  bool _isActiveProduct(ProductEntity product) {
+    final status = product.status.trim().toLowerCase();
+    return status.isEmpty || status == 'active';
   }
 
   bool _isCurrentCompanyProduct(ProductEntity product) {
