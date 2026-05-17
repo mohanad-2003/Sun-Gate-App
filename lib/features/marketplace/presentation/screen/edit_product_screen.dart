@@ -438,7 +438,7 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       dropdownColor: colorScheme.surface,
       decoration: InputDecoration(
         labelText: label,

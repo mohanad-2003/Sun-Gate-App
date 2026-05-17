@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sun_gate_app/features/marketplace/data/dto/update_company_request_dto.dart';
 import 'package:sun_gate_app/features/marketplace/domain/entities/company_entity.dart';
+import 'package:sun_gate_app/features/marketplace/domain/entities/product_entity.dart';
 import 'package:sun_gate_app/features/marketplace/domain/repositories/market_place_repository.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/controllers/market_place_state.dart';
 import 'package:sun_gate_app/features/marketplace/presentation/provider/market_place_provider.dart';
@@ -92,7 +93,7 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
     );
 
     try {
-      final products = await repository.getProducts();
+      final products = await _getProductsForAllStatuses();
 
       state = state.copyWith(isLoading: false, products: products);
     } catch (e) {
@@ -124,10 +125,7 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
       );
       return true;
     } catch (e) {
-      state = state.copyWith(
-        isSaving: false,
-        errorMessage: _errorMessage(e),
-      );
+      state = state.copyWith(isSaving: false, errorMessage: _errorMessage(e));
       return false;
     }
   }
@@ -203,17 +201,21 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
     try {
       await repository.updateProduct(productId: productId, formData: formData);
       await getProducts();
+      final ownedProductKeys = {
+        ...state.ownedProductKeys,
+        if (state.myCompany != null)
+          _ownedProductKey(state.myCompany!.id, productId),
+      };
       state = state.copyWith(
         isSaving: false,
+        ownedProductKeys: ownedProductKeys,
         successMessage: 'Product updated successfully',
       );
+      await _saveOwnedProductKeys(state.ownedProductKeys);
       return true;
     } catch (e) {
       final message = _errorMessage(e);
-      state = state.copyWith(
-        isSaving: false,
-        errorMessage: message,
-      );
+      state = state.copyWith(isSaving: false, errorMessage: message);
       return false;
     }
   }
@@ -268,6 +270,41 @@ class MarketPlaceController extends StateNotifier<MarketPlaceState> {
 
   String _ownedProductKey(String companyId, String productId) {
     return '${companyId.trim()}:${productId.trim()}';
+  }
+
+  Future<List<ProductEntity>> _getProductsForAllStatuses() async {
+    final products = <ProductEntity>[];
+    Object? firstError;
+
+    for (final status in const ['active', 'draft', 'hidden']) {
+      try {
+        products.addAll(await repository.getProducts(status: status));
+      } catch (e) {
+        firstError ??= e;
+      }
+    }
+
+    if (products.isNotEmpty) return _uniqueProducts(products);
+
+    if (firstError != null) {
+      return _uniqueProducts(await repository.getProducts());
+    }
+
+    return const [];
+  }
+
+  List<ProductEntity> _uniqueProducts(List<ProductEntity> products) {
+    final seenIds = <String>{};
+    final uniqueProducts = <ProductEntity>[];
+
+    for (final product in products) {
+      final id = product.id.trim();
+      if (id.isEmpty || seenIds.add(id)) {
+        uniqueProducts.add(product);
+      }
+    }
+
+    return uniqueProducts;
   }
 
   Future<void> _loadOwnedProductKeys() async {

@@ -95,8 +95,8 @@ class MarketPlaceRepositoryImpl implements MarketPlaceRepository {
   }
 
   @override
-  Future<List<ProductEntity>> getProducts() {
-    return remoteDataSource.getProducts().then(
+  Future<List<ProductEntity>> getProducts({String? status}) {
+    return remoteDataSource.getProducts(status: status).then(
       (value) => value.cast<ProductEntity>(),
     );
   }

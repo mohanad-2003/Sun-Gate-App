@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sun_gate_app/app/localization/app_localizations.dart';
 import 'package:sun_gate_app/core/services/location_helper_service.dart';
@@ -66,6 +67,40 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
       });
     } catch (e) {
       debugPrint('Location error: $e');
+    }
+  }
+
+  Future<void> _loadCurrentCompanyLocation() async {
+    try {
+      final location = await LocationHelper.getCurrentLocationName();
+
+      if (!mounted) return;
+
+      setState(() {
+        companyLocationController.text = location;
+      });
+    } catch (e) {
+      final message = e.toString().toLowerCase();
+      final loc = AppLocalizations.of(context)!;
+
+      if (message.contains('disabled')) {
+        await Geolocator.openLocationSettings();
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(loc.enableGpsMessage)),
+        );
+        return;
+      }
+
+      if (message.contains('permission')) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(loc.locationPermissionMessage)),
+        );
+        return;
+      }
+
+      debugPrint('Company location error: $e');
     }
   }
 
@@ -326,7 +361,19 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                 const SizedBox(height: 16),
                 ProfileSectionLabel(title: loc.location),
                 const SizedBox(height: 8),
-                TextField(controller: companyLocationController),
+                TextField(
+                  controller: companyLocationController,
+                  readOnly: true,
+                  onTap: _loadCurrentCompanyLocation,
+                  decoration: InputDecoration(
+                    hintText: loc.location,
+                    prefixIcon: const Icon(Icons.location_on_outlined),
+                    suffixIcon: const Icon(Icons.my_location),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 16),
                 ProfileSectionLabel(title: loc.mobileNumber),
                 const SizedBox(height: 8),
@@ -340,8 +387,9 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                 TextField(
                   controller: establishmentDateController,
                   readOnly: true,
-                  enabled: false,
+                  onTap: _pickCompanyEstablishmentDate,
                   decoration: InputDecoration(
+                    suffixIcon: const Icon(Icons.edit_calendar),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -352,7 +400,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                 const SizedBox(height: 8),
                 TextField(
                   controller: engineerNumberController,
-                  enabled: false,
+                  readOnly: true,
                   keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 16),
@@ -480,6 +528,8 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                               description: descriptionController.text.trim(),
                               address: companyLocationController.text.trim(),
                               phone: phoneController.text.trim(),
+                              establishmentDate:
+                                  establishmentDateController.text.trim(),
                             );
 
                             ref

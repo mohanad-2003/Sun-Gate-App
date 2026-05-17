@@ -17,7 +17,7 @@ abstract class MarketPlaceRepository {
 
   Future<List<EngineerEntity>> getEngineers({String? companyId});
   Future<EngineerEntity?> getMyEngineer();
-  Future<List<ProductEntity>> getProducts();
+  Future<List<ProductEntity>> getProducts({String? status});
   Future<ProductEntity> getProductById(String productId);
   Future<ProductEntity> createProduct(FormData formData);
   Future<EngineerEntity> createEngineer({
