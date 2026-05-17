@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sun_gate_app/features/admin/domain/entities/admin_account_entity.dart';
 import 'package:sun_gate_app/features/admin/presentation/controllers/admin_controller.dart';
+import 'package:sun_gate_app/features/admin/presentation/providers/admin_account_filter_provider.dart';
 import 'package:sun_gate_app/features/admin/presentation/widgets/admin_message_banner.dart';
+import 'package:sun_gate_app/features/admin/presentation/widgets/admin_role_filter_chips.dart';
 import 'package:sun_gate_app/features/admin/presentation/widgets/admin_ui_kit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -34,9 +36,21 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
     super.dispose();
   }
 
-  List<AdminAccountEntity> _filtered(List<AdminAccountEntity> accounts) {
-    if (_query.isEmpty) return accounts;
-    return accounts
+  List<AdminAccountEntity> _filtered(
+    List<AdminAccountEntity> accounts,
+    String? roleFilter,
+  ) {
+    Iterable<AdminAccountEntity> results = accounts;
+
+    if (roleFilter != null && roleFilter.isNotEmpty) {
+      results = results.where(
+        (account) => account.role.toLowerCase() == roleFilter.toLowerCase(),
+      );
+    }
+
+    if (_query.isEmpty) return results.toList();
+
+    return results
         .where(
           (account) =>
               account.fullName.toLowerCase().contains(_query) ||
@@ -44,6 +58,32 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
               account.role.toLowerCase().contains(_query),
         )
         .toList();
+  }
+
+  Map<String, int> _roleCounts(List<AdminAccountEntity> accounts) {
+    var users = 0;
+    var engineers = 0;
+    var companies = 0;
+
+    for (final account in accounts) {
+      switch (account.role.toLowerCase()) {
+        case 'engineer':
+          engineers++;
+          break;
+        case 'company':
+          companies++;
+          break;
+        default:
+          users++;
+      }
+    }
+
+    return {
+      'all': accounts.length,
+      'user': users,
+      'engineer': engineers,
+      'company': companies,
+    };
   }
 
   Future<void> _openWhatsApp(String? phone) async {
@@ -87,8 +127,11 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(adminControllerProvider);
+    final roleFilter = ref.watch(adminAccountRoleFilterProvider);
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final accounts = _filtered(state.accounts);
+    final allAccounts = state.accounts;
+    final roleCounts = _roleCounts(allAccounts);
+    final accounts = _filtered(allAccounts, roleFilter);
     final activeCount = accounts.where((account) => account.isActive).length;
 
     return Scaffold(
@@ -104,25 +147,37 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
             children: [
               AdminHeroBanner(
-                eyebrow: isArabic ? 'المستخدمون' : 'Accounts',
-                title: isArabic ? 'إدارة المستخدمين' : 'Manage users',
+                eyebrow: isArabic ? 'الحسابات' : 'Accounts',
+                title: isArabic ? 'إدارة الحسابات' : 'Account management',
                 subtitle: isArabic
-                    ? 'ابحث عن الحسابات، فعّلها، أوقفها، أو احذفها من واجهة واضحة.'
-                    : 'Search accounts, activate or suspend them, and remove them from one clear interface.',
+                    ? 'تحكم بكل المسجلين: مستخدمون عاديون، مهندسون، وشركات.'
+                    : 'Control every registered account: users, engineers, and companies.',
                 icon: Icons.groups_2_outlined,
                 footer: [
                   AdminHeroMetric(
-                    label: isArabic ? 'إجمالي الحسابات' : 'Total accounts',
+                    label: isArabic ? 'المعروضة' : 'Showing',
                     value: '${accounts.length}',
+                    icon: Icons.filter_list_rounded,
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 10),
                   AdminHeroMetric(
                     label: isArabic ? 'النشطة' : 'Active',
                     value: '$activeCount',
+                    icon: Icons.verified_user_outlined,
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
+              AdminRoleFilterChips(
+                selectedRole: roleFilter,
+                isArabic: isArabic,
+                counts: roleCounts,
+                onSelected: (role) {
+                  ref.read(adminAccountRoleFilterProvider.notifier).state =
+                      role;
+                },
+              ),
+              const SizedBox(height: 14),
               AdminSearchField(
                 controller: _searchController,
                 hintText: isArabic ? 'ابحث بالاسم أو البريد أو الدور' : 'Search by name, email, or role',
@@ -190,9 +245,19 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
                                   ],
                                 ),
                               ),
-                              AdminBadge(
-                                label: account.accountStatus,
-                                color: statusColor,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  AdminBadge(
+                                    label: _roleLabel(account.role, isArabic),
+                                    color: _roleColor(account.role),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  AdminBadge(
+                                    label: account.accountStatus,
+                                    color: statusColor,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -299,6 +364,32 @@ String _initial(String value) {
   final trimmed = value.trim();
   if (trimmed.isEmpty) return 'U';
   return trimmed.substring(0, 1).toUpperCase();
+}
+
+String _roleLabel(String role, bool isArabic) {
+  switch (role.toLowerCase()) {
+    case 'engineer':
+      return isArabic ? 'مهندس' : 'Engineer';
+    case 'company':
+      return isArabic ? 'شركة' : 'Company';
+    case 'admin':
+      return isArabic ? 'أدمن' : 'Admin';
+    default:
+      return isArabic ? 'مستخدم' : 'User';
+  }
+}
+
+Color _roleColor(String role) {
+  switch (role.toLowerCase()) {
+    case 'engineer':
+      return const Color(0xFF6A1B9A);
+    case 'company':
+      return const Color(0xFFE53935);
+    case 'admin':
+      return const Color(0xFF274777);
+    default:
+      return const Color(0xFF00897B);
+  }
 }
 
 class _MetaTile extends StatelessWidget {

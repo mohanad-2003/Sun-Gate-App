@@ -4,6 +4,7 @@ class NotificationEntity {
   final String body;
   final bool isRead;
   final String? createdAt;
+  final String? type;
 
   const NotificationEntity({
     required this.id,
@@ -11,5 +12,6 @@ class NotificationEntity {
     required this.body,
     required this.isRead,
     this.createdAt,
+    this.type,
   });
 }

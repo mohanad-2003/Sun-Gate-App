@@ -6,6 +6,7 @@ import 'package:sun_gate_app/app/router/route_names.dart';
 import 'package:sun_gate_app/core/theme/theme_mode_provider.dart';
 import 'package:sun_gate_app/features/admin/presentation/widgets/admin_ui_kit.dart';
 import 'package:sun_gate_app/features/auth/presentation/controllers/auth_form_controller.dart';
+import 'package:sun_gate_app/features/notifications/presentation/controllers/notification_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/logout_conformation_dialog.dart';
 import 'package:sun_gate_app/features/profile/presentation/widgets/profile_header_card.dart';
@@ -119,6 +120,9 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                         onConfirm: () async {
                           Navigator.of(context).pop();
                           await ref.read(authControllerProvider.notifier).logout();
+                          await ref
+                              .read(notificationControllerProvider.notifier)
+                              .resetDeliveryTracking();
                           if (context.mounted) {
                             context.go(RouteNames.login);
                           }

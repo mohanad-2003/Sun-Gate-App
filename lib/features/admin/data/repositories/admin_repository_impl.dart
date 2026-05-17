@@ -41,12 +41,11 @@ class AdminRepositoryImpl implements AdminRepository {
       engineersCount = await remoteDataSource.countEngineers();
     } catch (_) {}
 
-    final usersCount = accounts
-        .where((account) => account.role.toLowerCase() == 'user')
-        .length;
+    final usersCount =
+        accounts.where((account) => account.role.toLowerCase() == 'user').length;
 
     return AdminDashboardStatsEntity(
-      usersCount: usersCount > 0 ? usersCount : accounts.length,
+      usersCount: usersCount,
       companiesCount: companiesCount > 0
           ? companiesCount
           : accounts.where((a) => a.role.toLowerCase() == 'company').length,

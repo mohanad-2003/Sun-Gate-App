@@ -58,8 +58,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
     );
   }
 
-  Future<void> _openEngineerWhatsApp() async {
-    final engineerNumber = widget.company.engineerNumber?.trim() ?? '';
+  Future<void> _openEngineerWhatsApp(String engineerNumber) async {
     if (engineerNumber.isEmpty) return;
     await _openWhatsApp(engineerNumber);
   }
@@ -94,7 +93,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
       state.ownedProductKeys,
     );
     final products = filteredProducts;
-    final engineerNumber = widget.company.engineerNumber?.trim() ?? '';
+    final engineerNumber = state.engineerWhatsappFor(widget.company);
     final engineersCount = state.engineers.length;
 
     return Scaffold(
@@ -273,7 +272,7 @@ class _CompanyHomeSectionState extends ConsumerState<CompanyHomeSection> {
                                     ? 'رقم المهندس غير متوفر'
                                     : 'No engineer WhatsApp number'),
                           onTap: engineerNumber.isNotEmpty
-                              ? _openEngineerWhatsApp
+                              ? () => _openEngineerWhatsApp(engineerNumber)
                               : null,
                         ),
                         _InfoChip(

@@ -8,6 +8,7 @@ import 'package:sun_gate_app/features/admin/presentation/widgets/admin_message_b
 import 'package:sun_gate_app/features/admin/presentation/widgets/admin_section_header.dart';
 import 'package:sun_gate_app/features/admin/presentation/widgets/admin_stat_card.dart';
 import 'package:sun_gate_app/features/admin/presentation/widgets/admin_ui_kit.dart';
+import 'package:sun_gate_app/features/admin/presentation/providers/admin_navigation_helper.dart';
 import 'package:sun_gate_app/features/notifications/presentation/controllers/notification_controller.dart';
 import 'package:sun_gate_app/features/profile/presentation/controllers/profile_controller.dart';
 
@@ -34,6 +35,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(adminControllerProvider);
     final profile = ref.watch(profileControllerProvider).profile;
+    final unreadCount = ref.watch(notificationControllerProvider).unreadCount;
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final adminName = profile?.displasyName ?? (isArabic ? 'مدير النظام' : 'Admin');
 
@@ -47,36 +49,27 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: AdminHeroBanner(
-                        eyebrow: isArabic ? 'لوحة التحكم' : 'Admin workspace',
-                        title: adminName,
-                        subtitle: isArabic
-                            ? 'تابع المؤشرات الأساسية، راجع الطلبات الجديدة، وأدر المنصة من واجهة موحدة.'
-                            : 'Track key metrics, review incoming requests, and manage the platform from one polished workspace.',
-                        icon: Icons.shield_outlined,
-                        footer: [
-                          AdminHeroMetric(
-                            label: isArabic ? 'المستخدمون' : 'Users',
-                            value: '${state.stats.usersCount}',
-                          ),
-                          const SizedBox(width: 12),
-                          AdminHeroMetric(
-                            label: isArabic ? 'الطلبات الجديدة' : 'New requests',
-                            value: '${state.stats.pendingRequestsCount}',
-                          ),
-                        ],
-                      ),
+                AdminHeroBanner(
+                  eyebrow: isArabic ? 'لوحة التحكم' : 'Admin workspace',
+                  title: adminName,
+                  subtitle: isArabic
+                      ? 'تابع المؤشرات، راجع الطلبات، وأدر المنصة من مكان واحد.'
+                      : 'Track metrics, review requests, and manage the platform from one place.',
+                  icon: Icons.shield_outlined,
+                  notificationCount: unreadCount,
+                  onNotificationsTap: () =>
+                      context.push(RouteNames.notifications),
+                  footer: [
+                    AdminHeroMetric(
+                      label: isArabic ? 'المستخدمون' : 'Users',
+                      value: '${state.stats.usersCount}',
+                      icon: Icons.people_outline_rounded,
                     ),
-                    const SizedBox(width: 12),
-                    AdminPanel(
-                      padding: const EdgeInsets.all(4),
-                      child: IconButton(
-                        onPressed: () => context.push(RouteNames.notifications),
-                        icon: const Icon(Icons.notifications_outlined),
-                      ),
+                    const SizedBox(width: 10),
+                    AdminHeroMetric(
+                      label: isArabic ? 'طلبات جديدة' : 'New requests',
+                      value: '${state.stats.pendingRequestsCount}',
+                      icon: Icons.inbox_outlined,
                     ),
                   ],
                 ),
@@ -96,29 +89,46 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                     child: Center(child: CircularProgressIndicator()),
                   )
                 else
-                  SizedBox(
-                    height: 220,
-                    child: GridView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 12,
-                            crossAxisSpacing: 12,
-                            childAspectRatio: 1.15,
-                          ),
-                      children: [
+                  GridView(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
+                          mainAxisExtent: 136,
+                        ),
+                    children: [
                         AdminStatCard(
                           label: isArabic ? 'المستخدمون' : 'Users',
                           value: '${state.stats.usersCount}',
                           icon: Icons.person_outline,
                           color: const Color(0xFF274777),
+                          onTap: () => openAdminAccountsTab(ref, roleFilter: 'user'),
+                        ),
+                        AdminStatCard(
+                          label: isArabic ? 'المهندسون' : 'Engineers',
+                          value: '${state.stats.engineersCount}',
+                          icon: Icons.engineering_outlined,
+                          color: const Color(0xFF6A1B9A),
+                          onTap: () =>
+                              openAdminAccountsTab(ref, roleFilter: 'engineer'),
                         ),
                         AdminStatCard(
                           label: isArabic ? 'الشركات' : 'Companies',
                           value: '${state.stats.companiesCount}',
                           icon: Icons.business_outlined,
                           color: const Color(0xFFE53935),
+                          onTap: () =>
+                              openAdminAccountsTab(ref, roleFilter: 'company'),
+                        ),
+                        AdminStatCard(
+                          label: isArabic ? 'طلبات جديدة' : 'New requests',
+                          value: '${state.stats.pendingRequestsCount}',
+                          icon: Icons.mark_email_unread_outlined,
+                          color: const Color(0xFFFF9800),
+                          onTap: () => openAdminRequestsTab(ref),
                         ),
                         AdminStatCard(
                           label: isArabic ? 'المنتجات' : 'Products',
@@ -128,14 +138,14 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                           onTap: () => context.push(RouteNames.adminProducts),
                         ),
                         AdminStatCard(
-                          label: isArabic ? 'طلبات جديدة' : 'New requests',
-                          value: '${state.stats.pendingRequestsCount}',
-                          icon: Icons.mark_email_unread_outlined,
-                          color: const Color(0xFFFF9800),
-                          onTap: () => context.push(RouteNames.adminRequests),
+                          label: isArabic ? 'كل الحسابات' : 'All accounts',
+                          value:
+                              '${state.stats.usersCount + state.stats.engineersCount + state.stats.companiesCount}',
+                          icon: Icons.manage_accounts_outlined,
+                          color: const Color(0xFF00897B),
+                          onTap: () => openAdminAccountsTab(ref),
                         ),
                       ],
-                    ),
                   ),
                 const SizedBox(height: 20),
                 AdminSectionHeader(
@@ -143,14 +153,12 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                 ),
                 const SizedBox(height: 10),
                 _QuickActionTile(
-                  icon: Icons.engineering_outlined,
-                  title: isArabic
-                      ? 'المهندسون (${state.stats.engineersCount})'
-                      : 'Engineers (${state.stats.engineersCount})',
+                  icon: Icons.manage_accounts_outlined,
+                  title: isArabic ? 'إدارة كل الحسابات' : 'Manage all accounts',
                   subtitle: isArabic
-                      ? 'عرض أرقام واتساب المهندسين'
-                      : 'View engineer WhatsApp numbers',
-                  onTap: () => context.push(RouteNames.adminUsers),
+                      ? 'مستخدمون، مهندسون، وشركات — تفعيل، إيقاف، وحذف'
+                      : 'Users, engineers, and companies — activate, suspend, or delete',
+                  onTap: () => openAdminAccountsTab(ref),
                 ),
                 _QuickActionTile(
                   icon: Icons.delete_outline,

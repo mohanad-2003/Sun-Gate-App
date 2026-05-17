@@ -52,6 +52,15 @@ class MarketPlaceState {
     );
   }
 
+  /// First non-empty WhatsApp from linked engineers, else [company.engineerNumber].
+  String engineerWhatsappFor(CompanyEntity? company) {
+    final fromEngineers = engineers
+        .map((engineer) => engineer.phoneWhatsapp?.trim() ?? '')
+        .firstWhere((phone) => phone.isNotEmpty, orElse: () => '');
+    if (fromEngineers.isNotEmpty) return fromEngineers;
+    return company?.engineerNumber?.trim() ?? '';
+  }
+
   MarketPlaceState copyWith({
     bool? isLoading,
     bool? isSaving,

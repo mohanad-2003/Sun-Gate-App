@@ -24,7 +24,8 @@ class ApiConstants {
   static const getNotifications = '/api/notifications';
   static const unreadCount = '/api/notifications/unread-count';
   static const markAllAsRead = '/api/notifications/read-all';
-  static const markAsRead = '/api/notifications/';
+  static String markNotificationRead(String notificationId) =>
+      '/api/notifications/$notificationId/read';
   static const updateFcmToken = '/api/users/me/fcm-token';
   static const String companies = '/api/companies';
   static const String myCompany = '/api/companies/me';
